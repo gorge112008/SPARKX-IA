@@ -1,0 +1,66 @@
+{% load static %}
+{% url 'events:romeo_status' as romeo_status_url %}
+{% url 'events:romeo_action_create' as romeo_action_url %}
+{% url 'events:romeo_interpret' as romeo_interpret_url %}
+<div class="romeo-presence" data-romeo-presence data-status-url="{{ romeo_status_url }}" data-guide-url="{% url 'assistant:guide' %}" data-interaction-url="{% url 'assistant:interaction_log' %}" data-pattern-save-url="{% url 'assistant:pattern_save' %}" data-patterns-url="{% url 'assistant:patterns' %}" data-gica-user-name="{{ user.username }}" data-gica-personality="{{ gica_profile.personality|default:'friendly' }}" data-gica-appearance="{{ gica_profile.appearance|default:'ocean' }}" data-gica-open-conversation="true">
+  <button class="romeo-presence-button" type="button" data-romeo-presence-toggle aria-controls="romeo-presence-details" aria-expanded="false">
+    <span class="romeo-presence-home" data-romeo-home aria-hidden="true"><img src="{% static 'img/gica-avatar.svg' %}" width="24" height="24" alt=""></span>
+    <span class="romeo-presence-name">Gica-1</span>
+    <span class="romeo-voice-indicator" data-romeo-voice-indicator hidden>Mic activo</span>
+    <span class="romeo-presence-state" data-romeo-cursor-status role="status" aria-live="polite" aria-atomic="true">Listo</span>
+  </button>
+  <button class="romeo-stop-top" type="button" data-romeo-action-stop hidden>Detener</button>
+  <button class="romeo-stop-top" type="button" data-romeo-voice-stop hidden>Apagar mic</button>
+  <button class="romeo-stop-top" type="button" data-gica-demo-stop hidden>Detener piloto</button>
+  <section id="romeo-presence-details" class="romeo-presence-details" aria-label="Conversar con Gica-1" hidden>
+    <div class="romeo-presence-heading"><img class="gica-panel-avatar" src="{% static 'img/gica-avatar.svg' %}" width="34" height="34" alt=""><div><strong>Gica-1</strong><span class="romeo-presence-badge">Tu asistente de eventos</span></div><a class="text-link gica-manage-link" href="{% url 'assistant:profile' %}">Gestión del bot</a></div>
+    <p class="romeo-presence-copy" data-romeo-cursor-copy>¿Creamos un evento o hacemos otra tarea?</p>
+    <p class="romeo-presence-event" data-romeo-event-name hidden></p>
+    <a class="text-link" data-romeo-event-link hidden>Ver evento y seguimiento</a>
+    <form class="romeo-action-form" data-romeo-action-form data-action-url="{{ romeo_action_url }}" data-interpret-url="{{ romeo_interpret_url }}" aria-label="Dar una orden a Gica" hidden>
+      {% csrf_token %}
+      <div class="gica-quick-actions" aria-label="Acciones rápidas">
+        <div class="gica-creation-launch"><button class="button button-secondary" type="button" data-gica-creation-control="turn">Crear evento</button><button class="text-link" type="button" data-gica-creation-control="resume" data-gica-creation-resume>Continuar mi borrador</button></div>
+        <a class="button button-secondary" href="{% url 'events:index' %}">Eventos</a>
+        <a class="button button-secondary" href="{% url 'events:calendar' %}">Calendario</a>
+        <a class="button button-secondary" href="{% url 'directory:index' %}">Directorio</a>
+      </div>
+      <div class="romeo-voice-session">
+        <button class="button button-secondary" type="button" data-romeo-voice-session aria-pressed="false" aria-describedby="romeo-quick-status" hidden>Reanudar conversación</button>
+        <p id="romeo-quick-status" data-romeo-voice-session-status role="status" aria-live="polite">Micrófono apagado. Abre Gica para conversar o continúa por texto.</p>
+        <p data-gica-conversation role="status" aria-live="polite" hidden></p>
+        <div data-gica-transcript role="log" aria-label="Conversación con Gica" aria-live="polite" hidden></div>
+        <section data-gica-creation class="gica-creation" aria-label="Crear evento con Gica" hidden>
+          <header><strong>Tu nuevo evento</strong><span data-gica-creation-progress></span></header>
+          <p data-gica-creation-question class="gica-creation-question"></p>
+          <p class="field-help" data-gica-creation-status></p>
+          <details open><summary>Ficha que estamos completando</summary><dl data-gica-creation-draft class="gica-creation-draft"></dl></details>
+          <div class="gica-creation-controls"><button class="button button-secondary" type="button" data-gica-creation-control="back" data-gica-creation-back>Anterior</button><button class="button button-secondary" type="button" data-gica-creation-control="review" data-gica-creation-review>Revisar ficha</button><button class="text-link" type="button" data-gica-creation-control="cancel" data-gica-creation-cancel>Cancelar creación</button><button class="button" type="button" data-gica-creation-control="confirm" data-gica-creation-confirm hidden>Crear evento</button></div>
+          <a class="button button-secondary" data-gica-creation-event hidden>Abrir evento creado</a>
+        </section>
+        <div data-gica-knowledge-answer class="gica-knowledge-answer" role="region" aria-label="Referencia pública de Gica" hidden></div>
+      </div>
+      <p class="romeo-action-status" data-romeo-action-status role="status" aria-live="polite" aria-atomic="true"></p>
+      <div class="romeo-clarifications" data-romeo-clarifications role="group" aria-label="Opciones para aclarar tu orden" hidden></div>
+      <details class="gica-manual-mode" data-gica-manual-mode>
+        <summary>Modo manual <span>Escribir o dictar una orden</span></summary>
+        <label for="romeo-command">Tu orden</label>
+        <input id="romeo-command" name="command" type="text" maxlength="300" placeholder="Hola Gica, muéstrame el calendario" autocomplete="off" aria-describedby="romeo-command-help">
+        <p id="romeo-command-help">Escribe tu petición o la respuesta al paso actual y ejecútala.</p>
+        <div class="romeo-action-buttons"><button class="button button-secondary" type="button" data-dictate="romeo-command" data-dictate-label="Hablar" data-voice-status="romeo-voice-status" data-voice-submit-label="Ejecutar orden" aria-describedby="romeo-voice-status" hidden><svg class="icon" aria-hidden="true"><use href="#i-mic"/></svg><span>Hablar</span></button><button class="button" type="submit">Ejecutar orden</button><button class="button button-secondary" type="button" data-romeo-action-stop hidden>Detener</button></div>
+        <p class="field-help" id="romeo-voice-status" role="status" aria-live="polite">Revisa el texto antes de ejecutar.</p>
+        <label hidden><input type="checkbox" data-gica-guided checked> Conversación guiada local</label>
+      </details>
+    </form>
+    <section class="gica-demo" aria-labelledby="gica-demo-title" data-gica-demo>
+      <h3 id="gica-demo-title">Mira cómo creamos un evento</h3>
+      <p class="field-help">Sigue el registro de Gicaingenieros, la ficha del seminario y su calendario. Este recorrido guarda el piloto, aprueba su agenda y muestra el cambio de Robert a Jorge Gayoso Ugas y del jueves 19 al 26 de noviembre. Una repetición reutiliza el mismo evento. Sin micrófono ni consumo de modelos.</p>
+      <div class="gica-creation-launch"><button class="button button-secondary" type="button" data-gica-demo-start>Iniciar piloto guiado</button><button class="text-link" type="button" data-gica-demo-stop hidden>Detener piloto</button></div>
+      <p class="field-help" data-gica-demo-status role="status" aria-live="polite">Sólo necesitas observar. Usa Detener demo para interrumpirla.</p>
+      <p class="field-help" data-gica-demo-progress></p>
+      <details><summary>Guion de la demostración</summary><div data-gica-demo-script></div></details>
+      <a class="button button-secondary" data-gica-demo-event hidden>Ver evento piloto</a>
+    </section>
+    {% if request.resolver_match.app_name != 'assistant' or request.resolver_match.url_name != 'profile' %}<div hidden data-gica-settings-fallback>{% include 'assistant/_gica_settings.html' %}</div>{% endif %}
+  </section>
+</div>

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}{% load static tz %}
+{% block title %}Demo guiada · {{ event.title }} · SparkX{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/plan-reading.css' %}?v=20261108-motion2"><link rel="stylesheet" href="{% static 'css/journey-demo.css' %}?v=20261114-journey1">{% endblock %}
+{% block content %}
+<main id="main-content" class="page-content journey-page">
+  <nav class="breadcrumb" aria-label="Ruta"><a href="{% url 'events:index' %}">Eventos</a><span aria-hidden="true">/</span><a href="{% url 'events:detail' event.id %}">Mi evento</a><span aria-hidden="true">/</span><span>Demo guiada</span></nav>
+  <header class="page-heading journey-heading">
+    <div><span class="demo-badge">Demo 2 · Datos ficticios</span><h1 data-reveal="title">Del objetivo al plan, paso a paso</h1><p class="lead">{{ event.title }}</p></div>
+    <a class="button button-secondary" href="{% url 'events:detail' event.id %}">Abrir evento<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+  </header>
+
+  <div class="journey-disclosure"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg><p><strong>Recorrido local con propuestas de ejemplo.</strong> No usa IA real ni consume créditos. Aprobar un plan no acredita la ejecución del evento; tú confirmas cada cambio y el avance de sus tareas.</p></div>
+
+  <ol class="journey-steps" aria-label="Pasos de la demostración">
+    {% for step in guide_steps %}<li class="journey-step{% if step.current %} is-current{% elif step.done %} is-done{% endif %}"{% if step.current %} aria-current="step"{% endif %}><span class="journey-step-index" aria-hidden="true">{% if step.done %}✓{% else %}{{ forloop.counter }}{% endif %}</span><div><h2>{{ step.name }}</h2><p>{{ step.description }}</p><span class="journey-step-state">{% if step.current %}Paso actual{% elif step.done %}Paso recorrido{% else %}Por recorrer{% endif %}</span></div></li>{% endfor %}
+  </ol>
+
+  {% if journey.notice %}<div class="notice" role="status">{{ journey.notice }}</div>{% endif %}
+  {% if validation_errors %}<div class="notice notice-error" role="alert"><strong>Este cambio no se puede aplicar</strong><p>El plan aprobado se conserva. Corrige el conflicto antes de proponer otra versión.</p><ul>{% for issue in validation_errors %}<li>{{ issue }}</li>{% endfor %}</ul></div>{% endif %}
+
+  <div class="journey-layout">
+    <div class="journey-primary">
+      <section class="journey-card journey-next" aria-labelledby="journey-stage-title">
+        <span class="journey-eyebrow">Tu siguiente paso</span>
+        <h2 id="journey-stage-title">{{ journey.stage_title }}</h2><p class="journey-description">{{ journey.stage_description }}</p>
+        <div class="journey-actions">
+          {% if journey.baseline_available %}<form method="post" action="{% url 'events:journey_demo' event.id %}">{% csrf_token %}<input type="hidden" name="scenario" value="baseline"><input type="hidden" name="expected_revision" value="{{ event.revision }}"><input type="hidden" name="expected_plan_id" value="{{ event.active_plan_id|default:'' }}"><button class="button button-primary" type="submit" id="demo-baseline">Preparar propuesta de ejemplo</button></form>{% endif %}
+          {% if journey.change_available %}<form method="post" action="{% url 'events:journey_demo' event.id %}">{% csrf_token %}<input type="hidden" name="scenario" value="change"><input type="hidden" name="expected_revision" value="{{ event.revision }}"><input type="hidden" name="expected_plan_id" value="{{ event.active_plan_id|default:'' }}"><button class="button button-primary" type="submit" id="demo-change">Proponer 15 minutos más de práctica</button></form>{% endif %}
+          {% if candidate %}<a class="button button-secondary" href="#demo-candidate">Revisar propuesta pendiente</a>{% endif %}
+          {% if plan %}<a class="button button-secondary" href="{% url 'events:detail' event.id %}#preparation">Actualizar tareas</a>{% endif %}
+        </div>
+      </section>
+
+      {% if candidate %}<section id="demo-candidate" class="journey-card journey-candidate" aria-labelledby="demo-candidate-title">
+        <div class="journey-section-heading"><div><span class="journey-eyebrow">Todavía sin aplicar</span><h2 id="demo-candidate-title">Revisa la propuesta</h2></div><span class="demo-badge">{{ candidate.get_status_display }}</span></div>
+        <p class="journey-description">Comprueba horarios, tareas y supuestos. Tu aprobación activa exactamente esta propuesta; hasta entonces, el plan vigente se conserva.</p>
+        {% if candidate.base_revision != event.revision or candidate.base_plan_id != event.active_plan_id %}<div class="notice notice-error">La ficha o el plan cambió después de preparar esta propuesta. Descártala y prepara otra sobre la versión actual.</div>{% endif %}
+        {% if candidate.validation %}<div class="notice notice-error"><strong>Comprobaciones pendientes</strong><ul>{% for issue in candidate.validation %}<li>{{ issue }}</li>{% endfor %}</ul></div>{% endif %}
+        {% if impact %}<div class="journey-impact"><h3>Cambios respecto al plan aprobado</h3><ul>{% for collection, changes in impact.items %}{% if collection == 'sessions' or collection == 'tasks' %}{% if changes.added or changes.removed or changes.changed %}<li><strong>{% if collection == 'sessions' %}Sesiones{% else %}Tareas{% endif %}:</strong> {{ changes.added|length }} incorporadas, {{ changes.changed|length }} modificadas, {{ changes.removed|length }} retiradas.</li>{% endif %}{% endif %}{% endfor %}{% if impact.summary_changed %}<li>Se actualiza el resumen del plan.</li>{% endif %}</ul></div>{% endif %}
+        {% include 'events/_plan.html' with payload=candidate.payload proposed=True %}
+        {% if candidate.status == 'pending' %}<div class="candidate-actions journey-review-actions"><form method="post" action="{% url 'events:approve' event.id candidate.id %}">{% csrf_token %}<input type="hidden" name="expected_revision" value="{{ candidate.base_revision }}"><input type="hidden" name="expected_plan" value="{{ candidate.base_plan_id|default:'' }}"><input type="hidden" name="idempotency_key" value="{{ candidate.id }}"><input type="hidden" name="return_to_demo" value="1"><button class="button button-primary" type="submit" id="demo-approve"{% if candidate.validation or candidate.base_revision != event.revision or candidate.base_plan_id != event.active_plan_id %} disabled{% endif %}>Aprobar esta propuesta</button></form><form method="post" action="{% url 'events:reject' event.id candidate.id %}">{% csrf_token %}<input type="hidden" name="return_to_demo" value="1"><button class="button button-secondary" type="submit">Descartar propuesta</button></form></div>{% endif %}
+      </section>{% endif %}
+
+      {% if plan %}<section class="journey-card" aria-labelledby="demo-active-plan-title"><div class="journey-section-heading"><div><span class="journey-eyebrow">Guardado y aprobado</span><h2 id="demo-active-plan-title">Plan vigente · Versión {{ event.active_plan.version }}</h2></div><a class="text-link" href="{% url 'events:detail' event.id %}#plan">Ver plan completo</a></div><p class="journey-description">{{ plan.summary }}</p>{% include 'events/_agenda.html' with payload=plan proposed=False preview=True %}</section>{% endif %}
+    </div>
+
+    <aside class="journey-aside" aria-label="Contexto y seguimiento de la demostración">
+      <section class="journey-card" aria-labelledby="demo-brief-title"><span class="journey-eyebrow">Punto de partida</span><h2 id="demo-brief-title">La ficha del taller</h2><dl class="journey-facts"><div><dt>Fecha y hora</dt><dd>{% if event.starts_at %}{% timezone event.timezone %}{{ event.starts_at|date:'d M Y · H:i' }}{% endtimezone %}{% else %}Por confirmar{% endif %}</dd></div><div><dt>Zona horaria</dt><dd>{{ event.timezone }}</dd></div><div><dt>Aforo previsto</dt><dd>{{ event.capacity }} personas</dd></div></dl><details class="journey-brief"><summary>Leer el objetivo y las restricciones</summary><p>{{ event.brief }}</p></details><div class="journey-context-links"><a href="{% url 'events:interview' event.id %}">Revisar entrevista</a><a href="{% url 'events:edit' event.id %}">Editar ficha</a></div><p class="journey-footnote">Fecha, asistentes y recursos son datos sintéticos para ensayar el funcionamiento.</p></section>
+
+      <section class="journey-card" aria-labelledby="demo-progress-title"><span class="journey-eyebrow">Confirmado por ti</span><h2 id="demo-progress-title">Avance de preparación</h2>{% if progress %}{% include 'events/_task_progress_summary.html' with task_tracking=progress %}<a class="text-link" href="{% url 'events:detail' event.id %}#preparation">Gestionar estados y notas<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>{% else %}<p class="journey-description">Al aprobar el primer plan aparecerán sus tareas. No se marcan como hechas automáticamente.</p>{% endif %}</section>
+
+      {% if journey.conflict_available %}<section class="journey-card journey-conflict" aria-labelledby="demo-conflict-title"><span class="journey-eyebrow">Prueba opcional</span><h2 id="demo-conflict-title">¿Y si un horario se cruza?</h2><p class="journey-description">Prepara un ejemplo con sesiones solapadas para comprobar el rechazo. Esta prueba conserva tu plan aprobado y el avance registrado.</p><form method="post" action="{% url 'events:journey_demo' event.id %}">{% csrf_token %}<input type="hidden" name="scenario" value="conflict"><input type="hidden" name="expected_revision" value="{{ event.revision }}"><input type="hidden" name="expected_plan_id" value="{{ event.active_plan_id|default:'' }}"><button class="button button-secondary" type="submit" id="demo-conflict">Comprobar conflicto</button></form></section>{% endif %}
+    </aside>
+  </div>
+</main>
+{% endblock %}

@@ -1,0 +1,140 @@
+{
+  "catalog_version": "social-es-2026-11-15.4",
+  "language": "es",
+  "agent_aliases": ["Gica", "Jica", "Yica", "Yika", "Llica", "Ilica", "Chica"],
+  "social_concepts": {
+    "greeting": {
+      "hello": ["hola", "holi", "holis", "hey", "saludos"],
+      "good": ["buen", "buenos", "buenas"],
+      "day": ["día", "días"],
+      "afternoon": ["tarde", "tardes"],
+      "night": ["noche", "noches"],
+      "fused_day": ["buenosdias"],
+      "fused_afternoon": ["buenastardes"],
+      "fused_night": ["buenasnoches"],
+      "generic": ["buenas"],
+      "emphasis": ["muy"],
+      "hello_reply": "Hola.",
+      "day_reply": "Buenos días.",
+      "afternoon_reply": "Buenas tardes.",
+      "night_reply": "Buenas noches.",
+      "generic_reply": "Buenas."
+    },
+    "gratitude": {
+      "nouns": ["gracias"],
+      "verbs": ["agradezco", "agradecemos", "agradecerte", "agradece"],
+      "giving_verbs": ["doy", "damos", "dar", "darte", "darle", "darles"],
+      "pronouns": ["te", "le", "les", "lo", "se"],
+      "articles": ["las", "los", "mis", "unas"],
+      "intensifiers": ["muchas", "muchísimas", "mil", "mucho", "muchísimo", "bastante"],
+      "reason_markers": ["por"],
+      "help": ["ayuda", "ayudar", "ayudarme", "ayudarnos", "ayudado", "apoyo", "apoyar", "apoyarme", "apoyarnos", "apoyado", "tiempo", "paciencia", "atención", "comprensión", "colaboración"],
+      "read_infinitives": ["abrir", "buscar", "mostrar", "organizar", "explicar"],
+      "objects": ["calendario", "directorio", "evento", "eventos", "agenda", "plan", "tema"],
+      "benefit": ["todo", "esto", "eso"],
+      "function_words": ["tu", "su", "la", "el", "lo", "que", "me", "nos", "has", "han", "con", "este", "esta", "tanto", "toda", "todas", "los", "las", "haber", "haberte", "habernos", "brindado", "dado"],
+      "reply": "Con gusto. Aquí estoy para ayudarte.",
+      "declined_reply": "De acuerdo. Aquí sigo si necesitas ayuda."
+    },
+    "acknowledgement": {
+      "tokens": ["ok", "okay", "okey", "vale", "bueno", "listo", "ya", "chévere", "bacán", "perfecto"],
+      "spelled": ["o", "k"],
+      "state_verbs": ["está"],
+      "state": ["bien"],
+      "reply": "De acuerdo. Aquí sigo si necesitas ayuda."
+    },
+    "reciprocity": {
+      "heads": ["igualmente", "igual", "también"],
+      "markers": ["para", "a"],
+      "pronouns": ["ti"],
+      "same": ["mismo"],
+      "article": ["lo"],
+      "return_markers": ["de"],
+      "return_objects": ["nada"],
+      "negative": ["no"],
+      "existence": ["hay"],
+      "relative": ["qué"],
+      "problem": ["problema"],
+      "without": ["sin"],
+      "reply": "Gracias. Lo mismo para ti.",
+      "return_reply": "Gracias a ti."
+    },
+    "politeness": {
+      "requests": ["porfa", "porfis"],
+      "favor": ["favor"],
+      "favor_markers": ["por"],
+      "permission": ["permiso"],
+      "permission_markers": ["con"],
+      "apologies": ["perdón", "perdona", "disculpa", "disculpe"],
+      "apology_objects": ["molestia"],
+      "sorrow_verbs": ["siento"],
+      "articles": ["la", "lo"],
+      "friendly": ["amable"],
+      "degree": ["muy"],
+      "reply": "Claro, dime en qué puedo ayudarte.",
+      "apology_reply": "No te preocupes. Seguimos cuando quieras.",
+      "gratitude_reply": "Con gusto. Aquí estoy para ayudarte."
+    },
+    "wellbeing": {
+      "question_heads": ["cómo", "qué"],
+      "pronouns": ["te"],
+      "verbs": ["estás", "andas", "va"],
+      "state": ["bien", "tal"],
+      "quantifiers": ["todo"],
+      "reply": "Estoy bien, gracias por preguntar. ¿En qué te ayudo hoy?"
+    },
+    "farewell": {
+      "tokens": ["adiós", "chao", "chau", "cuídate"],
+      "until": ["hasta"],
+      "times": ["luego", "pronto", "mañana"],
+      "next": ["próxima"],
+      "see_pronouns": ["nos"],
+      "see_verbs": ["vemos"],
+      "articles": ["la"],
+      "reply": "Hasta pronto. Cuando quieras, seguimos con tus eventos."
+    },
+    "context": {
+      "discourse": ["oye"],
+      "emphasis": ["verdad", "corazón"],
+      "emphasis_markers": ["de"],
+      "softeners": ["realmente", "sinceramente"],
+      "decline": ["no"],
+      "accept": ["sí"]
+    },
+    "typos": {
+      "eligible": ["gracias", "agradezco"],
+      "excluded": ["gracia"],
+      "max_distance": 1,
+      "max_token_length": 32
+    }
+  },
+  "composition": {
+    "max_parts": 3,
+    "connectors": ["y", "e"]
+  },
+  "time": [
+    {"phrases": ["qué hora es", "qué hora tienes", "dime la hora", "me dices la hora", "cuál es la hora", "hora actual", "la hora", "tienes la hora"], "reply": ""}
+  ],
+  "person_greeting": {
+    "verbs": ["manda", "mandar", "mándale", "mandarle", "envía", "enviar", "envíale", "enviarle", "da", "dar", "dale", "darle"],
+    "direct_verbs": ["saluda", "saludar", "salúdale", "saludarle"],
+    "nouns": ["un saludo", "el saludo", "saludo", "saludos", "un saludito"],
+    "introducers": ["a", "para"],
+    "reply_template": "¡Hola, {person_name}! Que tengas un excelente día.",
+    "missing_reply": "Claro. Puedes pedirme: manda un saludo a Ana, usando el nombre que prefieras."
+  },
+  "wrappers": {
+    "prefixes": ["puedes", "podrías", "puede", "podría", "me puedes", "me podrías", "quiero", "quiero que", "quisiera", "me gustaría", "me gustaría que", "necesito", "serías tan amable de", "te pido que", "por favor", "porfa", "porfis", "a ver"],
+    "suffixes": ["por favor", "porfa", "porfis"],
+    "time_verbs": ["decir", "decirme", "decirnos", "dime", "dinos", "dar", "darme", "dame", "darnos", "danos", "me dices", "saber", "conocer"],
+    "time_targets": ["hora", "la hora", "hora actual", "la hora actual"],
+    "greeting_fillers": ["o"]
+  },
+  "guards": {
+    "negations": ["no", "nunca", "jamás", "tampoco", "ni"],
+    "conditions": ["si", "entonces", "cuando", "quizá", "quizás", "tal vez", "a menos que"],
+    "reported": ["dijo", "dice", "dijeron", "comentó", "según", "me pidió", "escribió", "citó", "repito", "ejemplo", "supongamos"],
+    "multiple": ["y", "e", "o", "u", "después", "luego", "además"],
+    "person_blocked": ["y", "e", "o", "u", "que", "para", "por", "después", "luego", "además", "abre", "abra", "abrir", "ejecuta", "ejecutar", "borra", "borrar", "elimina", "eliminar", "envía", "enviar", "manda", "mandar", "contacta", "contactar", "escribe", "escribir", "cambia", "cambiar", "haz", "pulsa", "presiona", "instala", "descarga", "script", "comando", "contraseña", "clave", "administrador", "permisos", "pago"]
+  }
+}

@@ -1,0 +1,29 @@
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+var/*
+!var/.gitkeep
+*.sqlite3
+*.sqlite3-journal
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Material auxiliar local; reglas en AGENTS.md
+/Temporal/
+
+# Binario local de OpenCode; código y pruebas permanecen en tools/opencode/.
+/.opencode/bin/
+
+# Configuración y banco privados del entorno de desarrollo.
+/.agents/
+/.codex/
+/.aws/
+/.opencode/
+
+# Paquetes y documentos de entrega; el repositorio conserva sus fuentes.
+/entrega/

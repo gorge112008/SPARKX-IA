@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+  <title>Gica</title>
+  <path d="M64 20v10" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+  <circle cx="64" cy="15" r="5" fill="#fff"/>
+  <rect x="22" y="31" width="84" height="72" rx="27" fill="#fff" fill-opacity=".14" stroke="#fff" stroke-opacity=".8" stroke-width="3"/>
+  <rect x="31" y="42" width="66" height="45" rx="18" fill="#071c33" fill-opacity=".82"/>
+  <path d="M44 61v7m40-7v7" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+  <path d="M55 76c5 4 13 4 18 0" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <path d="M15 57v20m98-20v20" stroke="#fff" stroke-opacity=".65" stroke-width="6" stroke-linecap="round"/>
+  <path d="m49 105-5 8m35-8 5 8" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+</svg>

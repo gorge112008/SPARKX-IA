@@ -1,0 +1,11 @@
+<div id="chat-messages" class="chat-messages" aria-label="Conversación del evento" aria-live="polite" aria-relevant="additions text">
+  {% for message in chat_messages %}
+    <article class="chat-message{% if message.role == 'user' %} chat-message-user{% else %} chat-message-assistant{% endif %}"{% if message.job_id %} data-romeo-job="{{ message.job_id }}"{% endif %}{% if message.role == 'assistant' and message.request_key|slice:':6' == 'local:' %} data-romeo-local-result="{{ message.pk }}"{% endif %}>
+      <span class="message-author">{% if message.role == 'user' %}Tú{% else %}Gica-1{% endif %}</span>
+      <p class="message-content">{{ message.content }}</p>
+      {% if message.role == 'assistant' %}<button class="read-message" type="button" data-read-message hidden>Leer respuesta</button>{% endif %}
+    </article>
+  {% empty %}
+    <div class="chat-intro"><p>Cuéntame qué quieres organizar. Puedo ayudarte a preparar una agenda y detectar lo que falta.</p></div>
+  {% endfor %}
+</div>

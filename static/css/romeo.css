@@ -1,0 +1,52 @@
+/* Romeo-1: compact operational rail in the existing light/dark design system. */
+.workspace-columns { grid-template-columns:minmax(0,1fr) 364px; }
+.agent-panel.romeo-panel { height:clamp(690px,calc(100dvh - 125px),900px); padding:20px; }
+.romeo-panel .agent-header { padding-bottom:12px; }
+.romeo-panel .agent-heading h2 { font-size:16px; letter-spacing:-.25px; margin-bottom:3px; }
+.romeo-panel .agent-heading p { font-size:12px; }
+.romeo-panel .provider-status { font-size:11px; margin-top:12px; }
+.romeo-panel .agent-header>.field-help { font-size:11px; line-height:1.5; }
+.romeo-tabs { display:flex; gap:20px; border-bottom:1px solid var(--line); margin:0 -2px; flex-shrink:0; }
+.romeo-tabs button { color:var(--muted); font-size:12px; font-weight:600; background:none; border:0; border-bottom:2px solid transparent; padding:11px 2px; }
+.romeo-tabs button[aria-selected="true"] { color:var(--ink); border-color:var(--link); }
+.romeo-view { min-height:130px; flex:1; overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; padding:18px 0 10px; }
+.romeo-view .chat-messages { overflow:visible; padding:0; min-height:0; }
+.romeo-run-title,.romeo-step-heading,.romeo-usage { display:flex; justify-content:space-between; gap:10px; align-items:center; }
+.romeo-run-title { font-size:12px; font-weight:600; }
+.romeo-run-title time,.romeo-step-heading time { color:var(--muted); font:10px/1.5 ui-monospace,Consolas,monospace; white-space:nowrap; }
+.romeo-model { color:var(--muted); font:11px/1.5 ui-monospace,Consolas,monospace; margin:4px 0 16px; overflow-wrap:anywhere; }
+.romeo-budget { margin:14px 0 22px; font-size:11px; }
+.romeo-budget>div { display:flex; justify-content:space-between; gap:8px; padding:4px 0; color:var(--muted); }
+.romeo-budget strong { color:var(--ink); font-weight:600; font-variant-numeric:tabular-nums; }
+.romeo-budget .romeo-budget-remaining { border-top:1px solid var(--line); margin-top:5px; padding-top:9px; }
+.romeo-request { padding:0 0 16px; margin-bottom:8px; border-bottom:1px solid var(--line); }
+.romeo-request>span { font-size:10px; font-weight:600; color:var(--muted); }
+.romeo-request p { margin:5px 0 0; font-size:12px; line-height:1.65; overflow-wrap:anywhere; }
+.romeo-steps { list-style:none; padding:0; margin:18px 0 12px; }
+.romeo-steps li { position:relative; display:grid; grid-template-columns:20px minmax(0,1fr); gap:10px; padding-bottom:20px; }
+.romeo-steps li:not(:last-child)::before { content:""; position:absolute; left:9px; top:20px; bottom:0; width:1px; background:var(--line); }
+.romeo-step-mark { display:grid; place-items:center; width:20px; height:20px; color:var(--muted); background:var(--sidebar); position:relative; z-index:1; }
+.romeo-step-mark svg { width:15px; height:15px; stroke-width:1.6; }
+.romeo-steps strong { font-size:12px; font-weight:600; }
+.romeo-steps p { margin:4px 0 0; color:var(--muted); font-size:11px; line-height:1.65; }
+.romeo-steps .is-current .romeo-step-mark { color:var(--link); animation:romeo-pulse 1.5s ease-in-out infinite; }
+.romeo-steps [data-romeo-stage="failed"] .romeo-step-mark,.romeo-steps [data-romeo-stage="failed"] strong,.romeo-steps [data-romeo-stage="needs_changes"] .romeo-step-mark { color:var(--danger); }
+.romeo-live { display:inline-block; width:6px; height:6px; margin-right:5px; border-radius:50%; background:var(--link); animation:romeo-pulse 1.5s ease-in-out infinite; }
+.romeo-usage { border-top:1px solid var(--line); padding-top:12px; font-size:11px; color:var(--muted); }
+.romeo-usage strong { font-weight:600; color:var(--ink); }
+.romeo-error { color:var(--danger); font-size:12px; line-height:1.6; }
+.romeo-result { margin:14px 0 6px; }
+.romeo-footnote { color:var(--muted); font-size:10px; line-height:1.6; margin:14px 0 0; }
+.romeo-idle { padding:20px 0 26px; }
+.romeo-idle>.icon { color:var(--link); margin-bottom:14px; }
+.romeo-idle p { font-size:13px; margin-bottom:8px; }
+.romeo-idle>span { display:block; color:var(--muted); font-size:12px; line-height:1.8; }
+.romeo-panel .chat-composer { border-top:1px solid var(--line); padding-top:12px; flex-shrink:0; }
+.romeo-panel .chat-composer textarea { font-size:12px; min-height:68px; }
+.romeo-panel .composer-note,.romeo-panel .voice-status { font-size:10px; line-height:1.5; }
+.romeo-panel .composer-note { margin-bottom:8px; }
+.romeo-panel .composer-actions .button { font-size:12px; min-height:32px; padding:6px 11px; }
+@keyframes romeo-pulse { 50% { opacity:.35; transform:translateY(-1px); } }
+@media(max-width:1100px) { .workspace-columns { grid-template-columns:minmax(0,1fr); } .agent-panel.romeo-panel { position:relative; top:0; height:780px; } }
+@media(max-width:600px) { .agent-panel.romeo-panel { padding:18px 16px; height:820px; min-height:0; } .romeo-step-heading { align-items:flex-start; } }
+@media(prefers-reduced-motion:reduce) { .romeo-live,.romeo-steps .is-current .romeo-step-mark { animation:none; } }

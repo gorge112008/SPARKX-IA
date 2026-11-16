@@ -1,0 +1,15 @@
+{% load static %}
+<details id="demo-context" class="demo-context">
+  <summary>Ficha de referencia, afiche y pendientes</summary>
+  <div class="demo-context-grid">
+    <div>
+      <h3>Datos del afiche</h3>
+      <p class="demo-source">{{ demo.source }}</p>
+      <dl class="demo-facts">{% for fact in demo.facts %}<div><dt>{{ fact.label }}</dt><dd>{{ fact.value }}</dd></div>{% endfor %}</dl>
+      <h3>Supuestos para explorar la demo</h3>
+      <dl class="demo-facts">{% for assumption in demo.assumptions %}<div><dt>{{ assumption.label }}</dt><dd>{{ assumption.value }}</dd></div>{% endfor %}</dl>
+    </div>
+    <figure class="demo-poster"><a href="{% static demo.poster_static_path %}" target="_blank" rel="noopener"><img src="{% static demo.poster_static_path %}" width="1122" height="1402" loading="lazy" alt="Afiche de referencia de GICA: Gestión estratégica del mantenimiento, jueves 12 de noviembre a las 7:30 p. m.; ponente Merling Daniel Rosales Infantes. El año no está indicado."></a><figcaption>Afiche aportado por Jorge. <a href="{% static demo.poster_static_path %}" target="_blank" rel="noopener">Abrir imagen completa</a></figcaption></figure>
+    <section class="demo-pending" aria-labelledby="demo-pending-title"><h3 id="demo-pending-title">Antes de organizarlo de verdad</h3><ul>{% for item in demo.pending %}<li>{{ item }}</li>{% endfor %}</ul><p>{{ demo.scope_note }}</p></section>
+  </div>
+</details>

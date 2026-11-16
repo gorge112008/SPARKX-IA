@@ -1,0 +1,89 @@
+{
+  "catalog_version": "es-2026-11-15.6",
+  "language": "es",
+  "slots": {
+    "person_name": {
+      "kind": "person_name",
+      "max_length": 100
+    }
+  },
+  "actions": {
+    "theme_light": {
+      "label": "Modo claro",
+      "command": "Modo claro",
+      "targets": [
+        "modo claro",
+        "tema claro",
+        "modo a claro",
+        "tema a claro",
+        "claro"
+      ],
+      "slot": null
+    },
+    "theme_dark": {
+      "label": "Modo oscuro",
+      "command": "Modo oscuro",
+      "targets": [
+        "modo oscuro",
+        "tema oscuro",
+        "modo a oscuro",
+        "tema a oscuro",
+        "oscuro"
+      ],
+      "slot": null
+    },
+    "calendar_open": {
+      "label": "Abrir calendario",
+      "command": "Abre calendario",
+      "targets": [
+        "calendario",
+        "mi calendario",
+        "calendario de eventos",
+        "mi calendario de eventos",
+        "vista calendario"
+      ],
+      "slot": null
+    },
+    "directory_open": {
+      "label": "Abrir directorio",
+      "command": "Abre directorio",
+      "targets": [
+        "directorio",
+        "directorio de personas",
+        "lista de personas",
+        "contactos",
+        "directorio de contactos",
+        "agenda de contactos",
+        "lista de contactos",
+        "listado de contactos",
+        "listado de personas",
+        "mis contactos",
+        "personas",
+        "mis personas"
+      ],
+      "slot": null
+    },
+    "people_search": {
+      "label": "Buscar una persona",
+      "command": "Busca a Jorge",
+      "targets": [],
+      "slot": "person_name"
+    },
+    "events_open": {
+      "label": "Abrir eventos",
+      "command": "Abre eventos",
+      "targets": [
+        "eventos",
+        "mis eventos",
+        "lista de eventos",
+        "listado de eventos",
+        "repositorio de eventos",
+        "seccion de eventos",
+        "modulo de eventos",
+        "panel de eventos",
+        "gestor de eventos"
+      ],
+      "slot": null
+    }
+  }
+}

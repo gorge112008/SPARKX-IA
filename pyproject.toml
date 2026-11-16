@@ -1,0 +1,12 @@
+[project]
+name = "sparkx-event-architect"
+version = "0.1.0"
+description = "Adaptive event planning with explicit revisions and human approval"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]

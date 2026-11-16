@@ -1,0 +1,56 @@
+/* Gica's compact conversation surface follows the workspace's two palettes. */
+.gica-companion{position:fixed;left:0;top:0;z-index:34;width:304px;max-width:calc(100vw - 24px);color:var(--ink);font-family:var(--font);contain:layout;--gica-companion-color:#126787}
+.gica-companion[data-appearance="slate"]{--gica-companion-color:#384455}
+.gica-companion[data-appearance="forest"]{--gica-companion-color:#176d5e}
+.gica-companion[hidden]{display:none!important}
+.gica-companion-card{padding:14px;background:var(--sidebar);border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 36px var(--shadow);max-height:calc(100dvh - 108px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--control-border) transparent}
+.gica-companion-header{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.gica-companion-grip{display:grid;place-items:center;flex:0 0 26px;width:26px;height:32px;padding:4px;border:0;border-radius:8px;background:transparent;color:var(--muted);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.gica-companion-grip svg{display:block;width:18px;height:18px;fill:currentColor;pointer-events:none}
+.gica-companion-grip:hover{background:var(--surface-hover);color:var(--ink)}
+.gica-companion.is-dragging .gica-companion-grip,.gica-companion.is-dragging .gica-companion-compact{cursor:grabbing}
+.gica-companion.is-dragging{user-select:none;-webkit-user-select:none}
+.gica-companion-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.gica-companion-avatar{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:12px;background:var(--gica-companion-color);color:#fff;font-size:20px;font-weight:600;overflow:hidden}
+.gica-companion-avatar img{display:block;width:100%;height:100%}
+.gica-companion-identity{display:grid;gap:2px;flex:1;min-width:0}
+.gica-companion-identity strong{font-size:12px;line-height:1.4;font-weight:650}
+.gica-companion-state{font-size:10px;line-height:1.4;color:var(--muted);overflow-wrap:anywhere}
+.gica-companion-minimize{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;padding:6px;border:0;border-radius:9px;background:transparent;color:var(--muted)}
+.gica-companion-minimize svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.gica-companion-minimize:hover{background:var(--surface-hover);color:var(--ink)}
+.gica-companion-question{margin:0 0 10px;font-size:13px;line-height:1.65;overflow-wrap:anywhere}
+.gica-companion-answer{margin:0 0 12px;padding-left:10px;border-left:2px solid var(--line);color:var(--muted);font-size:11px;line-height:1.5;overflow-wrap:anywhere}
+.gica-companion-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:12px 0}
+.gica-companion-choice{min-height:36px;padding:8px 10px;background:var(--field);color:var(--ink);border:1px solid var(--control-border);border-radius:9px;font-size:11px;font-weight:550;line-height:1.4;text-align:left;white-space:normal;overflow-wrap:anywhere;transition:background .15s,border-color .15s,transform .15s}
+.gica-companion-choice:hover{background:var(--accent-soft);border-color:var(--link);transform:translateY(-1px)}
+.gica-companion-choice:active{transform:translateY(0)}
+.gica-companion-choice.is-other{color:var(--link);border-color:var(--line);background:transparent}
+.gica-companion-choice:last-child:nth-child(odd){grid-column:1/-1}
+.gica-companion-options.has-directory-candidates{grid-template-columns:minmax(0,1fr)}
+.gica-companion-choice.is-directory-candidate{padding:10px 11px;line-height:1.55}
+.gica-companion-other{margin:12px 0}
+.gica-companion-other label{display:block;margin-bottom:6px;font-size:11px;font-weight:600}
+.gica-companion-other-row{display:flex;gap:6px;align-items:stretch}
+.gica-companion-other input{width:100%;min-width:0;min-height:36px;padding:7px 9px;border:1px solid var(--control-border);border-radius:8px;background:var(--field);color:var(--ink);font-size:12px}
+.gica-companion-send{flex:0 0 auto;padding:6px 9px;border:1px solid var(--primary);border-radius:8px;background:var(--primary);color:var(--primary-ink);font-size:10px;font-weight:600}
+.gica-companion-send:hover{background:var(--primary-hover)}
+.gica-companion-other-help{display:block;margin-top:5px;font-size:10px;color:var(--muted)}
+.gica-companion-footer{display:flex;justify-content:space-between;gap:12px;padding-top:10px;margin-top:4px;border-top:1px solid var(--line)}
+.gica-companion-link,.gica-companion-stop{padding:3px 0;min-height:28px;background:transparent;border:0;color:var(--link);font-size:10px;font-weight:600;line-height:1.4;text-align:left}
+.gica-companion-link:hover,.gica-companion-stop:hover{text-decoration:underline}
+.gica-companion-stop{color:var(--danger)}
+.gica-companion.is-minimized{width:52px;max-width:52px}
+.gica-companion-compact{position:relative;display:grid;place-items:center;width:52px;height:52px;padding:6px;background:var(--sidebar);border:1px solid var(--line);border-radius:18px;box-shadow:0 6px 24px var(--shadow);transition:border-color .15s,background .15s;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.gica-companion-compact:hover{border-color:var(--link);background:var(--surface-hover)}
+.gica-companion-compact .gica-companion-avatar{width:38px;height:38px;flex-basis:38px;border-radius:12px}
+.gica-companion-mic-dot{position:absolute;right:2px;bottom:2px;width:10px;height:10px;background:var(--muted);border:2px solid var(--sidebar);border-radius:50%}
+.gica-companion.is-listening .gica-companion-mic-dot{background:#16845b}
+.gica-companion.is-speaking .gica-companion-mic-dot{background:var(--link)}
+.gica-companion.is-short .gica-companion-card{max-height:220px}
+.gica-companion-static{left:auto;right:12px;top:auto;bottom:12px}
+.gica-companion-inline{font-family:var(--font);margin:12px 0 14px}
+.gica-companion button:focus-visible,.gica-companion input:focus-visible,.gica-companion-inline button:focus-visible,.gica-companion-inline input:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+@media(max-width:700px){.gica-companion{width:288px}.gica-companion-card{padding:12px;border-radius:16px}.gica-companion-choice{min-height:40px}.gica-companion-grip{width:32px;height:36px;flex-basis:32px}.gica-companion-minimize{width:36px;height:36px;flex-basis:36px}.gica-companion-link,.gica-companion-stop{min-height:32px}}
+@media(prefers-reduced-motion:reduce){.gica-companion-choice,.gica-companion-compact{transition:none}.gica-companion-choice:hover{transform:none}}
+@media print{.gica-companion{display:none!important}}

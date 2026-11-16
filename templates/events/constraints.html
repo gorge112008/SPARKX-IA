@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Restricciones · SparkX{% endblock %}
+{% block content %}<main id="main-content" class="page-content">
+<header class="page-heading"><div><h1>Restricciones y decisiones</h1><p class="lead">{{ event.title }}</p></div><a class="button button-secondary" href="{% url 'events:detail' event.id %}">Volver al evento</a></header>
+<div class="notice"><p>Declara una ventana disponible y los expositores habilitados. Se comprobarán sus otras agendas aprobadas de tu espacio. Las marcas conservan decisiones del plan vigente. Guardar no modifica ese plan ni confirma disponibilidad externa.</p></div>
+<form method="post" class="event-form">{% csrf_token %}{{ form.expected_revision }}{{ form.non_field_errors }}
+<div class="field-grid"><div class="field">{{ form.start.label_tag }}{{ form.start }}{{ form.start.errors }}</div><div class="field">{{ form.end.label_tag }}{{ form.end }}{{ form.end.errors }}</div></div>
+<p class="field-help">Horas en {{ event.timezone }}. Ventana máxima de 24 horas. Para esta versión se conservan los identificadores de las sesiones configuradas.</p>
+<div class="field">{{ form.speakers.label_tag }}{{ form.speakers }}{{ form.speakers.errors }}<p class="field-help">{{ form.speakers.help_text }} En escritorio usa Ctrl para seleccionar varias personas.</p></div>
+{% for row in form.session_fields %}<section class="demo-context"><h2>{{ row.session.title }}</h2><p class="field-help">{{ row.session.start }} · {{ row.session.speaker }} · {{ row.session.duration_minutes }} minutos</p><div class="field-grid">{% for field in row.fields %}<label>{{ field }} {{ field.label }}</label>{% endfor %}</div></section>{% endfor %}
+<p class="field-help">Al desmarcar una decisión permites modificarla en propuestas futuras. Las tareas y el plan actual permanecen guardados. Guardar invalida propuestas preparadas con requisitos anteriores.</p>
+<button class="button button-primary" type="submit">Guardar restricciones revisadas</button></form>
+{% if event.planning_constraints %}<section class="demo-context"><h2>Buscar una alternativa</h2><p>El cálculo intenta conservar horarios y asignaciones. Si no encuentra una opción dentro de sus límites, muestra un bloqueo para revisión. Usa una cuadrícula de 15 minutos; no garantiza una solución óptima.</p>
+<form method="post" action="{% url 'events:repair' event.id %}">{% csrf_token %}<input type="hidden" name="expected_revision" value="{{ event.revision }}"><button class="button button-secondary" type="submit">Calcular propuesta sin IA</button></form></section>{% endif %}
+</main>{% endblock %}

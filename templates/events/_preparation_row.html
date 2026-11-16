@@ -1,0 +1,31 @@
+{% load tz %}
+<li class="preparation-row"{% if task.tracking %} id="{{ task.tracking.dom_id }}" data-task-row{% endif %}>
+  <span class="preparation-number" aria-hidden="true">{{ position }}</span>
+  <div class="preparation-copy">
+    <div class="preparation-line"><h4>{{ task.title|default:'Tarea por definir' }}</h4>
+      {% if task.tracking %}<span class="task-state task-state-{{ task.tracking.status }}" data-task-state="{{ task.tracking.status }}"><span class="task-state-dot" aria-hidden="true"></span>{{ task.tracking.label }}</span>{% else %}<span class="preparation-status">{% if task.status == 'pending' %}Pendiente{% elif task.status == 'prepared' %}Preparada{% elif task.status == 'approved' %}Aprobada{% elif task.status == 'completed' %}Completada{% elif task.status == 'verified' %}Verificada{% else %}Por revisar{% endif %}</span>{% endif %}
+    </div>
+    {% if task.purpose or task.depends_on_titles %}<details class="row-details" data-task-instructions><summary>Ver instrucciones</summary>{% if task.purpose %}<p>{{ task.purpose }}</p>{% endif %}{% if task.depends_on_titles %}<div class="preparation-dependencies"><p>Antes de esta tarea:</p><ul>{% for title in task.depends_on_titles %}<li>{{ title }}</li>{% endfor %}</ul></div>{% endif %}</details>{% endif %}
+    {% if task.tracking %}
+      {% if task.tracking.updated_at %}<p class="task-updated">{{ task.tracking.updated_by.get_short_name|default:task.tracking.updated_by.username }} · {% timezone event.timezone %}<time datetime="{{ task.tracking.updated_at|date:'c' }}">{{ task.tracking.updated_at|date:'d M Y · H:i' }}</time>{% endtimezone %}</p>{% endif %}
+      {% if task.tracking.feedback %}<p class="task-update-feedback{% if task.tracking.result != 'saved' %} is-error{% endif %}" data-task-result="{{ task.tracking.result }}" tabindex="-1" role="{% if task.tracking.result == 'saved' %}status{% else %}alert{% endif %}">{{ task.tracking.feedback }}</p>{% endif %}
+      {% if task.tracking.next_task %}<a class="text-link task-next" href="{{ task.tracking.next_task.url }}" data-task-next-id="{{ task.tracking.next_task.dom_id }}">Continuar con: {{ task.tracking.next_task.title }}</a>{% endif %}
+      {% if task.tracking.editable %}
+        <details class="task-followup" data-task-followup{% if task.tracking.editor_open %} open{% endif %}><summary id="{{ task.tracking.dom_id }}-edit">{% if task.tracking.is_completed %}Reabrir tarea{% else %}Actualizar estado{% endif %}</summary>
+          <form method="post" action="{% url 'events:task_progress' event.id %}" hx-post="{% url 'events:task_progress' event.id %}" hx-target="closest li" hx-swap="outerHTML" hx-disabled-elt="find button[type='submit']" data-task-update>
+            {% csrf_token %}{% for field in task.tracking.form.hidden_fields %}{{ field }}{% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}{% endfor %}
+            {% for error in task.tracking.form.non_field_errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+            {% if task.tracking.is_completed %}<p class="task-reopen-help">Esta tarea ya está completada. Para volver a trabajar en ella, elige un estado pendiente e indica el motivo. El historial se conserva.</p>{% endif %}
+            <div class="field"><label for="{{ task.tracking.form.status.id_for_label }}">{{ task.tracking.form.status.label }}</label>{{ task.tracking.form.status }}{% if task.tracking.form.status.errors %}<div class="errorlist" id="{{ task.tracking.form.status.auto_id }}_error">{% for error in task.tracking.form.status.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>{% endif %}</div>
+            <div class="field"><label for="{{ task.tracking.form.note.id_for_label }}">{{ task.tracking.form.note.label }}</label>{{ task.tracking.form.note }}<p class="field-help" id="{{ task.tracking.form.note.auto_id }}_helptext">{{ task.tracking.form.note.help_text }}</p>{% if task.tracking.form.note.errors %}<div class="errorlist" id="{{ task.tracking.form.note.auto_id }}_error">{% for error in task.tracking.form.note.errors %}<p class="field-error">{{ error }}</p>{% endfor %}</div>{% endif %}</div>
+            <div class="task-form-actions"><button id="{{ task.tracking.dom_id }}-save" class="button button-secondary button-small" type="submit">{% if task.tracking.is_completed %}Confirmar reapertura{% else %}Guardar estado{% endif %}</button><button class="button button-secondary button-small" type="button" data-task-cancel hidden>Cancelar</button></div>
+          </form>
+        </details>
+      {% else %}<a class="text-link task-reload" data-task-reload href="{% url 'events:detail' event.id %}#preparation">Recargar el plan vigente</a>{% endif %}
+      {% if task.tracking.history or task.tracking.carried_from_version %}<details class="task-history"><summary>Ver historial</summary>
+        {% if task.tracking.carried_from_version %}<p>Avance conservado de la versión {{ task.tracking.carried_from_version }}: la tarea y sus requisitos no cambiaron.</p>{% if task.tracking.carried_from_note %}<p class="task-history-note task-carried-note">{{ task.tracking.carried_from_note }}</p>{% endif %}{% endif %}
+        {% if task.tracking.history %}<p>Últimos cambios en esta versión (hasta 5).</p><ol>{% for change in task.tracking.history %}<li><strong>{{ change.get_to_status_display }}</strong><span>{{ change.actor.get_short_name|default:change.actor.username }} · {% timezone event.timezone %}{{ change.created_at|date:'d M Y · H:i' }}{% endtimezone %}</span>{% if change.note %}<p class="task-history-note">{{ change.note }}</p>{% endif %}</li>{% endfor %}</ol>{% endif %}
+      </details>{% endif %}
+    {% endif %}
+  </div>
+</li>

@@ -1,0 +1,14 @@
+{
+  "catalog_version": "es-2026-11-15.6",
+  "language": "es",
+  "limits": {
+    "command": 300,
+    "query": 100
+  },
+  "modules": {
+    "vocabulary": "gica_vocabulary.es.json",
+    "intents": "gica_intents.es.json",
+    "dialogues": "gica_dialogues.es.json",
+    "normalization": "gica_normalization.es.json"
+  }
+}

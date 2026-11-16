@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static tz %}
+{% block title %}Entrevista guiada · {{ event.title }} · SparkX{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/interview.css' %}?v=20261112-interview1">{% endblock %}
+{% block content %}
+<main id="main-content" class="page-content interview-page">
+  <nav class="breadcrumb" aria-label="Ruta"><a href="{% url 'events:index' %}">Eventos</a><span aria-hidden="true">/</span><a href="{% url 'events:detail' event.id %}">{{ event.title }}</a><span aria-hidden="true">/</span><span>Entrevista guiada</span></nav>
+  <header class="interview-heading">
+    <div><p class="interview-eyebrow">Preparar el contexto</p><h1 data-reveal="title">{% if summary_mode %}Resumen de tu evento{% else %}Entrevista guiada{% endif %}</h1><p class="lead">Una pregunta a la vez. Confirma lo que sabes y deja visible lo que todavía falta decidir.</p></div>
+    <div class="interview-heading-actions"><a class="button button-secondary" href="{% url 'events:detail' event.id %}">Volver al evento</a><a class="text-link interview-mobile-navigation" href="#interview-navigation">Ver preguntas</a></div>
+  </header>
+  <div class="interview-scope"><svg class="icon" aria-hidden="true"><use href="#i-checklist"/></svg><p>Esta guía usa preguntas predefinidas y guarda tus respuestas. No utiliza IA ni consume créditos. La agenda y las tareas aprobadas se conservan.</p></div>
+  <section class="interview-overview" aria-label="Revisión del contexto">
+    <p><strong>{{ interview.reviewed_count }} de {{ interview.total }}</strong> puntos revisados</p><p><span>{{ interview.pending_count }} pendiente{{ interview.pending_count|pluralize }}</span><span>{{ interview.assumed_count }} supuesto{{ interview.assumed_count|pluralize }}</span></p>
+  </section>
+  <div class="interview-layout">
+    <aside class="interview-sidebar" id="interview-navigation">
+      <nav class="interview-nav" aria-label="Preguntas de la entrevista"><ol>{% for item in question_nav %}<li><a href="{{ item.url }}"{% if item.is_current and not summary_mode %} aria-current="step"{% endif %} class="interview-nav-link" data-status="{{ item.status }}"><span class="interview-nav-number" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</span><span>{{ item.label }}</span><span class="interview-nav-dot" aria-hidden="true"></span></a></li>{% endfor %}</ol><a class="interview-summary-link" href="{% url 'events:interview' event.id %}?view=summary"{% if summary_mode %} aria-current="page"{% endif %}><svg class="icon" aria-hidden="true"><use href="#i-events"/></svg>Ver resumen</a></nav>
+      <p class="interview-sidebar-note">Este avance corresponde al contexto del evento, no a la ejecución de sus tareas.</p>
+    </aside>
+    <div class="interview-main">
+      {% if summary_mode %}
+      <section class="interview-summary" aria-labelledby="interview-summary-title">
+        <header><h2 id="interview-summary-title">Lo que tenemos hasta ahora</h2><p>Revisa cada respuesta y su estado antes de preparar una propuesta. Lo pendiente no se completa automáticamente.</p></header>
+        <dl class="interview-entries">{% for entry in interview.entries %}<div class="interview-entry" data-status="{{ entry.status }}"><dt><span>{{ entry.label }}</span><span class="interview-status">{{ entry.status_label }}</span></dt><dd class="interview-entry-value">{% if entry.value %}{{ entry.value|linebreaksbr }}{% if entry.key == 'duration_minutes' and entry.status != 'pending' %} minutos{% endif %}{% elif entry.status == 'in_brief' %}<span class="muted">Consulta la descripción guardada del evento.</span>{% elif entry.status == 'not_applicable' %}<span class="muted">No aplica a este evento.</span>{% else %}<span class="muted">Por definir.</span>{% endif %}</dd>{% if entry.source_label %}<dd class="interview-entry-source">{{ entry.source_label }}</dd>{% endif %}<dd class="interview-entry-action"><a class="text-link" href="{{ entry.edit_url }}">Editar<span class="sr-only"> {{ entry.label }}</span><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></dd></div>{% endfor %}</dl>
+        {% if interview.pending_count %}<p class="interview-summary-note">Puedes continuar con puntos pendientes. Se conservarán como información por definir.</p>{% endif %}
+        <div class="form-actions interview-actions"><a class="button button-primary" href="{% url 'events:detail' event.id %}#proposal-form">Volver al evento</a><a class="button button-secondary" href="{% url 'events:edit' event.id %}">Editar ficha</a></div>
+      </section>
+      {% elif question %}
+      <section class="interview-question" aria-labelledby="interview-question-title">
+        <header><p class="interview-eyebrow">{{ question.label }}</p><h2 id="interview-question-title">{{ question.prompt }}</h2>{% if question.help_text %}<p class="interview-question-help">{{ question.help_text }}</p>{% endif %}</header>
+        {% if conflict %}<section class="notice interview-conflict" aria-labelledby="interview-conflict-title"><h3 id="interview-conflict-title">Hay una versión más reciente</h3><p>Compara la respuesta guardada y la ficha actual con tus campos de abajo antes de guardar de nuevo.</p><dl><dt>Respuesta actual · revisión {{ event.revision }}</dt><dd>{% if saved_answer.value %}{{ saved_answer.value|linebreaksbr }}{% elif saved_answer.status == 'in_brief' %}Consulta la descripción guardada del evento.{% elif saved_answer.status == 'not_applicable' %}No aplica a este evento.{% else %}Por definir.{% endif %}</dd><dt>Estado actual</dt><dd>{{ saved_answer.status_label|default:"Pendiente" }}</dd></dl><p>Al guardar de nuevo confirmarás tus campos sobre esta revisión.</p><a class="text-link" href="{% url 'events:interview' event.id %}?question={{ question.key }}">Descartar mis campos y cargar la respuesta actual</a></section>{% endif %}
+        <form method="post" class="event-form interview-form" novalidate>{% csrf_token %}{% for hidden in form.hidden_fields %}{{ hidden }}{{ hidden.errors }}{% endfor %}{% if form.non_field_errors %}<div class="notice notice-error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+          <div class="field interview-status-field"><label for="{{ form.status.id_for_label }}">Estado de esta información</label>{{ form.status }}{{ form.status.errors }}<p class="field-help">Marca «Confirmado por mí» solo cuando puedas sostener ese dato. Un supuesto sigue siendo una decisión provisional.</p></div>
+          <div class="field"><label for="{{ form.value.id_for_label }}">{{ form.value.label }}</label>{{ form.value }}{% if form.value.help_text %}<p class="field-help">{{ form.value.help_text }}</p>{% endif %}{{ form.value.errors }}</div>
+          <div class="form-actions interview-actions"><button class="button button-primary" type="submit" name="action" value="save">Guardar y continuar<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button><button class="button button-secondary" type="submit" name="action" value="summary">Guardar y ver resumen</button></div>
+          <p class="interview-save-note">Guardar actualiza el contexto para próximas propuestas. No aprueba cambios del plan ni modifica estados de tareas. Si cambias este contexto, al aprobar otro plan sus tareas comenzarán pendientes; el historial de la versión anterior se conserva.</p>
+        </form>
+      </section>
+      {% endif %}
+      <details class="interview-context"{% if conflict %} open{% endif %}>
+        <summary>Datos que ya están en la ficha</summary>
+        <div class="interview-context-body"><p>No necesitas repetirlos. Que estén guardados no acredita su confirmación; conserva su procedencia y los supuestos indicados en la descripción.</p><dl><div class="interview-context-wide"><dt>Evento</dt><dd>{{ event.title }}</dd></div><div><dt>Fecha y hora de inicio</dt><dd>{% if event.starts_at %}{% timezone event.timezone %}{{ event.starts_at|date:"d/m/Y · H:i" }}{% endtimezone %}{% else %}Por confirmar{% endif %}</dd></div><div><dt>Zona horaria</dt><dd>{{ event.timezone }}</dd></div><div><dt>Capacidad prevista</dt><dd>{{ event.capacity }} personas</dd></div><div class="interview-context-wide"><dt>Descripción y objetivos</dt><dd>{{ event.brief|linebreaksbr }}</dd></div></dl><a class="text-link" href="{% url 'events:edit' event.id %}">Editar datos de la ficha<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+      </details>
+    </div>
+  </div>
+</main>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% load l10n %}<section id="romeo-monitor" class="romeo-monitor" aria-label="Seguimiento de Gica-1"{% if romeo.job %} data-romeo-monitor-job="{{ romeo.job.id }}"{% endif %}{% if romeo_oob %} hx-swap-oob="outerHTML"{% endif %}>
+  <div class="romeo-run-title"><span>{% if romeo.working %}<span class="romeo-live" aria-hidden="true"></span> En ejecución{% elif romeo.job %}Última solicitud{% else %}Preparado para tu evento{% endif %}</span>{% if romeo.job %}<time datetime="{{ romeo.job.created_at|date:'c' }}">{{ romeo.job.created_at|date:'H:i' }}</time>{% endif %}</div>
+  {% if romeo.model %}<p class="romeo-model">{{ romeo.model }}</p>{% endif %}
+  {% if romeo.route == 'fallback_budget' %}<p class="field-help">Alternativa gratuita autorizada: el presupuesto bloqueó la vía principal antes de enviar.</p>{% endif %}
+  {% if romeo.route == 'free_pool' %}<p class="field-help">Modelo gratuito elegido para esta tarea desde el inicio. Contexto y consumo separados.</p>{% endif %}
+  {% if romeo.route == 'free_pool_budget' %}<p class="field-help">Modelo gratuito autorizado: el presupuesto bloqueó la vía principal antes de enviar.</p>{% endif %}
+  <div class="romeo-budget"><div><span>Tope del piloto</span><strong>USD {{ romeo.limit|floatformat:"-2" }}</strong></div>{% if romeo.budget %}<div><span>Consumo estimado</span><strong>USD {{ romeo.budget.spent_usd|floatformat:"-6" }}</strong></div><div><span>Reservado / por conciliar</span><strong>USD {{ romeo.budget.reserved_usd|floatformat:"-6" }}</strong></div><div class="romeo-budget-remaining"><span>Disponible para reservar</span><strong>USD {{ romeo.budget.available_usd|floatformat:"-6" }}</strong></div>{% endif %}</div>
+  {% if romeo.job %}
+    <div class="romeo-request"><span>{{ romeo.job.get_kind_display }}</span><p>{{ romeo.job.prompt|truncatechars:220 }}</p></div>
+    {% if romeo.rows %}<ol class="romeo-steps">{% for row in romeo.rows %}<li{% if row.current %} class="is-current"{% endif %} data-romeo-stage="{{ row.stage }}"><span class="romeo-step-mark" aria-hidden="true">{% if row.current %}<svg viewBox="0 0 20 20"><path d="m4 2 12 10-7 1-3 5Z"/></svg>{% else %}<svg viewBox="0 0 20 20"><path d="m5 10 3 3 7-7"/></svg>{% endif %}</span><div><div class="romeo-step-heading"><strong>{{ row.label }}</strong><time datetime="{{ row.at|date:'c' }}">{{ row.at|date:'H:i:s' }}</time></div><p>{{ row.detail }}</p></div></li>{% endfor %}</ol>{% else %}<p class="field-help">Este trabajo es anterior al seguimiento detallado. Su estado es {{ romeo.job.get_status_display|lower }}.</p>{% endif %}
+    {% if romeo.job.error %}<p class="romeo-error" role="status">{{ romeo.job.error }}</p>{% endif %}
+    {% if romeo.usage %}<div class="romeo-usage"><span>{{ romeo.usage.get_status_display }}</span>{% if romeo.usage.total_tokens != None %}<strong>{{ romeo.usage.total_tokens }} tokens</strong>{% else %}<span>Tokens sin confirmar</span>{% endif %}</div>{% endif %}
+    {% if romeo.job.status == 'succeeded' %}<a class="button button-secondary button-small romeo-result" href="{% url 'events:detail' event.id %}?result={{ romeo.job.id }}{% if romeo.job.kind == 'plan' %}#candidate{% else %}#agent-title{% endif %}">{% if romeo.job.kind == 'plan' %}Revisar propuesta{% else %}Ver conversación{% endif %}</a>{% endif %}
+  {% else %}
+    <div class="romeo-idle"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg><p>Describe el evento o prepara una propuesta.</p><span>Aquí verás cada paso observado, sus tokens y el resultado para revisar.</span></div>
+  {% endif %}
+  <p class="romeo-footnote">Pasos registrados por el servidor. El plan cambia cuando tú lo apruebas.</p>
+</section>

@@ -1,0 +1,111 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
+  {# CSS owns presentation; HTMX must not snapshot/restore inline style attributes under our CSP. #}
+  <meta name="color-scheme" content="light dark"><meta name="theme-color" content="#f5f7fb"><meta name="htmx-config" content='{"allowEval":false,"allowScriptTags":false,"historyCacheSize":0,"includeIndicatorStyles":false,"attributesToSettle":["class","width","height"],"selfRequestsOnly":true}'><title>{% block title %}SparkX · Planifica con claridad{% endblock %}</title>
+  <script src="{% static 'js/theme.js' %}?v=20261108-calendar1"></script>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}?v=20261116-account-menu1">
+  <link rel="stylesheet" href="{% static 'css/plan-reading.css' %}?v=20261114-taskflow1">
+  <link rel="stylesheet" href="{% static 'css/romeo.css' %}?v=20261115-romeo1">
+  <link rel="stylesheet" href="{% static 'css/pilot-workflow.css' %}?v=20261116-jury1">
+  {% if local_shutdown_visible or request.resolver_match.url_name == 'local_shutdown' %}<link rel="stylesheet" href="{% static 'css/local-runtime.css' %}?v=20261116-account-menu1">{% endif %}
+  {% block extra_head %}{% endblock %}
+  <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
+  <script src="{% static 'js/app.js' %}?v=20261116-account-menu1" defer></script>
+  <script src="{% static 'vendor/motion-14.10.1.js' %}" integrity="sha384-lnXs/o2QVHbH7aNA9JGkcMdW38AWVgMHWWrPU/fGgHi+eRj2j0a8va/1nlijpjHX" defer></script>
+  <script src="{% static 'js/workspace.js' %}?v=20261116-jury1" defer></script>
+  <script src="{% static 'js/task-progress.js' %}?v=20261116-jury1" defer></script>
+  <script src="{% static 'js/romeo.js' %}?v=20261116-jury1" defer></script>
+  <script src="{% static 'js/pilot-controls.js' %}?v=20261116-jury1" defer></script>
+  <script src="{% static 'js/motion.js' %}?v=20261108-motion3" defer></script>
+  {% if portal_can_organize %}
+  <link rel="stylesheet" href="{% static 'css/calendar.css' %}?v=20261108-calendar2">
+  <link rel="stylesheet" href="{% static 'css/directory.css' %}?v=20261115-directory2">
+  <link rel="stylesheet" href="{% static 'css/journey-demo.css' %}?v=20261114-journey1">
+  <script src="{% static 'js/calendar.js' %}?v=20261115-fluency1" defer></script>
+  <script src="{% static 'js/gica-navigation.js' %}?v=20261116-jury1" defer></script>
+  <link rel="stylesheet" href="{% static 'css/romeo-presence.css' %}?v=20261116-clean1">
+  <link rel="stylesheet" href="{% static 'css/gica-conversation.css' %}?v=20261115-knowledge1">
+  <link rel="stylesheet" href="{% static 'css/gica-creation.css' %}?v=20261116-jury1">
+  <script src="{% static 'js/event-form.js' %}?v=20261116-jury1" defer></script>
+  <script src="{% static 'js/romeo-presence.js' %}?v=20261116-jury1" defer></script>
+  <script src="{% static 'js/romeo-actions.js' %}?v=20261115-general1" defer></script>
+  <script src="{% static 'js/romeo-speech.js' %}?v=20261115-creation-live1" defer></script>
+  <script src="{% static 'js/gica-creation.js' %}?v=20261116-demo1" defer></script>
+  <script src="{% static 'js/romeo-voice.js' %}?v=20261116-jury1" defer></script>
+  <link rel="stylesheet" href="{% static 'css/gica-companion.css' %}?v=20261116-jury1">
+  <script src="{% static 'js/gica-companion.js' %}?v=20261116-jury1" defer></script>
+  <script src="{% static 'js/gica-demo-preview.js' %}?v=20261116-jury1" defer></script>
+  <script src="{% static 'js/gica-demo.js' %}?v=20261116-jury1" defer></script>
+  <script src="{% static 'js/gica-patterns.js' %}?v=20261115-fluency1" defer></script>
+  {% endif %}
+</head>
+<body{% if user.is_authenticated %} data-voice-user="{{ user.pk }}" data-portal-role="{{ portal_role }}"{% endif %}>
+<a class="skip-link" href="#main-content">Saltar al contenido</a>
+<svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 2c1.1 6.3 3.7 8.9 10 10-6.3 1.1-8.9 3.7-10 10C10.9 15.7 8.3 13.1 2 12c6.3-1.1 8.9-3.7 10-10Z"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 11h18"/></symbol>
+<symbol id="i-mentor" viewBox="0 0 24 24"><path d="m2 8 10-5 10 5-10 5L2 8Zm4 2v7c4 3 8 3 12 0v-7m4-2v8"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3c0-5 16-5 16 0v3H4Z"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 3H4v18h5m5-14 5 5-5 5m-6-5h11"/></symbol>
+<symbol id="i-power" viewBox="0 0 24 24"><path d="M12 2v10m-6.4-7.1a9 9 0 1 0 12.8 0"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></symbol>
+<symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 21v-4c0-4 12-4 12 0v4H3Zm13-17c5-1 6 7 1 7m1 3c4 0 5 3 5 7h-5"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2m-7 9v3m-4 0h8"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+<symbol id="i-replay" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 1.8 8.4M3 5v5h5m4-3v5l3 2"/></symbol>
+<symbol id="i-expand" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6-7 7M10 20H4v-6m0 6 7-7"/></symbol>
+<symbol id="i-checklist" viewBox="0 0 24 24"><rect x="3" y="2" width="18" height="20" rx="2"/><path d="m6 7 1.5 1.5L10 6m3 1h5M6 12l1.5 1.5L10 11m3 1h5M6 17l1.5 1.5L10 16m3 1h5"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-events" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14A8.5 8.5 0 0 1 10 3.5 8.5 8.5 0 1 0 20.5 14Z"/></symbol>
+<symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></symbol>
+<symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m10 6 6 6-6 6"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+</defs></svg>
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Navegación principal">
+    <a class="brand" href="{% url 'events:index' %}" aria-label="SparkX, mis eventos"><svg class="icon brand-spark" aria-hidden="true"><use href="#i-spark"/></svg><span>SparkX</span></a>
+    <p class="nav-caption">Espacio de trabajo</p>
+    <nav class="main-nav" aria-label="Herramientas comunes">
+      <a data-romeo-nav="events" class="nav-link{% if request.resolver_match.app_name == 'events' and request.resolver_match.url_name != 'calendar' %} is-current{% endif %}" href="{% url 'events:index' %}"{% if request.resolver_match.app_name == 'events' and request.resolver_match.url_name != 'calendar' %} aria-current="location"{% endif %}><svg class="icon" aria-hidden="true"><use href="#i-events"/></svg>{% if portal_is_reviewer %}Eventos asignados{% else %}Eventos{% endif %}</a>
+      <a data-romeo-nav="calendar" class="nav-link{% if request.resolver_match.url_name == 'calendar' %} is-current{% endif %}" href="{% url 'events:calendar' %}"{% if request.resolver_match.url_name == 'calendar' %} aria-current="location"{% endif %}><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>Calendario</a>
+      {% if portal_can_organize %}<a data-romeo-nav="directory" class="nav-link{% if request.resolver_match.app_name == 'directory' %} is-current{% endif %}" href="{% url 'directory:index' %}"{% if request.resolver_match.app_name == 'directory' %} aria-current="location"{% endif %}><svg class="icon" aria-hidden="true"><use href="#i-people"/></svg>Directorio</a>{% endif %}
+      {% if portal_can_organize %}<a class="nav-link{% if request.resolver_match.app_name == 'assistant' and request.resolver_match.url_name == 'profile' %} is-current{% endif %}" href="{% url 'assistant:profile' %}"{% if request.resolver_match.app_name == 'assistant' and request.resolver_match.url_name == 'profile' %} aria-current="location"{% endif %}><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg>Conoce a Gica</a>{% endif %}
+    </nav>
+    <div class="sidebar-bottom{% if local_shutdown_visible %} sidebar-bottom--local-control{% endif %}">
+      {% if user.is_authenticated %}
+      <details class="account-menu" data-account-menu>
+        <summary class="account-trigger" data-account-trigger aria-label="Perfil de {{ user.username }}" aria-controls="account-options">
+          <span class="account-avatar"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg></span>
+          <span class="account-identity"><strong>{{ user.username }}</strong><span>{% if portal_users_visible %}Administrador{% elif portal_is_reviewer %}Revisor{% else %}Organizador{% endif %}</span></span>
+          <svg class="icon account-chevron" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+        </summary>
+        <nav class="account-options" id="account-options" data-account-options aria-label="Opciones de tu cuenta">
+          {% if not portal_is_reviewer %}
+          <p class="account-section-label">{% if portal_users_visible %}Administración{% else %}Configuración{% endif %}</p>
+          {% if portal_users_visible %}<a class="nav-link{% if request.resolver_match.app_name == 'accounts' %} is-current{% endif %}" href="{% url 'accounts:users' %}"{% if request.resolver_match.app_name == 'accounts' %} aria-current="location"{% endif %}><svg class="icon" aria-hidden="true"><use href="#i-people"/></svg>Usuarios</a>{% endif %}
+          <a class="nav-link{% if request.resolver_match.app_name == 'ai_management' %} is-current{% endif %}" href="{% url 'ai_management:index' %}"{% if request.resolver_match.app_name == 'ai_management' %} aria-current="location"{% endif %}><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg>Gestión de IA</a>
+          {% endif %}
+          <div class="account-personal">
+            <p class="account-section-label">Tu cuenta</p>
+            <a class="nav-link{% if request.resolver_match.url_name == 'password_change' or request.resolver_match.url_name == 'password_change_done' %} is-current{% endif %}" href="{% url 'password_change' %}"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg>Cambiar contraseña</a>
+            <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="nav-link logout" type="submit"><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg>Cerrar sesión</button></form>
+          </div>
+          {% if local_shutdown_visible %}<div class="account-power"><a class="nav-link local-power-link" href="{% url 'local_shutdown' %}"><svg class="icon" aria-hidden="true"><use href="#i-power"/></svg>Apagar SparkX</a></div>{% endif %}
+        </nav>
+      </details>
+      {% else %}<span class="muted">Espacio del organizador</span>{% endif %}
+    </div>
+  </aside>
+  <div class="app-content">
+    <header class="app-topbar"><div class="app-location"><span>Espacio de trabajo</span><span aria-hidden="true">/</span><strong>{% if request.resolver_match.app_name == 'ai_management' %}Gestión de IA{% elif request.resolver_match.url_name == 'calendar' %}Calendario{% elif request.resolver_match.app_name == 'directory' %}Directorio{% elif request.resolver_match.app_name == 'accounts' %}Usuarios{% elif request.resolver_match.app_name == 'assistant' and request.resolver_match.url_name == 'profile' %}Conoce a Gica{% elif request.resolver_match.app_name == 'assistant' %}Memoria de Gica{% elif user.is_authenticated %}Eventos{% else %}Acceso{% endif %}</strong></div>{% if portal_can_organize %}{% include 'events/_romeo_presence.html' %}{% endif %}<button class="theme-toggle icon-button" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" hidden><svg class="icon theme-icon-sun" aria-hidden="true"><use href="#i-sun"/></svg><svg class="icon theme-icon-moon" aria-hidden="true"><use href="#i-moon"/></svg></button></header>
+    {% if messages %}<div class="flash-messages" aria-live="polite">{% for message in messages %}<div class="notice{% if message.tags %} notice-{{ message.tags }}{% endif %}">{{ message }}</div>{% endfor %}</div>{% endif %}
+    {% block content %}{% endblock %}
+  </div>
+</div>
+{% if portal_can_organize %}<svg class="romeo-cursor is-docked" data-romeo-cursor xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" hidden><g data-romeo-cursor-glyph><path class="romeo-cursor-arrow" d="M1 1 7 24l5-8 9-3Z"/><g class="romeo-cursor-label"><rect x="20" y="20" width="82" height="25" rx="5"/><text x="30" y="37">Gica-1</text></g></g></svg>{% endif %}
+</body></html>

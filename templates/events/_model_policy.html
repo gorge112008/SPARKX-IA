@@ -1,0 +1,11 @@
+<div id="{{ policy_prefix }}-model-policy"{% if policy_oob %} hx-swap-oob="outerHTML"{% endif %}>
+{% if model_policy %}
+  <details class="notice">
+    <summary>Condiciones de {{ model_policy.name }}</summary>
+    <p>{{ model_policy.privacy }}</p><p>{{ model_policy.quota_note }}</p>
+    <a href="{{ model_policy.url }}" target="_blank" rel="noopener noreferrer">Consultar política del proveedor</a>
+  </details>
+  <input type="hidden" name="model_policy_token" value="{{ model_policy.token }}">
+  <div class="field"><label for="{{ policy_prefix }}-policy-accept"><input id="{{ policy_prefix }}-policy-accept" type="checkbox" name="accept_model_policy" value="1"> Acepto estas condiciones para enviar esta solicitud a {{ model_policy.name }}, sólo con datos ficticios.</label><p class="field-help">La aceptación se renueva en cada envío remoto. Las consultas locales no la necesitan.</p></div>
+{% endif %}
+</div>

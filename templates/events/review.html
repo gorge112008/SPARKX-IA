@@ -1,0 +1,10 @@
+{% extends 'base.html' %}{% load tz static %}
+{% block title %}{{ event.title }} · Revisión · SparkX{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/plan-reading.css' %}?v=20261108-motion2">{% endblock %}
+{% block content %}<main id="main-content" class="page-content">
+<nav class="breadcrumb" aria-label="Ruta"><a href="{% url 'events:index' %}">Eventos asignados</a><span>/</span><span>Consulta</span></nav>
+<h1>{{ event.title }}</h1><p class="lead">Acceso de Revisor · Solo consulta</p>
+<section class="mentor-help"><h2>Ficha del evento</h2><p>{{ event.brief|linebreaksbr }}</p><p>{% if event.starts_at %}{% timezone event.timezone %}{{ event.starts_at|date:'d/m/Y · H:i' }}{% endtimezone %}{% else %}Fecha pendiente{% endif %} · {{ event.timezone }} · Capacidad prevista: {{ event.capacity }}</p></section>
+<section class="mentor-help"><h2>Agenda aprobada</h2>{% if event.active_plan_id %}{% include 'events/_agenda.html' with payload=event.active_plan.payload proposed=False preview=False %}{% else %}<p class="muted">Todavía no hay una agenda aprobada.</p>{% endif %}</section>
+<section class="mentor-help"><h2>Avance de preparación</h2>{% if task_tracking %}<p>{{ task_tracking.completed }} de {{ task_tracking.total }} tareas completadas · {{ task_tracking.percentage }} %</p><ul>{% for row in task_tracking.rows %}<li>{{ row.title }} — {{ row.tracking.label }}</li>{% endfor %}</ul>{% else %}<p class="muted">La preparación se mostrará cuando haya un plan aprobado.</p>{% endif %}</section>
+</main>{% endblock %}

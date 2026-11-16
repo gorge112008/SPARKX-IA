@@ -1,0 +1,52 @@
+{% extends 'base.html' %}{% load tz %}
+{% block title %}{% if editing %}Editar ficha{% else %}Nuevo evento{% endif %} · SparkX{% endblock %}
+{% block content %}
+<main id="main-content" class="page-content create-page event-create-workspace"{% if not editing %} data-romeo-destination="create"{% endif %}>
+  <nav class="breadcrumb" aria-label="Ruta"><a href="{% url 'events:index' %}">Eventos</a><span aria-hidden="true">/</span>{% if editing %}<a href="{% url 'events:detail' event.id %}">{{ event.title }}</a><span aria-hidden="true">/</span><span>Editar ficha</span>{% else %}<span>Nuevo evento</span>{% endif %}</nav>
+  <header class="form-heading"><h1 data-reveal="title">{% if editing %}Edita la ficha de tu evento{% else %}Crea tu evento{% endif %}</h1><p class="lead">{% if editing %}Actualiza sus datos y revisa el plan cuando estés listo.{% else %}Cinco bloques sencillos. Completa lo que sabes y deja lo demás pendiente.{% endif %}</p></header>
+  <form method="post" class="event-form event-block-form" data-event-block-form{% if not editing %} data-gica-event-form="create"{% endif %} novalidate>
+    {% csrf_token %}{% for hidden in form.hidden_fields %}{{ hidden }}{{ hidden.errors }}{% endfor %}
+    {% if form.non_field_errors %}<div class="notice notice-error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+    {% if conflict %}<section class="notice" aria-labelledby="current-event-title"><h2 id="current-event-title">Ficha actual · revisión {{ event.revision }}</h2><dl><dt>Nombre</dt><dd>{{ event.title }}</dd><dt>Descripción y objetivos</dt><dd>{{ event.brief|linebreaksbr }}</dd><dt>Fecha y hora</dt><dd>{% if event.starts_at %}{% timezone event.timezone %}{{ event.starts_at|date:"d M Y · H:i" }}{% endtimezone %}{% else %}Por confirmar{% endif %}</dd><dt>Zona horaria</dt><dd>{{ event.timezone }}</dd><dt>Capacidad prevista</dt><dd>{{ event.capacity }}</dd></dl><p>Tus cambios están debajo. Al guardar confirmarás esos valores sobre esta revisión.</p><a class="text-link" href="{% url 'events:edit' event.id %}">Cargar la ficha actual</a></section>{% endif %}
+    <div class="event-form-blocks">
+      <section class="event-form-block" data-gica-form-block="identity" aria-labelledby="event-block-identity">
+        <header class="event-form-block-heading"><span class="event-block-number" aria-hidden="true">01</span><div><h2 id="event-block-identity">Identidad</h2><p>Nombre y organización.</p></div></header>
+        <div class="field" data-gica-field="title"><label for="{{ form.title.id_for_label }}">Nombre del evento</label>{{ form.title }}{{ form.title.errors }}</div>
+        <div class="field" data-gica-field="organization"><label for="{{ form.organization_id.id_for_label }}">Organiza</label>{{ form.organization_id }}{{ form.organization_id.errors }}<p class="field-help"><a href="{% url 'directory:organization_create' %}">Registrar una institución</a></p></div>
+        <div class="field" data-gica-field="speaker"><label for="{{ form.speaker_id.id_for_label }}">Expositor</label>{{ form.speaker_id }}{{ form.speaker_id.errors }}<p class="field-help">Asignación para este evento. Su institución de origen se conserva.</p></div>
+        <div class="field event-demo-choice" data-gica-field="is_synthetic"><label for="{{ form.is_synthetic.id_for_label }}">{{ form.is_synthetic }} Datos de demostración</label>{{ form.is_synthetic.errors }}<p class="field-help">Marca esta opción si el evento usa datos ficticios.</p></div>
+      </section>
+      <section class="event-form-block" data-gica-form-block="schedule" aria-labelledby="event-block-schedule">
+        <header class="event-form-block-heading"><span class="event-block-number" aria-hidden="true">02</span><div><h2 id="event-block-schedule">Programación</h2><p>Cuándo nos reunimos.</p></div></header>
+        <div class="field event-dates-field" data-gica-field="date"><label for="{{ form.scheduled_dates.id_for_label }}">Fechas</label>{{ form.scheduled_dates }}<p class="field-help">DD/MM/AAAA. Separa varias fechas con comas.</p>{{ form.scheduled_dates.errors }}</div>
+        <div class="field" data-gica-field="time"><label for="{{ form.starts_at.id_for_label }}">Inicio <span class="event-field-optional">· opcional</span></label>{{ form.starts_at }}{{ form.starts_at.errors }}<div class="event-start-options" data-event-date-controls hidden><button type="button" class="event-date-toggle" data-event-date-toggle aria-expanded="false">Elegir una fecha</button><label class="event-time-label">Hora <input type="time" data-event-time aria-label="Hora de inicio" step="60"></label></div><div class="event-date-panel" data-event-date-panel hidden><div class="event-date-heading"><button type="button" data-event-date-month="prev" aria-label="Mes anterior">‹</button><strong data-event-date-heading></strong><button type="button" data-event-date-month="next" aria-label="Mes siguiente">›</button></div><p class="field-help">Selecciona un único día; para varias fechas utiliza el campo de arriba.</p><div class="event-date-weekdays" aria-hidden="true"><span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sá</span><span>Do</span></div><div class="event-date-grid" data-event-date-grid role="group" aria-label="Días del mes"></div></div></div>
+        <div class="field" data-gica-field="timezone"><label for="{{ form.timezone.id_for_label }}">Zona horaria</label>{{ form.timezone }}{{ form.timezone.errors }}<div class="event-field-options" role="group" aria-label="Zona horaria rápida"><button type="button" data-event-preset="timezone" data-event-preset-value="America/Lima" aria-pressed="false">Perú · Lima</button></div></div>
+      </section>
+      <section class="event-form-block" data-gica-form-block="audience" aria-labelledby="event-block-audience">
+        <header class="event-form-block-heading"><span class="event-block-number" aria-hidden="true">03</span><div><h2 id="event-block-audience">Audiencia</h2><p>El aforo que tienes previsto.</p></div></header>
+        <div class="field" data-gica-field="capacity"><label for="{{ form.capacity.id_for_label }}">Personas previstas</label>{{ form.capacity }}{{ form.capacity.errors }}<div class="event-field-options" role="group" aria-label="Capacidad rápida"><button type="button" data-event-preset="capacity" data-event-preset-value="20" aria-pressed="false">20</button><button type="button" data-event-preset="capacity" data-event-preset-value="50" aria-pressed="false">50</button><button type="button" data-event-preset="capacity" data-event-preset-value="100" aria-pressed="false">100</button></div><p class="field-help">Puedes escribir otra cantidad. No representa inscripciones.</p></div>
+        <div class="event-block-tip"><svg class="icon" aria-hidden="true"><use href="#i-people"/></svg><p>Piensa en el público al que quieres llegar. Gica te ayudará a definirlo durante la preparación.</p></div>
+      </section>
+      <section class="event-form-block event-form-block-description" data-gica-form-block="description" aria-labelledby="event-block-description">
+        <header class="event-form-block-heading"><span class="event-block-number" aria-hidden="true">04</span><div><h2 id="event-block-description">Descripción</h2><p>Qué haremos y para qué.</p></div></header>
+        <div class="field" data-gica-field="brief"><label for="{{ form.brief.id_for_label }}">Descripción y objetivos</label>{{ form.brief }}<p class="field-help">Resume el propósito, el formato y las restricciones que ya conoces.</p>{{ form.brief.errors }}</div>
+      </section>
+      <section class="event-form-block event-form-block-preparation" data-gica-form-block="preparation" aria-labelledby="event-block-preparation">
+        <header class="event-form-block-heading"><span class="event-block-number" aria-hidden="true">05</span><div><h2 id="event-block-preparation">Preparación</h2><p>Las decisiones que darán forma al plan.</p></div></header>
+        {% if not editing %}<section data-gica-live-summary class="gica-live-summary" aria-label="Datos que completa Gica" hidden><p data-gica-live-progress></p><p data-gica-live-question role="status" aria-live="polite"></p><p data-gica-live-status class="field-help"></p><div data-gica-live-dates></div><dl data-gica-live-answers></dl></section>{% endif %}
+        <div class="event-preparation-fields">
+          <div class="field" data-gica-field="objective"><label for="{{ form.objective.id_for_label }}">{{ form.objective.label }}</label>{{ form.objective }}{{ form.objective.errors }}</div>
+          <div class="field" data-gica-field="audience"><label for="{{ form.audience.id_for_label }}">{{ form.audience.label }}</label>{{ form.audience }}{{ form.audience.errors }}</div>
+          <div class="field" data-gica-field="modality"><label for="{{ form.modality.id_for_label }}">{{ form.modality.label }}</label>{{ form.modality }}{{ form.modality.errors }}</div>
+          <div class="field" data-gica-field="duration_minutes"><label for="{{ form.duration_minutes.id_for_label }}">{{ form.duration_minutes.label }}</label>{{ form.duration_minutes }}{{ form.duration_minutes.errors }}</div>
+          <div class="field" data-gica-field="location"><label for="{{ form.location.id_for_label }}">{{ form.location.label }}</label>{{ form.location }}{{ form.location.errors }}</div>
+          <div class="field" data-gica-field="resources"><label for="{{ form.resources.id_for_label }}">{{ form.resources.label }}</label>{{ form.resources }}{{ form.resources.errors }}</div>
+          <div class="field event-preparation-wide" data-gica-field="constraints"><label for="{{ form.constraints.id_for_label }}">{{ form.constraints.label }}</label>{{ form.constraints }}{{ form.constraints.errors }}</div>
+        </div>
+        <p class="field-help">Lo que escribas se guarda como declaración tuya. Puedes dejar datos pendientes; no confirma reservas ni disponibilidad externa.</p>
+      </section>
+    </div>
+    <footer class="event-form-footer"><p>{% if editing %}Revisa los cambios antes de guardar.{% else %}El agente propone. Tú decides los cambios del plan.{% endif %}</p><div class="form-actions"><a class="button button-secondary" href="{% if editing %}{% url 'events:detail' event.id %}{% else %}{% url 'events:index' %}{% endif %}">Cancelar</a><button class="button button-primary" type="submit"{% if not editing %} data-gica-create-submit{% endif %}>{% if editing %}Guardar ficha{% else %}Crear evento{% endif %}</button></div></footer>
+  </form>
+</main>
+{% endblock %}

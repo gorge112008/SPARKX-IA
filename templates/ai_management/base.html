@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% load static %}
+{% block title %}Gestión de IA · SparkX{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/ai-management.css' %}?v=20261115-pool1">{% endblock %}
+{% block content %}
+<main id="main-content" class="page-content ai-page">
+  <header class="page-heading"><div><p class="ai-eyebrow">RECURSOS DEL PROYECTO</p><h1 data-reveal="title">Gestión de IA</h1><p class="lead">Elige cómo generar, anticipa el gasto y consulta el consumo de tus solicitudes.</p></div>{% if user.is_superuser %}<a class="button button-secondary" href="{% url 'ai_management:budget' %}">Configurar presupuesto</a>{% endif %}</header>
+  <nav class="section-nav ai-nav" aria-label="Secciones de gestión de IA">
+    {% if user.is_superuser %}<a href="{% url 'ai_management:control' %}"{% if section == 'control' %} class="is-current" aria-current="page"{% endif %}>APIs y agentes</a>{% endif %}
+    <a href="{% url 'ai_management:index' %}"{% if section == 'summary' %} class="is-current" aria-current="page"{% endif %}>Resumen</a>
+    <a href="{% url 'ai_management:providers' %}"{% if section == 'providers' %} class="is-current" aria-current="page"{% endif %}>Proveedores</a>
+    <a href="{% url 'ai_management:compare' %}"{% if section == 'calculator' %} class="is-current" aria-current="page"{% endif %}>Comparador</a>
+    <a href="{% url 'ai_management:usage' %}"{% if section == 'usage' %} class="is-current" aria-current="page"{% endif %}>Historial de uso</a>
+  </nav>
+  {% block ai_content %}{% endblock %}
+</main>
+{% endblock %}

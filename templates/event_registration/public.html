@@ -1,0 +1,23 @@
+{% extends 'event_registration/public_base.html' %}{% load tz %}
+{% block title %}Inscripción · {{ event.title }} · SparkX{% endblock %}
+{% block content %}
+<section class="registration-card">
+  <header class="registration-public-heading"><p class="registration-eyebrow">{% if is_open %}Inscripciones abiertas{% else %}Inscripciones cerradas{% endif %}</p><h1>{{ event.title }}</h1>
+    {% if event.starts_at %}<p class="lead">{% timezone event.timezone %}{{ event.starts_at|date:"d M Y · H:i" }}{% endtimezone %} · {{ event.timezone }}</p>{% else %}<p class="lead">Fecha por confirmar · {{ event.timezone }}</p>{% endif %}
+  </header>
+  {% if is_open %}<p class="registration-availability" role="status"><strong>{{ counts.remaining }}</strong> cupos disponibles de {{ counts.capacity }}. La disponibilidad se comprueba al enviar.</p>{% endif %}
+  {% if event.is_synthetic %}<div class="notice">Evento de demostración con datos ficticios. No representa una convocatoria oficial.</div>{% endif %}
+  {% if sessions %}<section><h2>Agenda publicada</h2><ol>{% for session in sessions %}<li><strong>{% timezone event.timezone %}{{ session.start|date:"H:i" }}{% endtimezone %} · {{ session.title }}</strong><p>{{ session.duration_minutes }} min{% if session.speaker %} · {{ session.speaker }}{% endif %}</p></li>{% endfor %}</ol><p class="field-help">Corresponde a la versión publicada por el organizador.</p></section>{% endif %}
+  {% if show_form %}
+    <h2>Solicita tu inscripción</h2>
+    <form method="post" novalidate>
+      {% csrf_token %}{% for hidden in form.hidden_fields %}{{ hidden }}{{ hidden.errors }}{% endfor %}
+      {% if form.non_field_errors %}<div class="notice notice-error" role="alert">{{ form.non_field_errors }}<p><a href="{% url 'event_registration:public' publication.public_token %}">Recargar el formulario</a></p></div>{% endif %}
+      <div class="field"><label for="{{ form.full_name.id_for_label }}">{{ form.full_name.label }}</label>{{ form.full_name }}{{ form.full_name.errors }}</div>
+      <div class="field"><label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>{{ form.email }}{{ form.email.errors }}</div>
+      <p class="field-help">El organizador usará tu nombre y correo para gestionar la inscripción de este evento. Se conserva un registro por correo; no se envían mensajes ni se cobran pagos.</p>
+      <div class="form-actions"><button class="button button-primary" type="submit">Enviar solicitud</button></div>
+    </form>
+  {% elif is_open %}<div class="notice">Por ahora no hay cupos disponibles.</div>{% else %}<div class="notice">Las inscripciones no están abiertas. Esta página no recibe nuevos registros.</div>{% endif %}
+</section>
+{% endblock %}

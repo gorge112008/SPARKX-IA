@@ -1,0 +1,6 @@
+<div class="plan-review">
+  {% if payload.summary %}<p class="plan-summary">{{ payload.summary }}</p>{% endif %}
+  {% include 'events/_agenda.html' with preview=False %}
+  {% include 'events/_preparation.html' with preview=False task_tracking=None %}
+  {% if payload.risks %}<section class="plan-section risk-section"><h3>Riesgos a revisar</h3><ul>{% for risk in payload.risks %}<li>{{ risk }}</li>{% endfor %}</ul></section>{% endif %}
+</div>

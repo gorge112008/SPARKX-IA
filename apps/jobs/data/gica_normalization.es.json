@@ -1,0 +1,43 @@
+{
+  "catalog_version": "es-2026-11-15.6",
+  "language": "es",
+  "limits": {
+    "max_passes": 3,
+    "max_tokens": 80,
+    "max_token_length": 32,
+    "max_distance": 2,
+    "distance_one_min_length": 5,
+    "distance_two_min_length": 9
+  },
+  "concepts": {
+    "calendar": {"canonical": "calendario", "variants": ["calendario", "calendarios"], "max_distance": 2},
+    "events": {"canonical": "eventos", "variants": ["evento", "eventos"], "max_distance": 1},
+    "directory": {"canonical": "directorio", "variants": ["directorio", "directorios"], "max_distance": 2},
+    "contacts": {"canonical": "contactos", "variants": ["contacto", "contactos"], "max_distance": 1},
+    "people": {"canonical": "personas", "variants": ["persona", "personas"], "max_distance": 1},
+    "theme": {"canonical": "tema", "variants": ["tema", "temas"], "max_distance": 0},
+    "mode": {"canonical": "modo", "variants": ["modo", "modos"], "max_distance": 0},
+    "light": {"canonical": "claro", "variants": ["claro", "claros", "clara", "claras"], "max_distance": 1},
+    "dark": {"canonical": "oscuro", "variants": ["oscuro", "oscuros", "oscura", "oscuras"], "max_distance": 1}
+  },
+  "scope_determiners": {"los": "el", "las": "la", "mis": "mi", "nuestros": "nuestro", "nuestras": "nuestra"},
+  "grammar_variants": {
+    "vista": ["vista", "vistas"],
+    "lista": ["lista", "listas"],
+    "listado": ["listado", "listados"],
+    "agenda": ["agenda", "agendas"],
+    "repositorio": ["repositorio", "repositorios"],
+    "seccion": ["seccion", "secciones"],
+    "modulo": ["modulo", "modulos"],
+    "panel": ["panel", "paneles"],
+    "gestor": ["gestor", "gestores"],
+    "programa": ["programa", "programas"],
+    "programacion": ["programacion", "programaciones"],
+    "cronograma": ["cronograma", "cronogramas"]
+  },
+  "verb_variants": {
+    "open": {"abre": ["abran", "abrid"], "muestra": ["muestranos"]},
+    "search": {"busca": ["busquen"], "encuentra": ["encuentren"]},
+    "theme": {"cambia": ["cambien"], "pon": ["pongan"], "activa": ["activen"]}
+  }
+}

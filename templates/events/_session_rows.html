@@ -1,0 +1,8 @@
+{% load tz %}{% localtime off %}
+{% for session in sessions %}
+<li class="agenda-row">
+  {% ifchanged session.local_start|date:'Y-m-d' %}<p class="agenda-day">{% if session.local_start %}{{ session.local_start|date:'l, j F Y' }}{% else %}Fecha por definir{% endif %}</p>{% endifchanged %}
+  <div class="agenda-time"><span class="agenda-range"><time datetime="{{ session.start }}">{% if session.local_start %}{{ session.local_start|date:'H:i' }}{% else %}Por definir{% endif %}</time>{% if session.local_end %}<span aria-hidden="true">–</span><span class="sr-only"> a </span><time datetime="{{ session.local_end|date:'c' }}">{{ session.local_end|date:'H:i' }}{% if session.crosses_day %}<span class="agenda-end-date">{{ session.local_end|date:'d M' }}</span>{% endif %}</time>{% endif %}</span>{% if session.duration_minutes %}<span class="agenda-duration">{{ session.duration_minutes }} min</span>{% endif %}</div>
+  <div class="agenda-copy"><h4>{{ session.title|default:'Sesión por definir' }}</h4>{% if session.speaker %}<p class="agenda-speaker">{{ session.speaker }}</p>{% endif %}{% if session.resource %}<details class="row-details"><summary>Ver recurso</summary><p>{{ session.resource }}</p></details>{% endif %}</div>
+</li>
+{% endfor %}{% endlocaltime %}

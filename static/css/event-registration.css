@@ -1,0 +1,23 @@
+/* Event registration uses the existing local SparkX theme and controls. */
+.registration-layout { display:grid; grid-template-columns:minmax(280px,.9fr) minmax(320px,1.3fr); gap:24px; align-items:start; }
+.registration-card { background:var(--sidebar); border:1px solid var(--line); border-radius:8px; padding:28px; min-width:0; }
+.registration-counts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; padding:18px 0; margin:0 0 20px; border-bottom:1px solid var(--line); }
+.registration-counts dt { color:var(--muted); font-size:12px; }
+.registration-counts dd { margin:6px 0 0; font-size:24px; font-weight:650; }
+.registration-state-form { margin:24px 0; padding-top:20px; border-top:1px solid var(--line); }
+.registration-table-scroll { width:100%; overflow-x:auto; margin-top:20px; }
+.registration-table { border-collapse:collapse; width:100%; text-align:left; font-size:13px; }
+.registration-table th,.registration-table td { padding:12px 10px; border-bottom:1px solid var(--line); overflow-wrap:anywhere; }
+.registration-table th { color:var(--muted); font-size:12px; font-weight:600; }
+.registration-table td:first-child { min-width:120px; }
+.registration-pagination { display:flex; align-items:center; gap:18px; justify-content:center; margin-top:20px; font-size:12px; }
+.registration-public-body { min-height:100dvh; }
+.registration-public { max-width:660px; margin:0 auto; padding:40px 24px 64px; }
+.registration-brand { display:flex; gap:16px; align-items:baseline; margin:0 0 28px; font-size:24px; font-weight:700; letter-spacing:-.5px; }
+.registration-brand span { font-size:13px; font-weight:500; color:var(--muted); letter-spacing:0; }
+.registration-public-heading { margin-bottom:24px; }
+.registration-eyebrow { color:var(--link); font-size:12px; font-weight:650; margin-bottom:12px; }
+.registration-availability { border-block:1px solid var(--line); padding:16px 0; margin:0 0 26px; color:var(--muted); font-size:13px; }
+.registration-availability strong { color:var(--ink); }
+@media(max-width:1000px) { .registration-layout { grid-template-columns:minmax(0,1fr); } }
+@media(max-width:540px) { .registration-card { padding:22px 18px; } .registration-public { padding:24px 14px 40px; } .registration-counts { gap:8px; } .registration-counts dd { font-size:21px; } .registration-management .page-heading { align-items:flex-start; flex-direction:column; } }

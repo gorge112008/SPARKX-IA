@@ -1,0 +1,21 @@
+/* Bounded local conversation and explicit phrase review. */
+[data-gica-conversation] { margin: .75rem 0; color: var(--muted); font-size: .8rem; line-height: 1.55; }
+[data-gica-transcript] { max-height: 15rem; overflow-y: auto; overflow-wrap: anywhere; overscroll-behavior: contain; border: 1px solid var(--line); border-radius: .7rem; margin: .75rem 0; padding: .3rem .8rem; font-size: .8rem; line-height: 1.55; }
+.gica-conversation-turn { padding: .5rem 0; }
+.gica-conversation-turn + .gica-conversation-turn { border-top: 1px solid var(--line); }
+.gica-conversation-turn p { margin: .2rem 0; }
+.gica-guide-text { margin: .4rem 0 .4rem .5rem; font-size: .78rem; }
+.gica-pattern-dialog { width: min(32rem, calc(100vw - 2rem)); max-height: min(90dvh, 46rem); overflow-y: auto; padding: 1.5rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--sidebar); color: var(--ink); }
+.gica-pattern-dialog::backdrop { background: rgb(7 15 28 / .5); }
+.gica-pattern-dialog h2 { font-size: 1.1rem; margin: 0 0 .75rem; }
+.gica-pattern-dialog p, .gica-pattern-dialog label, .gica-pattern-dialog a { font-size: .82rem; line-height: 1.6; }
+.gica-pattern-dialog form > label:not(.gica-pattern-review) { display: block; margin: 1rem 0 .35rem; font-weight: 600; }
+.gica-pattern-dialog textarea, .gica-pattern-dialog select { box-sizing: border-box; width: 100%; max-width: 100%; padding: 9px; color: var(--ink); background: var(--field); border: 1px solid var(--control-border); border-radius: 6px; font: 13px/1.5 var(--font); }
+.gica-patterns-link { display: inline-flex; margin-left: .6rem; gap: .4rem; }
+.gica-pattern-review { display: flex; align-items: flex-start; gap: .4rem; margin: 1rem 0; }
+.gica-pattern-review input { width: auto; flex: 0 0 auto; margin-top: .3rem; }
+.gica-pattern-dialog .dialog-actions { display: flex; justify-content: flex-end; gap: .6rem; margin: 1rem 0; }
+.gica-pattern-notice { font-size: .8rem; line-height: 1.55; overflow-wrap: anywhere; }
+.gica-knowledge-answer { margin:1rem 0; padding:14px; border:1px solid var(--line); border-radius:8px; font-size:12px; line-height:1.8; overflow-wrap:anywhere; max-height:18rem; overflow-y:auto; }
+.gica-knowledge-answer>a { display:block; margin:8px 0; }
+@media (max-width: 480px) { .gica-pattern-dialog { padding: 1rem; } .gica-guide-text { margin-left: 0; } }

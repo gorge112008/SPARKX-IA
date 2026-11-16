@@ -1,0 +1,11 @@
+{% load planning_ui %}
+{% with sessions=payload|agenda_rows:event.timezone %}
+<section class="plan-section agenda-section"{% if not proposed %} id="agenda"{% endif %} aria-label="Agenda{% if proposed %} propuesta{% endif %}">
+  <header class="reading-heading"><div><h3>{% if proposed %}Agenda propuesta{% else %}Sesiones{% endif %}</h3><p>Horario local · {{ event.timezone }}</p></div><span class="reading-count">{{ sessions|length }} {% if sessions|length == 1 %}sesión{% else %}sesiones{% endif %}</span></header>
+  {% if sessions %}
+    {% if preview and sessions|length > 3 %}<div class="plan-scroll agenda-scroll" tabindex="0" role="region" aria-label="Sesiones del plan">{% endif %}
+    <ol class="agenda-list" aria-label="Todas las sesiones">{% include 'events/_session_rows.html' %}</ol>
+    {% if preview and sessions|length > 3 %}</div>{% endif %}
+  {% else %}<p class="section-empty">Todavía no hay sesiones definidas.</p>{% endif %}
+</section>
+{% endwith %}

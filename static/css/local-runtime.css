@@ -1,0 +1,33 @@
+/* Local runtime controls use the existing light/dark workspace tokens. */
+.local-power-link { color:var(--danger); }
+.local-power-link:hover { background:var(--danger-soft); }
+.local-runtime-page { max-width:880px; padding:32px 32px 60px; }
+.local-runtime-card { max-width:640px; padding:32px; border:1px solid var(--line); border-radius:9px; background:var(--sidebar); }
+.local-runtime-mark { display:flex; align-items:center; justify-content:center; width:42px; height:42px; margin-bottom:24px; border-radius:10px; background:var(--danger-soft); color:var(--danger); }
+.local-runtime-mark .icon { width:23px; height:23px; }
+.local-runtime-eyebrow { margin-bottom:8px; color:var(--muted); font-size:11px; font-weight:600; }
+.local-runtime-card h1 { margin-bottom:14px; font-size:24px; }
+.local-runtime-intro { max-width:540px; margin-bottom:24px; color:var(--muted); font-size:13px; line-height:1.8; }
+.local-runtime-card .notice { margin:24px 0; font-size:12px; line-height:1.8; }
+.local-runtime-confirm { display:flex; align-items:flex-start; gap:12px; margin:28px 0; font-size:13px; cursor:pointer; }
+.local-runtime-confirm input { width:17px; height:17px; flex:0 0 17px; margin:2px 0 0; accent-color:var(--accent); }
+.local-runtime-actions { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:12px; }
+.local-runtime-actions .button { min-height:40px; }
+.local-runtime-stop { background:var(--danger-soft); color:var(--danger); border-color:var(--danger); }
+.local-runtime-stop:hover { background:var(--danger-soft); box-shadow:0 0 0 1px var(--danger); }
+.local-runtime-help { margin:28px 0 0; padding-top:22px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; line-height:1.8; overflow-wrap:anywhere; }
+.local-runtime-help strong { font-weight:600; }
+.local-runtime-restart { margin-top:28px; }
+.local-runtime-restart h2 { margin-bottom:8px; font-size:14px; }
+.local-runtime-restart p { margin-bottom:0; font-size:13px; line-height:1.8; overflow-wrap:anywhere; }
+@media(prefers-reduced-motion:no-preference) {
+  .local-runtime-stop { transition:background .15s,box-shadow .15s,transform .15s; }
+  .local-runtime-stop:active { transform:translateY(1px); }
+}
+@media(max-width:700px) {
+  .sidebar-bottom--local-control { position:static; display:block; margin-top:14px; padding-top:12px; border-top:1px solid var(--line); }
+  .local-runtime-page { padding:24px 16px 36px; }
+  .local-runtime-card { padding:26px 22px; }
+  .local-runtime-card h1 { font-size:23px; }
+  .local-runtime-actions .button { min-height:44px; flex:1; }
+}

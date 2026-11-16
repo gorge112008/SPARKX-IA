@@ -1,0 +1,58 @@
+.gica-memory-page { max-width:1500px; }
+.gica-memory-intro { color:var(--muted); font-size:13px; max-width:850px; line-height:1.8; margin-bottom:36px; }
+.gica-memory-layout { display:grid; grid-template-columns:minmax(280px,400px) minmax(0,1fr); gap:48px; align-items:start; }
+.gica-memory-create { padding-right:32px; border-right:1px solid var(--line); }
+.gica-memory-create>h2,.gica-memory-list-heading h2 { margin:0 0 8px; font-size:16px; }
+.gica-memory-create form { margin-top:24px; }
+.gica-memory-create .field { margin-bottom:22px; }
+.gica-memory-create .field textarea { min-height:110px; font-size:13px; }
+.gica-memory-create .field input,.gica-memory-create .field select { font-size:13px; }
+.gica-memory-create .gica-memory-review label { font-size:12px; font-weight:400; line-height:1.9; }
+.gica-memory-list-heading { display:flex; justify-content:space-between; gap:16px; align-items:center; margin-bottom:20px; }
+.gica-memory-list-heading span { font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.gica-memory-table-wrap { max-height:560px; overflow:auto; border:1px solid var(--line); border-radius:6px; }
+.gica-memory-table { width:100%; border-collapse:collapse; text-align:left; font-size:12px; }
+.gica-memory-table th { position:sticky; top:0; z-index:1; background:var(--quiet); color:var(--muted); font-weight:600; padding:14px 16px; border-bottom:1px solid var(--line); }
+.gica-memory-table td { vertical-align:top; padding:18px 16px; border-bottom:1px solid var(--line); }
+.gica-memory-table tbody tr:last-child td { border-bottom:0; }
+.gica-memory-table td:first-child { min-width:160px; max-width:430px; overflow-wrap:anywhere; }
+.gica-memory-table td:first-child strong { display:block; font-size:13px; font-weight:500; margin-bottom:5px; }
+.gica-memory-table td:first-child span,.gica-memory-table time { color:var(--muted); }
+.gica-memory-table time { white-space:nowrap; font-size:11px; }
+.gica-memory-empty { padding:48px 28px; background:var(--quiet); border:1px dashed var(--line); border-radius:6px; text-align:center; }
+.gica-memory-empty>.icon { color:var(--link); width:28px; height:28px; margin-bottom:16px; }
+.gica-memory-empty h3 { margin-bottom:8px; }
+.gica-memory-empty p { margin:0 auto; max-width:360px; color:var(--muted); font-size:13px; }
+.gica-memory-saved>.field-help { margin-top:16px; }
+.gica-mentor-summary { display:flex; flex-wrap:wrap; gap:12px 36px; margin:28px 0; padding:20px 0; border-block:1px solid var(--line); color:var(--muted); font-size:12px; }
+.gica-mentor-summary strong { color:var(--text); font-size:18px; font-weight:500; font-variant-numeric:tabular-nums; }
+.gica-mentor-filters { display:flex; flex-wrap:wrap; align-items:end; gap:16px; margin-bottom:20px; }
+.gica-mentor-filters .field { flex:1 1 170px; margin:0; }
+.gica-mentor-filters .field:first-child { flex:2 1 250px; }
+.gica-mentor-filters input,.gica-mentor-filters select,.gica-mentor-review input,.gica-mentor-review textarea,.gica-mentor-review select { font-size:13px; }
+.gica-mentor-records { display:grid; gap:28px; margin:32px 0; }
+.gica-mentor-record { border:1px solid var(--line); border-radius:8px; padding:28px 32px; min-width:0; }
+.gica-mentor-record>header { display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:24px; font-size:13px; }
+.gica-mentor-record>header strong { font-weight:500; }
+.gica-mentor-record>header span { display:block; margin-top:5px; }
+.gica-mentor-record time { font-size:11px; color:var(--muted); }
+.gica-mentor-exchange { display:grid; gap:20px; margin:0; }
+.gica-mentor-exchange>div { display:grid; grid-template-columns:210px minmax(0,1fr); gap:20px; }
+.gica-mentor-record dt { font-size:12px; color:var(--muted); }
+.gica-mentor-record dd { margin:0; font-size:13px; overflow-wrap:anywhere; white-space:pre-wrap; }
+.gica-mentor-record code { font-size:11px; }
+.gica-mentor-record dd>.field-help { display:block; margin-top:8px; }
+.gica-mentor-record details { border-top:1px solid var(--line); margin-top:24px; padding-top:16px; }
+.gica-mentor-record summary,.gica-mentor-clear summary { cursor:pointer; font-size:12px; color:var(--link); }
+.gica-mentor-timing dl { display:grid; gap:12px; margin:20px 0; }
+.gica-mentor-timing dl>div { display:flex; justify-content:space-between; gap:20px; }
+.gica-mentor-review form { max-width:720px; margin-top:24px; }
+.gica-mentor-review .field { margin-bottom:20px; }
+.gica-mentor-review textarea { min-height:100px; }
+.gica-mentor-delete form,.gica-mentor-clear form { display:flex; align-items:center; flex-wrap:wrap; gap:16px; margin-top:20px; }
+.gica-mentor-delete label,.gica-mentor-clear label { font-size:12px; font-weight:400; }
+.gica-mentor-pagination { display:flex; align-items:center; justify-content:center; gap:24px; font-size:12px; margin:32px 0; }
+.gica-mentor-clear { border-top:1px solid var(--line); margin-top:48px; padding-top:20px; }
+@media(max-width:700px) { .gica-mentor-record { padding:22px 18px; } .gica-mentor-exchange>div { grid-template-columns:minmax(0,1fr); gap:6px; } .gica-mentor-filters { gap:14px; } .gica-mentor-filters .field { flex-basis:100%; } }
+@media(max-width:1050px) { .gica-memory-layout { grid-template-columns:minmax(0,1fr); gap:36px; } .gica-memory-create { max-width:650px; padding:0 0 28px; border:0; border-bottom:1px solid var(--line); } }
+@media(max-width:700px) { .gica-memory-intro { margin-bottom:28px; } .gica-memory-table th,.gica-memory-table td { padding:12px; } .gica-memory-table th:nth-child(2),.gica-memory-table td:nth-child(2) { display:none; } }

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Ajustar horarios · {{ event.title }}{% endblock %}
+{% block content %}
+<main id="main-content" class="page-content" data-romeo-destination="schedule" data-gica-pilot-schedule="true" data-event-id="{{ event.pk }}">
+  <nav class="breadcrumb" aria-label="Ruta"><a href="{% url 'events:index' %}">Mis eventos</a><span>/</span><a href="{% url 'events:detail' event.id %}">{{ event.title }}</a><span>/</span><span>Horarios</span></nav>
+  <header class="page-heading"><div><h1>Ajusta las horas de la agenda</h1><p class="lead">Versión {{ event.active_plan.version }} · {{ event.timezone }}. Revisa los cambios antes de aprobarlos.</p></div></header>
+  <p class="section-description">Modifica el inicio o la duración de cada sesión. El sistema comprueba los solapamientos y conserva la agenda aprobada hasta que revises la nueva propuesta.</p>
+  {% if schedule_error %}<p class="notice notice-error" role="alert">{{ schedule_error }}</p>{% endif %}
+  <form method="post" class="event-form schedule-editor" data-gica-schedule-form data-pilot-schedule>
+    {% csrf_token %}<input type="hidden" name="expected_revision" value="{{ event.revision }}"><input type="hidden" name="expected_plan" value="{{ event.active_plan_id }}">{{ formset.management_form }}{{ formset.non_form_errors }}
+    {% for session, form in schedule_rows %}<fieldset class="schedule-editor-row" data-gica-session="{{ session.id }}"><legend>{{ forloop.counter }} · {{ session.title }}</legend><p class="field-help">{{ session.speaker }}</p>{{ form.session_id }}{{ form.non_field_errors }}<div class="field-grid"><div class="field"><label for="{{ form.start.id_for_label }}">{{ form.start.label }}</label>{{ form.start }}{{ form.start.errors }}</div><div class="field"><label for="{{ form.duration_minutes.id_for_label }}">{{ form.duration_minutes.label }}</label>{{ form.duration_minutes }}{{ form.duration_minutes.errors }}</div></div></fieldset>{% endfor %}
+    <div class="form-actions"><a class="button button-secondary" href="{% url 'events:detail' event.id %}#plan">Volver a la agenda</a><button class="button button-primary" type="submit" data-gica-schedule-submit>Preparar propuesta de horario</button></div>
+  </form>
+</main>
+{% endblock %}

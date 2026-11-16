@@ -1,0 +1,22 @@
+{% extends "ai_management/base.html" %}
+{% block ai_content %}
+<div class="ai-status"><span class="ai-dot{% if ready %} is-ready{% endif %}" aria-hidden="true"></span><div><strong>{% if ready %}{{ active_snapshot.name }}{% else %}IA pendiente de configuración{% endif %}</strong><p>{{ readiness }}{% if ready %}. La disponibilidad real se comprueba al solicitar una generación.{% endif %}</p></div><a href="{% url 'ai_management:providers' %}">Revisar proveedores</a></div>
+<section aria-labelledby="ai-month-title" class="ai-section">
+<div class="ai-section-heading"><h2 id="ai-month-title" data-reveal="words">Tu presupuesto de {{ summary.month|date:"F Y" }}</h2><span class="muted">USD · mes de America/Lima</span></div>
+<dl class="ai-metrics">
+<div><dt>Consumo estimado bruto</dt><dd data-ai-spent>USD {{ summary.spent_usd|floatformat:"-6" }}</dd><p>Calculado con tokens registrados y la tarifa guardada.</p></div>
+<div><dt>Reservado</dt><dd data-ai-reserved>USD {{ summary.reserved_usd|floatformat:"-6" }}</dd><p>Solicitudes pendientes o con consumo desconocido.</p></div>
+<div><dt>Disponible</dt><dd data-ai-available>USD {{ summary.available_usd|floatformat:"-6" }}</dd><p>De USD {{ summary.budget_usd|floatformat:"-6" }} autorizados para el mes.</p></div>
+</dl>
+<div class="ai-token-line"><strong>Tokens</strong><span>{{ summary.used_tokens }} registrados</span><span>{{ summary.reserved_tokens }} reservados</span><span>{{ summary.available_tokens }} disponibles de {{ summary.token_limit }}</span></div>
+{% if summary.over_budget or summary.over_token_limit or summary.limit_breach_count %}<div class="notice notice-error">Hay un límite excedido. Las nuevas solicitudes se bloquean hasta revisar el presupuesto y el consumo.</div>{% endif %}
+{% if summary.uncertain_count %}<div class="notice">{{ summary.uncertain_count }} solicitud{{ summary.uncertain_count|pluralize:"es" }} con consumo pendiente de conciliar. Su reserva se conserva. <a href="{% url 'ai_management:usage' %}">Revisar historial</a></div>{% endif %}
+</section>
+<div class="ai-columns">
+<section class="ai-section"><h2 data-reveal="words">Reglas de gasto</h2><ul class="ai-rules"><li>API de pago: <strong>{% if account.paid_enabled %}autorizada dentro del límite{% else %}desactivada{% endif %}</strong>.</li><li>Se reserva el máximo de entrada y salida de cada perfil antes de ejecutar.</li><li>No hay cambio automático de un proveedor gratuito a uno de pago.</li><li>Los créditos y descuentos se comprueban en el proveedor; este panel muestra costo bruto estimado.</li></ul><a class="text-link" href="{% url 'ai_management:compare' %}">Simular un presupuesto →</a></section>
+<section class="ai-section"><h2 data-reveal="words">Elegir tu conexión</h2><p>Groq y Gemini ofrecen cuotas gratuitas sujetas a sus condiciones. Ollama requiere instalar un modelo local. OpenAI y los perfiles de pago necesitan autorización de gasto.</p><p class="muted">Guardar una configuración no verifica claves, saldo, cuota ni rendimiento. No se enviarán solicitudes desde estas pantallas.</p><a class="text-link" href="{% url 'ai_management:providers' %}">Ver opciones y requisitos →</a></section>
+</div>
+<section class="ai-section"><div class="ai-section-heading"><h2 data-reveal="words">Últimas solicitudes</h2><a href="{% url 'ai_management:usage' %}">Ver historial</a></div>
+{% if recent_usage %}<div class="ai-table-wrap" tabindex="0" role="region" aria-label="Últimas solicitudes de IA"><table class="ai-table ai-recent"><thead><tr><th>Fecha</th><th>Evento</th><th>Proveedor / modelo</th><th>Estado</th><th>Costo estimado USD</th></tr></thead><tbody>{% for item in recent_usage %}<tr><td>{{ item.created_at|date:"d M H:i" }}</td><td>{{ item.job.event.title }}</td><td>{{ item.snapshot.provider }}<small>{{ item.snapshot.model }}</small></td><td>{{ item.get_status_display }}</td><td>{% if item.estimated_cost_usd is not None %}${{ item.estimated_cost_usd|floatformat:"-6" }}{% else %}<span class="muted">Sin determinar</span>{% endif %}</td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="ai-empty"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg><p>Aún no hay consumo registrado.</p><span class="muted">Las solicitudes de tus eventos aparecerán aquí con su reserva y sus tokens.</span></div>{% endif %}
+</section>
+{% endblock %}

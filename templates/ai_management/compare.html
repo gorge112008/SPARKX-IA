@@ -1,0 +1,42 @@
+{% extends "ai_management/base.html" %}{% load static %}
+{% block extra_head %}{{ block.super }}<script src="{% static 'js/ai-comparison.js' %}?v=20261109-1" defer></script>{% endblock %}
+{% block ai_content %}
+<section class="ai-section">
+<div class="ai-section-heading"><div><h2 data-reveal="words">Compara antes de generar</h2><p class="muted">Los mismos tokens, con las condiciones de cada integración. El cálculo es local y no activa proveedores.</p></div><a class="text-link" href="{% url 'ai_management:calculator' %}">Calculadora individual y créditos →</a></div>
+<form method="post" class="ai-form ai-comparison-form" data-ai-comparison-form>{% csrf_token %}
+{% if form.non_field_errors %}<div class="notice notice-error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+<div class="field ai-source-field"><label for="{{ form.source.id_for_label }}">{{ form.source.label }}</label>{{ form.source }}{{ form.source.errors }}</div>
+<div class="ai-scenario-inputs">
+<fieldset class="ai-fieldset" data-scenario-fields="manual"><legend>Escenario por solicitud</legend><p class="field-help">Se utiliza al elegir «Introducir un escenario». Máximo combinado: 131 072 tokens.</p><div class="field-grid">
+{% with field=form.input_tokens %}{% include "ai_management/_field.html" %}{% endwith %}
+{% with field=form.output_tokens %}{% include "ai_management/_field.html" %}{% endwith %}
+{% with field=form.cached_tokens %}{% include "ai_management/_field.html" %}{% endwith %}
+{% with field=form.requests %}{% include "ai_management/_field.html" %}{% endwith %}
+</div></fieldset>
+<fieldset class="ai-fieldset" data-scenario-fields="history"><legend>Historial de referencia</legend><p class="field-help">Se utiliza al elegir historial. Sólo se comparan solicitudes con tokens completos; los importes originales se conservan.</p>
+{% with field=form.event %}{% include "ai_management/_field.html" %}{% endwith %}
+<div class="field-grid">{% with field=form.kind %}{% include "ai_management/_field.html" %}{% endwith %}{% with field=form.month %}{% include "ai_management/_field.html" %}{% endwith %}</div>
+</fieldset>
+</div>
+<details class="ai-conversion"{% if form.pen_rate.value or form.pen_date.value or form.pen_source.value %} open{% endif %}><summary>Mostrar también en soles · opcional</summary><p class="muted">Introduce una tasa consultada por ti con su fecha y procedencia. El presupuesto se mantiene en USD.</p><div class="field-grid">{% with field=form.pen_rate %}{% include "ai_management/_field.html" %}{% endwith %}{% with field=form.pen_date %}{% include "ai_management/_field.html" %}{% endwith %}</div>{% with field=form.pen_source %}{% include "ai_management/_field.html" %}{% endwith %}</details>
+<div class="form-actions"><button class="button button-primary" type="submit">Comparar modelos</button><a class="button button-secondary" href="{% url 'ai_management:compare' %}">Restablecer escenario</a></div>
+</form>
+</section>
+{% if comparison %}
+<section class="ai-section" id="comparison-results" aria-labelledby="comparison-heading">
+<div class="ai-section-heading"><div><p class="ai-eyebrow">SIMULACIÓN · {% if comparison.scenario.source == 'history' %}HISTORIAL{% else %}ESCENARIO MANUAL{% endif %}</p><h2 id="comparison-heading" data-reveal="words">Un escenario, {{ comparison.comparisons|length }} opciones</h2><p>{{ comparison.scenario.requests }} solicitudes · {{ comparison.scenario.input_tokens }} tokens de entrada · {{ comparison.scenario.output_tokens }} de salida.</p></div>{% if selected_event %}<a class="button button-secondary" href="{% url 'events:detail' selected_event.pk %}">Abrir evento</a>{% endif %}</div>
+{% if comparison.scenario.source == 'history' %}
+<div class="ai-coverage"><strong>Cobertura: {{ comparison.scenario.coverage.included_count }} de {{ comparison.scenario.coverage.total_count }} solicitudes.</strong><p>{{ comparison.scenario.coverage.provider_count }} con fuente proveedor · {{ comparison.scenario.coverage.manual_count }} con conciliación manual{% if comparison.scenario.coverage.unknown_source_count %} · {{ comparison.scenario.coverage.unknown_source_count }} con origen sin identificar{% endif %}.</p>
+{% if comparison.scenario.coverage.excluded_count %}<p>{{ comparison.scenario.coverage.excluded_count }} excluidas del escenario por estado o datos incompletos/inconsistentes; siguen en el historial.</p>{% endif %}
+{% if comparison.scenario.coverage.cache_unknown_count %}<p>{{ comparison.scenario.coverage.cache_unknown_count }} sin desglose de caché: se simulan sin descuento.</p>{% endif %}
+{% if comparison.scenario.coverage.derived_total_count %}<p>{{ comparison.scenario.coverage.derived_total_count }} totales derivados de entrada más salida completas, sin modificar los registros.</p>{% endif %}</div>
+<p class="muted">Subtotal de {{ comparison.historical.known_cost_count }} solicitudes con importe: {% if comparison.historical.known_cost_count %}<strong>USD {{ comparison.historical.historical_cost_usd|floatformat:"-6" }}</strong>{% else %}<strong>Sin importe registrado</strong>{% endif %}{% if comparison.historical.unknown_cost_count %}; <strong>{{ comparison.historical.unknown_cost_count }} todavía sin determinar</strong>{% endif %}. Se conservan sus tarifas originales; la tabla siguiente es otro escenario.</p>
+{% endif %}
+{% if comparison.conversion %}<div class="ai-conversion-note">Conversión declarada, sin verificación: 1 USD = {{ comparison.conversion.rate }} PEN · {{ comparison.conversion.date|date:"d/m/Y" }} · {{ comparison.conversion.source }}.</div>{% endif %}
+<div class="ai-table-wrap" tabindex="0" role="region" aria-label="Comparación de costos de los modelos"><table class="ai-table ai-comparison-table"><thead><tr><th>Proveedor y modalidad</th><th>Entrada / caché / salida<br>USD por millón</th><th>Total simulado USD</th><th>Promedio por solicitud</th>{% if comparison.conversion %}<th>Total simulado PEN</th>{% endif %}<th>Condiciones</th></tr></thead><tbody>
+{% for item in comparison.comparisons %}<tr data-comparison-code="{{ item.code }}"><td><strong>{{ item.name }}</strong><small>{{ item.model }}</small><small>Tarifa revisada: {{ item.verified_on|date:"d/m/Y" }}</small><a href="{{ item.source_url }}" target="_blank" rel="noopener noreferrer">Fuente oficial ↗</a></td><td>{{ item.input_rate|floatformat:"-6" }} / {{ item.cached_rate|floatformat:"-6" }} / {{ item.output_rate|floatformat:"-6" }}</td><td data-comparison-gross>{% if item.available %}<strong>${{ item.gross|floatformat:"-6" }}</strong>{% else %}<span class="muted">No cotizable</span>{% endif %}</td><td>{% if item.per_request is not None %}${{ item.per_request|floatformat:"-6" }}{% else %}—{% endif %}</td>{% if comparison.conversion %}<td>{% if item.gross_pen is not None %}S/ {{ item.gross_pen|floatformat:"-6" }}{% else %}—{% endif %}</td>{% endif %}<td>{{ item.condition }}{% if item.cache_note %}<small>{{ item.cache_note }}</small>{% endif %}{% if item.reason %}<small>{{ item.reason }}</small>{% endif %}<small>Acceso, cuota y disponibilidad real sin comprobar.</small>{% if user.is_superuser %}<a class="text-link" href="{% url 'ai_management:profile_create' %}?preset={{ item.code }}">Preparar este perfil →</a>{% endif %}</td></tr>{% endfor %}
+</tbody></table></div>
+<div class="notice">La cantidad de tokens se mantiene para comparar tarifas; otro modelo puede generar una salida diferente. No es una factura, una prueba de calidad o una autorización de gasto. Los créditos se calculan sólo para el proveedor elegido en la calculadora individual.</div>
+</section>
+{% else %}<section class="ai-section ai-comparison-help"><h2 data-reveal="words">Una decisión con contexto</h2><div class="ai-columns"><div><h3>Explora sin consumir IA</h3><p class="muted">Puedes comparar un escenario manual desde ahora. El historial aparecerá cuando existan solicitudes registradas; no se crea consumo para llenar esta pantalla.</p></div><div><h3>Conserva el control del gasto</h3><p class="muted">Preparar un perfil permite revisarlo. La selección y el permiso de pago se guardan en Presupuesto; generar utiliza las reservas y límites del perfil activo.</p></div></div></section>{% endif %}
+{% endblock %}

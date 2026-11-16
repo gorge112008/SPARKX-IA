@@ -1,0 +1,16 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="same-origin"><meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="color-scheme" content="light dark"><title>{% block title %}Inscripción · SparkX{% endblock %}</title>
+  <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
+  <script src="{% static 'js/theme.js' %}?v=20261108-calendar1"></script>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}?v=20261115-directory1">
+  <link rel="stylesheet" href="{% static 'css/event-registration.css' %}?v=20261115-registration1">
+</head>
+<body class="registration-public-body">
+  <a class="skip-link" href="#main-content">Saltar al contenido</a>
+  <main id="main-content" class="registration-public"><div class="registration-brand">SparkX <span>Inscripciones</span></div>{% block content %}{% endblock %}</main>
+</body>
+</html>

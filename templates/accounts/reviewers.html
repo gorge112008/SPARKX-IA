@@ -1,0 +1,18 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}Revisores · {{ event.title }} · SparkX{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/accounts.css' %}?v=20261113-accounts1">{% endblock %}
+{% block content %}
+<main id="main-content" class="page-content accounts-page">
+  <nav class="breadcrumb" aria-label="Ubicación"><a href="{% url 'events:index' %}">Eventos</a><span aria-hidden="true">/</span><a href="{% url 'events:detail' event.pk %}">{{ event.title }}</a><span aria-hidden="true">/</span><span>Revisores</span></nav>
+  <div class="page-heading"><div><h1 data-reveal="title">Revisores del evento</h1><p class="lead">Asigna quién puede consultar este evento.</p></div></div>
+  <section class="reviewer-panel" aria-labelledby="reviewer-event-title"><h2 id="reviewer-event-title">{{ event.title }}</h2><p class="section-description">Los revisores pueden consultar la ficha, la agenda y la preparación. No pueden editar el evento, aprobar propuestas, cambiar tareas ni utilizar la IA.</p>
+    <form method="post" class="accounts-form reviewer-form">
+      {% csrf_token %}{% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+      {% if conflict %}<div class="notice notice-error" role="alert"><p>Los accesos cambiaron mientras revisabas esta página. Compara tu selección con los accesos actuales antes de guardar de nuevo.</p><p>Revisores actuales: {% for reviewer in current_reviewers %}{{ reviewer.get_full_name|default:reviewer.username }}{% if not forloop.last %}, {% endif %}{% empty %}ninguno{% endfor %}.</p></div>{% endif %}
+      {% if form.non_field_errors %}<div class="notice notice-error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+      <fieldset class="reviewer-fieldset"><legend>Revisores disponibles</legend>{{ form.reviewers.errors }}<div class="reviewer-choices">{{ form.reviewers }}</div>{% if not form.reviewers.field.queryset.exists %}<p class="field-help">No hay revisores activos. Crea primero una cuenta con el rol Revisor.</p>{% endif %}</fieldset>
+      <div class="form-actions"><a class="button button-secondary" href="{% url 'events:detail' event.pk %}">Volver al evento</a><button class="button button-primary" type="submit">Guardar accesos</button></div>
+    </form>
+  </section>
+</main>
+{% endblock %}

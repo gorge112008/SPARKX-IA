@@ -1,0 +1,18 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive"><meta name="color-scheme" content="light dark">
+  <title>Página no disponible · SparkX</title>
+  <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
+  <script src="{% static 'js/theme.js' %}?v=20261108-calendar1"></script>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}?v=20261115-directory1">
+  <link rel="stylesheet" href="{% static 'css/access-error.css' %}">
+</head>
+<body class="access-error-body"><main id="main-content" class="access-error-card">
+  <p class="access-error-brand">SparkX <span>404</span></p>
+  <h1>No podemos abrir esta página</h1>
+  <p>El enlace no está disponible para esta cuenta. Comprueba la dirección o vuelve al inicio.</p>
+  <a class="button button-primary" href="{% url 'events:index' %}">Volver al inicio</a>
+</main></body>
+</html>

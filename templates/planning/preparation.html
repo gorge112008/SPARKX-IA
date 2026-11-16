@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Responsables y evidencia · SparkX{% endblock %}
+{% block content %}
+<main id="main-content" class="page-content">
+  <header class="page-heading"><div><h1>Responsables y evidencia</h1><p class="lead">{{ event.title }}</p></div><a class="button button-secondary" href="{% url 'events:detail' event.id %}">Volver al evento</a></header>
+  <div class="notice"><p>El organizador declara quién prepara cada tarea y qué evidencia revisó. Para marcar «Verificado por el organizador», la ejecución debe figurar como completada. Un cambio posterior en la ejecución o en el responsable exige revisar esa verificación.</p></div>
+  <p class="field-help">Fechas en {{ event.timezone }}. Los enlaces se guardan como referencias; SparkX no abre ni comprueba su contenido. Guardar preparación no modifica la ejecución de la tarea.</p>
+  {% if submitted_form %}{{ submitted_form.non_field_errors }}{% endif %}
+  {% for row in rows %}
+  <section class="demo-context">
+    <h2>{{ row.title }}</h2><p><strong>{{ row.state.label }}</strong></p>
+    {% if row.state.reason %}<div class="notice notice-warning">{{ row.state.reason }}</div>{% endif %}
+    {% if row.record %}<p class="field-help">Última declaración: {{ row.record.updated_by.get_username }} · {{ row.record.updated_at|date:'d/m/Y H:i' }} · versión {{ row.record.version }}</p>{% endif %}
+    <form method="post" class="event-form">
+      {% csrf_token %}{{ row.form.plan_id }}{{ row.form.task_id }}{{ row.form.expected_version }}{{ row.form.request_key }}
+      {% for hidden in row.form.hidden_fields %}{{ hidden.errors }}{% endfor %}
+      <div class="field-grid">
+        <div class="field">{{ row.form.responsible_person.label_tag }}{{ row.form.responsible_person }}{{ row.form.responsible_person.errors }}</div>
+        <div class="field">{{ row.form.due_at.label_tag }}{{ row.form.due_at }}{{ row.form.due_at.errors }}</div>
+      </div>
+      <div class="field">{{ row.form.stage.label_tag }}{{ row.form.stage }}{{ row.form.stage.errors }}</div>
+      <div class="field">{{ row.form.evidence_note.label_tag }}{{ row.form.evidence_note }}{{ row.form.evidence_note.errors }}</div>
+      <div class="field">{{ row.form.evidence_url.label_tag }}{{ row.form.evidence_url }}{{ row.form.evidence_url.errors }}</div>
+      <button class="button button-primary" type="submit">Guardar preparación de esta tarea</button>
+    </form>
+    {% if row.record.recent_changes %}<details><summary>Historial de declaraciones</summary><ol>{% for change in row.record.recent_changes %}<li>Versión {{ change.version }}: {{ change.get_to_stage_display }} · {{ change.actor.get_username }} · {{ change.created_at|date:'d/m/Y H:i' }}</li>{% endfor %}</ol></details>{% endif %}
+  </section>
+  {% empty %}<p>No hay tareas en el plan vigente. Aprueba primero un plan con tareas para registrar responsables y evidencia.</p>{% endfor %}
+</main>
+{% endblock %}

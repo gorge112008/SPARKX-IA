@@ -1,0 +1,45 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}Conoce a Gica · SparkX{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/gica-profile.css' %}?v=20261116-profile1">{% endblock %}
+{% block content %}
+<main id="main-content" class="page-content gica-profile-page">
+  <header class="page-heading"><div><p class="gica-profile-eyebrow">Tu guía en SparkX</p><h1>Conoce a Gica</h1><p class="lead">Una conversación, un paso a la vez.</p></div></header>
+  <div class="gica-profile-layout">
+    <section class="gica-profile-identity gica-appearance-{{ gica_profile_settings.appearance }}" aria-labelledby="gica-profile-name">
+      <div class="gica-profile-avatar"><img src="{% static 'img/gica-avatar.svg' %}" alt="Avatar de Gica, un bot de mirada amable" width="128" height="128"></div>
+      <p class="gica-profile-eyebrow">Tu asistente de eventos</p><h2 id="gica-profile-name">Gica-1</h2>
+      <p>{{ gica_profile_settings.description }}</p>
+      <blockquote class="gica-profile-greeting">{{ gica_greeting_preview }}</blockquote>
+      <button class="button" type="button" data-gica-settings-open>Conversar con Gica</button>
+      <p class="field-help">Al abrir Gica puedes conversar por voz o usar los controles manuales.</p>
+    </section>
+    <div class="gica-profile-content">
+      <section class="gica-profile-section" aria-labelledby="gica-demo-preview-title">
+        <h2 id="gica-demo-preview-title">Nuestro piloto paso a paso</h2>
+        <p class="field-help">Gica registra Gicaingenieros y prepara nuestro seminario con Robert Castillo para el jueves 19. Después muestra un cambio de expositor a Jorge Gayoso Ugas y de fecha al jueves 26. El recorrido guarda la ficha y las versiones de la agenda en SparkX; puedes detenerlo. El micrófono está apagado.</p>
+        <button class="button button-secondary" type="button" data-gica-demo-start>Iniciar piloto guiado</button>
+      </section>
+      <section class="gica-profile-section" aria-labelledby="gica-personalize-title">
+        <div class="gica-profile-section-heading"><h2 id="gica-personalize-title">Hazlo tuyo</h2><span>Sólo para tu cuenta</span></div>
+        <form method="post" class="gica-profile-form">
+          {% csrf_token %}{{ profile_form.non_field_errors }}
+          <fieldset><legend>{{ profile_form.personality.label }}</legend><p class="field-help">Elige el tono de su saludo. Las preguntas y reglas del evento mantienen su claridad.</p><div class="gica-profile-options">{% for option in profile_form.personality %}<label class="gica-profile-option">{{ option.tag }}<span>{{ option.choice_label }}</span></label>{% endfor %}</div>{{ profile_form.personality.errors }}</fieldset>
+          <fieldset><legend>{{ profile_form.appearance.label }}</legend><div class="gica-profile-options">{% for option in profile_form.appearance %}<label class="gica-profile-option gica-profile-palette gica-appearance-{{ option.data.value }}">{{ option.tag }}<span class="gica-profile-swatch" aria-hidden="true"></span><span>{{ option.choice_label }}</span></label>{% endfor %}</div>{{ profile_form.appearance.errors }}</fieldset>
+          <div class="gica-profile-save"><button class="button" type="submit">Guardar preferencias</button><span class="field-help">Su nombre sigue siendo Gica-1.</span></div>
+        </form>
+      </section>
+      <section class="gica-profile-section" aria-labelledby="gica-capabilities-title">
+        <h2 id="gica-capabilities-title">Lo que podemos hacer juntos</h2>
+        <ul class="gica-profile-capabilities"><li><strong>Preparar tu evento</strong><span>Te pregunta y completa la ficha contigo. Tú confirmas su creación.</span></li><li><strong>Encontrar lo que necesitas</strong><span>Abre eventos, calendario y directorio; busca personas y te ayuda a navegar.</span></li><li><strong>Hablar a tu ritmo</strong><span>Puedes pausar, corregir y continuar. El estado del micrófono está siempre visible.</span></li></ul>
+      </section>
+      <div class="gica-profile-section gica-profile-settings">
+        {% include 'assistant/_gica_settings.html' %}
+      </div>
+      <section class="gica-profile-section" aria-labelledby="gica-memory-title">
+        <h2 id="gica-memory-title">Memoria y conexiones</h2><div class="gica-profile-links"><a href="{% url 'assistant:memory' %}"><strong>Interacciones</strong><span>Revisa lo que entendió y cómo respondió.</span></a><a href="{% url 'assistant:patterns' %}"><strong>Patrones revisados</strong><span>Gestiona las expresiones que aprobaste.</span></a><a href="{% url 'assistant:knowledge' %}"><strong>Conocimientos</strong><span>Consulta referencias y asociaciones de lenguaje.</span></a>{% if portal_role == 'admin' %}<a href="{% url 'ai_management:index' %}"><strong>Gestión de IA</strong><span>Conexiones, límites y presupuesto autorizado.</span></a>{% endif %}</div>
+        <p class="field-help gica-profile-boundary">Personalizar su tono y apariencia no cambia sus permisos. Los planes, estados y acciones externas siguen sus controles de autorización.</p>
+      </section>
+    </div>
+  </div>
+</main>
+{% endblock %}

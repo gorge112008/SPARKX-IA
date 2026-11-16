@@ -1,0 +1,12 @@
+{% load planning_ui %}
+{% with tasks=payload|preparation_rows %}
+<section class="plan-section preparation-section" aria-label="Preparación{% if proposed %} propuesta{% endif %}">
+  <header class="reading-heading"><div><h3>{% if proposed %}Preparación propuesta{% else %}Tareas del plan{% endif %}</h3><p>Abre cada tarea para consultar sus instrucciones.</p></div><span class="reading-count">{{ tasks|length }} {% if tasks|length == 1 %}tarea{% else %}tareas{% endif %}</span></header>
+  {% include 'events/_task_progress_summary.html' %}
+  {% if tasks %}
+    {% if preview and tasks|length > 3 %}<div class="plan-scroll preparation-scroll" tabindex="0" role="region" aria-label="Tareas del plan">{% endif %}
+    <ol class="preparation-list" aria-label="Todas las tareas">{% include 'events/_preparation_rows.html' with tasks=task_tracking.rows|default:tasks %}</ol>
+    {% if preview and tasks|length > 3 %}</div>{% endif %}
+  {% else %}<p class="section-empty">Las tareas aparecerán cuando prepares un plan.</p>{% endif %}
+</section>
+{% endwith %}

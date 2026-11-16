@@ -1,0 +1,26 @@
+{% url 'ai_management:pool_entry_save' as pool_save_url %}
+{% if pool_save_url and pool_form %}
+<section class="ai-section" aria-labelledby="free-pool-title">
+  <div class="ai-section-heading"><h2 id="free-pool-title">Modelos gratuitos de Gica-1</h2><span class="muted">{% if pool_summary.enabled %}Prioridad gratuita habilitada{% else %}Prioridad gratuita deshabilitada{% endif %}</span></div>
+  <p class="muted">Autoriza cada modelo y sus tareas. Los límites de esta tabla son internos de SparkX, por día UTC; no acreditan cuota ni disponibilidad del proveedor. Un trabajo usa un único modelo y no se reintenta tras un error.</p>
+  {% if pool_summary.gateway_paused %}<div class="notice" role="status">La pasarela gratuita está en pausa hasta {{ pool_summary.cooldown_until|date:'d/m/Y H:i:s' }}. Es una pausa local; no conocemos la hora de restablecimiento del proveedor.</div>{% endif %}
+  <div class="ai-table-wrap" tabindex="0" role="region" aria-label="Modelos gratuitos y autorizaciones">
+    <table class="ai-table ai-pool-table"><thead><tr><th>Modelo revisado</th><th>Autorización y estado</th><th>Tareas y prioridad</th><th>Límites internos diarios</th><th>Uso y reservas internos</th><th>Configuración</th></tr></thead><tbody>
+      {% for row in pool_rows %}<tr data-pool-model="{{ row.code }}"><td><strong>{{ row.policy.name }}</strong><small>{{ row.policy.model }}</small><details><summary>Privacidad</summary><p>{{ row.policy.privacy }}</p><a href="{{ row.policy.privacy_url }}" target="_blank" rel="noopener noreferrer">Condiciones revisadas ↗</a></details></td>
+        <td>{% if row.entry %}<span class="ai-badge">{{ row.state }}</span>{% if row.entry.approved_at %}<small>Aprobación: {{ row.entry.approved_at|date:'d/m/Y H:i' }}{% if not row.policy_valid and row.entry.enabled %} · requiere revisión{% endif %}</small>{% endif %}{% else %}<span class="muted">Sin autorización</span>{% endif %}</td>
+        <td>{% if row.entry %}{{ row.entry.get_roles_display }}<small>Prioridad {{ row.entry.priority }}</small>{% else %}—{% endif %}</td>
+        <td>{% if row.entry %}{{ row.entry.daily_request_limit }} trabajos<small>{{ row.entry.daily_token_limit }} tokens</small>{% else %}—{% endif %}</td>
+        <td>{% if row.entry %}{{ row.requests_used }} trabajos<small>{{ row.tokens_committed }} tokens comprometidos</small><small>Disponibles: {{ row.available_requests }} trabajos / {{ row.available_tokens }} tokens</small>{% else %}—{% endif %}</td>
+        <td><a class="text-link" href="{% url 'ai_management:control' %}?pool_model={{ row.code }}#pool-editor">{% if row.entry %}Editar{% else %}Configurar{% endif %}</a></td></tr>{% endfor %}
+    </tbody></table>
+  </div>
+  {% if grant %}<details class="ai-conversion" id="pool-editor" open><summary>Configurar un modelo gratuito</summary>
+    <form class="ai-form api-pool-form" method="post" action="{{ pool_save_url }}" data-pool-entry-form>{% csrf_token %}{{ pool_form.non_field_errors }}{{ pool_form.expected_grant_version }}{{ pool_form.expected_policy_fingerprint }}
+      <div class="field-grid">{% for field in pool_form.visible_fields %}<div class="field{% if field.field.widget.input_type == 'checkbox' %} api-checkbox{% endif %}">{% if field.field.widget.input_type == 'checkbox' %}<label>{{ field }}{{ field.label }}</label>{% else %}{{ field.label_tag }}{{ field }}{% endif %}{{ field.errors }}{% if field.help_text %}<p class="field-help">{{ field.help_text }}</p>{% endif %}</div>{% endfor %}</div>
+      <div class="api-pool-policies">{% for code, policy in fallback_policies %}<details data-pool-policy="{{ code }}" data-policy-fingerprint="{{ policy.model_policy_version }}"{% if code == pool_selected_code %} open{% endif %}><summary>Condiciones de {{ policy.name }}</summary><p>{{ policy.privacy }}</p><a href="{{ policy.privacy_url }}" target="_blank" rel="noopener noreferrer">Leer condiciones ↗</a></details>{% endfor %}</div>
+      <p class="field-help">La aceptación corresponde sólo al modelo seleccionado y a la política revisada. Cambiarla requiere nueva aprobación. Guardar no realiza inferencia ni comprueba cuota remota.</p>
+      <button type="submit" class="button button-primary">Guardar modelo gratuito</button>
+    </form>
+  </details>{% else %}<p class="muted">Guarda primero el acceso de Gica-1. Ningún modelo se autoriza al abrir esta pantalla.</p>{% endif %}
+</section>
+{% endif %}

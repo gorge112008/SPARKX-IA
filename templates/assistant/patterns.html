@@ -1,0 +1,40 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}Mis patrones · Gica · SparkX{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/gica-memory.css' %}?v=20261115-autodirect1">{% endblock %}
+{% block content %}
+<main id="main-content" class="page-content gica-memory-page">
+  <div class="page-heading">
+    <div><h1>Mis patrones de Gica</h1><p class="lead">Tus frases revisadas, asociadas a una función de SparkX.</p></div>
+    <a class="button button-secondary" href="{% url 'events:index' %}">Volver a mis eventos</a>
+  </div>
+  <p class="gica-memory-intro">Estos patrones son sólo de tu cuenta. Guardar una frase ayuda a reconocerla; cada acción conserva sus permisos y controles. No se guarda audio. El <a class="text-link" href="{% url 'assistant:memory' %}">registro de interacciones para el mentor</a> se revisa por separado y no activa patrones.</p>
+  <div class="gica-memory-layout">
+    <section class="gica-memory-create" aria-labelledby="pattern-create-title">
+      <h2 id="pattern-create-title">Revisar y guardar una frase</h2>
+      <p class="field-help">Una orden por frase, sin contraseñas ni datos sensibles. Hasta 200 patrones personales.</p>
+      <form method="post" action="{% url 'assistant:pattern_save' %}" data-private-form>
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="notice notice-error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="field"><label for="{{ form.phrase.id_for_label }}">Frase que quieres reconocer</label>{{ form.phrase }}{{ form.phrase.errors }}<p class="field-help">Máximo 300 caracteres. Por ejemplo: «Llévame a mi agenda semanal».</p></div>
+        <div class="field"><label for="{{ form.intent.id_for_label }}">Qué significa</label>{{ form.intent }}{{ form.intent.errors }}</div>
+        <div class="field gica-memory-review"><label for="{{ form.reviewed.id_for_label }}">{{ form.reviewed }} He revisado la frase y su intención; quiero guardarla.</label>{{ form.reviewed.errors }}</div>
+        <button class="button button-primary" type="submit">Guardar patrón revisado</button>
+      </form>
+    </section>
+    <section class="gica-memory-saved" aria-labelledby="pattern-saved-title">
+      <div class="gica-memory-list-heading"><h2 id="pattern-saved-title">Frases guardadas</h2><span>{{ patterns|length }} / 200</span></div>
+      {% if patterns %}
+      <div class="gica-memory-table-wrap" role="region" aria-label="Tus patrones guardados" tabindex="0">
+        <table class="gica-memory-table">
+          <thead><tr><th scope="col">Frase e intención</th><th scope="col">Revisada</th><th scope="col">Acción</th></tr></thead>
+          <tbody>{% for pattern in patterns %}
+          <tr><td><strong>{{ pattern.phrase }}</strong><span>{{ pattern.get_intent_display }}</span></td><td><time datetime="{{ pattern.reviewed_at|date:'c' }}">{{ pattern.reviewed_at|date:'d/m/Y H:i' }}</time></td><td><form method="post" action="{% url 'assistant:pattern_delete' pattern.pk %}">{% csrf_token %}<button class="button button-secondary button-small" type="submit" aria-label="Eliminar patrón: {{ pattern.phrase }}">Eliminar</button></form></td></tr>
+          {% endfor %}</tbody>
+        </table>
+      </div>
+      {% else %}<div class="gica-memory-empty"><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg><h3>Tu memoria empieza contigo</h3><p>Revisa una frase aquí o desde la conversación con Gica. Sólo se guardará cuando lo confirmes.</p></div>{% endif %}
+      <p class="field-help">Puedes eliminar cualquier frase. Una frase de búsqueda guardada sin nombre hará que Gica te pregunte a quién buscas.</p>
+    </section>
+  </div>
+</main>
+{% endblock %}

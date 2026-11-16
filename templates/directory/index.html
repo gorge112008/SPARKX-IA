@@ -1,0 +1,37 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}Directorio · SparkX{% endblock %}
+{% block extra_head %}{% if not portal_can_organize %}<link rel="stylesheet" href="{% static 'css/directory.css' %}?v=20261115-directory2">{% endif %}{% endblock %}
+{% block content %}
+<main id="main-content" class="page-content directory-page" data-romeo-destination="directory" data-romeo-query="{{ filter_form.q.value|default:'' }}" data-romeo-result-count="{{ records_page.paginator.count }}">
+  <header class="page-heading directory-heading">
+    <div><h1>Directorio</h1><p class="section-description">Tus personas y organizaciones, disponibles para preparar cada evento.</p></div>
+    <div class="directory-actions"><a class="button {% if tab == 'organizations' %}button-primary{% else %}button-secondary{% endif %}" href="{% url 'directory:organization_create' %}">Nueva organización</a><a class="button {% if tab == 'people' %}button-primary{% else %}button-secondary{% endif %}" href="{% url 'directory:person_create' %}"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>Nueva persona</a></div>
+  </header>
+  <nav class="directory-tabs" aria-label="Secciones del directorio">
+    <a href="{% url 'directory:index' %}"{% if tab == 'people' %} aria-current="page"{% endif %}>Personas</a>
+    <a href="{% url 'directory:index' %}?tab=organizations"{% if tab == 'organizations' %} aria-current="page"{% endif %}>Empresas y organizaciones</a>
+  </nav>
+  <form method="get" class="directory-filters" role="search" aria-label="Filtrar el directorio">
+    <input type="hidden" name="tab" value="{{ tab }}">
+    <div class="field directory-search"><label for="{{ filter_form.q.id_for_label }}">{% if tab == 'organizations' %}Buscar organización{% else %}Buscar persona{% endif %}</label>{{ filter_form.q }}{{ filter_form.q.errors }}</div>
+    {% if tab == 'people' %}<div class="field"><label for="{{ filter_form.category.id_for_label }}">Categoría habitual</label>{{ filter_form.category }}{{ filter_form.category.errors }}</div><div class="field"><label for="{{ filter_form.organization.id_for_label }}">Empresa u organización</label>{{ filter_form.organization }}{{ filter_form.organization.errors }}</div>{% endif %}
+    <div class="directory-filter-bottom"><label class="directory-check" for="{{ filter_form.include_inactive.id_for_label }}">{{ filter_form.include_inactive }}<span>Incluir archivados</span></label><div class="directory-actions"><a class="text-link" href="{% url 'directory:index' %}{% if tab == 'organizations' %}?tab=organizations{% endif %}">Limpiar</a><button class="button button-secondary" type="submit">Aplicar filtros</button></div></div>
+    {{ filter_form.non_field_errors }}
+  </form>
+  <div class="directory-results-heading"><h2>{% if tab == 'people' %}Personas{% else %}Empresas y organizaciones{% endif %}</h2><span>{{ records_page.paginator.count }} {% if tab == 'people' %}persona{{ records_page.paginator.count|pluralize:"s" }}{% elif records_page.paginator.count == 1 %}organización{% else %}organizaciones{% endif %}</span></div>
+  <div class="directory-table-wrap" tabindex="0" role="region" aria-label="Resultados del directorio">
+    <table class="directory-table">
+      <caption class="sr-only">{% if tab == 'people' %}Personas de tu directorio{% else %}Empresas y organizaciones de tu directorio{% endif %}</caption>
+      <thead><tr>{% if tab == 'people' %}<th scope="col">Persona</th><th scope="col">Categoría habitual</th><th scope="col">Organización</th>{% else %}<th scope="col">Organización</th><th scope="col">Tipo de dato</th>{% endif %}<th scope="col">Estado</th><th scope="col"><span class="sr-only">Acciones</span></th></tr></thead>
+      <tbody>{% for record in records_page %}<tr>
+        {% if tab == 'people' %}<td class="directory-identity"><strong>{{ record.full_name }}</strong>{% if record.email %}<span>{{ record.email }}</span>{% endif %}{% if record.expertise %}<small>{{ record.expertise }}</small>{% endif %}{% if record.is_synthetic %}<span class="directory-badge">Dato sintético</span>{% endif %}</td><td>{{ record.get_category_display }}</td><td>{% if record.organization %}{{ record.organization.name }}{% if not record.organization.is_active %}<small class="directory-muted">Archivada</small>{% endif %}{% else %}<span class="directory-muted">Sin organización</span>{% endif %}</td>
+        {% else %}<td class="directory-identity"><strong>{{ record.name }}</strong></td><td>{% if record.is_synthetic %}<span class="directory-badge">Dato sintético</span>{% else %}<span class="directory-muted">Registro del organizador</span>{% endif %}</td>{% endif %}
+        <td><span class="directory-status{% if record.is_active %} is-active{% endif %}">{% if record.is_active %}Activ{% if tab == 'people' %}o{% else %}a{% endif %}{% else %}Archivad{% if tab == 'people' %}o{% else %}a{% endif %}{% endif %}</span></td>
+        <td class="directory-row-actions"><a class="button button-secondary button-small" href="{% if tab == 'people' %}{% url 'directory:person_edit' record.pk %}{% else %}{% url 'directory:organization_edit' record.pk %}{% endif %}" aria-label="Editar {% if tab == 'people' %}a {{ record.full_name }}{% else %}{{ record.name }}{% endif %}">Editar</a></td>
+      </tr>{% empty %}<tr><td colspan="{% if tab == 'people' %}5{% else %}4{% endif %}" class="directory-empty"><strong>No hay coincidencias.</strong><p>Prueba otros filtros o añade {% if tab == 'people' %}una persona{% else %}una organización{% endif %} a tu directorio.</p></td></tr>{% endfor %}</tbody>
+    </table>
+  </div>
+  {% include 'directory/_pagination.html' %}
+  <p class="directory-footnote">La categoría del directorio es habitual. Al vincular una persona a un evento puedes definir su rol para esa ocasión.</p>
+</main>
+{% endblock %}

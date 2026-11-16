@@ -1,0 +1,19 @@
+.pilot-heading { display:flex; gap:10px; align-items:center; color:var(--link); font-size:11px; margin-bottom:12px; }
+.pilot-plan-controls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin:18px 0; }
+.pilot-plan-controls .button { font-size:12px; }
+.pilot-plan-controls p { flex-basis:100%; font-size:11px; color:var(--muted); margin:0; }
+.pilot-status { font-size:12px; line-height:1.7; color:var(--muted); }
+.schedule-editor { max-width:1000px; }
+.schedule-editor-row { border:1px solid var(--line); border-radius:9px; padding:18px; margin:20px 0; min-width:0; }
+.schedule-editor-row legend { font-size:13px; font-weight:600; padding:0 8px; }
+.schedule-editor-row .field-help { margin:0 0 15px; }
+.schedule-editor-row .field { margin:0; }
+.schedule-editor-row input { font-size:13px; }
+.event-history { margin:18px 0; padding-left:18px; font-size:12px; line-height:1.8; }
+.event-history li { padding-block:8px; }
+.event-history time { color:var(--muted); font-size:11px; display:block; }
+.proposal-history { margin:18px 0 26px; padding-bottom:16px; border-bottom:1px solid var(--line); }
+.proposal-history h3 { font-size:14px; }
+.proposal-history .event-history { max-height:260px; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; }
+.proposal-history .event-history p { margin:5px 0 0; color:var(--muted); font-size:11px; line-height:1.7; }
+@media(max-width:700px) { .schedule-editor-row .field+.field { margin-top:16px; } }

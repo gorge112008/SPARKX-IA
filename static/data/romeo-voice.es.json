@@ -1,0 +1,10 @@
+{
+  "version": "es-2026-11-15.1",
+  "session_seconds": 300,
+  "phrases": {
+    "wake": ["gica hablemos"],
+    "execute": ["gica ejecuta"],
+    "cancel": ["gica cancela"],
+    "stop": ["gica silencio", "gica deja de escuchar"]
+  }
+}

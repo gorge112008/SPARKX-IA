@@ -1,0 +1,545 @@
+{
+  "catalog_version": "es-2026-11-15.6",
+  "examples": [
+    {
+      "id": "expanded_chica_events",
+      "command": "hola chica abre eventos",
+      "status": "understood",
+      "action": "events_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_now_calendar",
+      "command": "ahora calendario",
+      "status": "understood",
+      "action": "calendar_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_click_events",
+      "command": "haz clic en eventos",
+      "status": "understood",
+      "action": "events_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_click_calendar",
+      "command": "haz click en el calendario",
+      "status": "understood",
+      "action": "calendar_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_press_directory",
+      "command": "pulsa directorio",
+      "status": "understood",
+      "action": "directory_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_press_calendar",
+      "command": "pulsa en el calendario",
+      "status": "understood",
+      "action": "calendar_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_push_events",
+      "command": "presiona eventos",
+      "status": "understood",
+      "action": "events_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_push_contacts",
+      "command": "presionar en la lista de contactos",
+      "status": "understood",
+      "action": "directory_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_enter_events",
+      "command": "entra en mis eventos",
+      "status": "understood",
+      "action": "events_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_enter_directory",
+      "command": "entrar al directorio",
+      "status": "understood",
+      "action": "directory_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_navigate_calendar",
+      "command": "navega al calendario",
+      "status": "understood",
+      "action": "calendar_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_navigate_events",
+      "command": "navegar en eventos",
+      "status": "understood",
+      "action": "events_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_section_events",
+      "command": "llévame a la sección de eventos",
+      "status": "understood",
+      "action": "events_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_go_calendar",
+      "command": "ve al calendario de eventos",
+      "status": "understood",
+      "action": "calendar_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_go_contacts",
+      "command": "ve a mi directorio de contactos",
+      "status": "understood",
+      "action": "directory_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_visualize_events",
+      "command": "visualiza el repositorio de eventos",
+      "status": "understood",
+      "action": "events_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_contact_agenda",
+      "command": "mostrar mi agenda de contactos",
+      "status": "understood",
+      "action": "directory_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_set_events",
+      "command": "pon eventos",
+      "status": "understood",
+      "action": "events_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_set_calendar",
+      "command": "ponme el calendario",
+      "status": "understood",
+      "action": "calendar_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_set_dark",
+      "command": "establece modo oscuro",
+      "status": "understood",
+      "action": "theme_dark",
+      "query": ""
+    },
+    {
+      "id": "expanded_select_light",
+      "command": "selecciona el tema claro",
+      "status": "understood",
+      "action": "theme_light",
+      "query": ""
+    },
+    {
+      "id": "expanded_adjust_dark",
+      "command": "ajusta a modo oscuro",
+      "status": "understood",
+      "action": "theme_dark",
+      "query": ""
+    },
+    {
+      "id": "expanded_calendar_button",
+      "command": "haz clic en el botón de calendario",
+      "status": "understood",
+      "action": "calendar_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_directory_link",
+      "command": "haz clic en el enlace de directorio",
+      "status": "understood",
+      "action": "directory_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_courteous_contacts",
+      "command": "por favor ahora muestra mis contactos",
+      "status": "understood",
+      "action": "directory_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_current_events",
+      "command": "en este momento, abre eventos",
+      "status": "understood",
+      "action": "events_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_polite_directory",
+      "command": "serías tan amable de mostrar el directorio",
+      "status": "understood",
+      "action": "directory_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_chica_person",
+      "command": "Hola Chica, busca por nombre a José Chica",
+      "status": "understood",
+      "action": "people_search",
+      "query": "José Chica"
+    },
+    {
+      "id": "expanded_locate_jica",
+      "command": "localiza a Rosa Jica",
+      "status": "understood",
+      "action": "people_search",
+      "query": "Rosa Jica"
+    },
+    {
+      "id": "expanded_locate_person",
+      "command": "ubica una persona llamada María del Pilar",
+      "status": "understood",
+      "action": "people_search",
+      "query": "María del Pilar"
+    },
+    {
+      "id": "expanded_find_chica",
+      "command": "buscar por nombre a Chica",
+      "status": "understood",
+      "action": "people_search",
+      "query": "Chica"
+    },
+    {
+      "id": "expanded_person_chica_one",
+      "command": "Busca a Chica Uno",
+      "status": "understood",
+      "action": "people_search",
+      "query": "Chica Uno"
+    },
+    {
+      "id": "expanded_search_vocative",
+      "command": "Busca a Chica, Jica",
+      "status": "understood",
+      "action": "people_search",
+      "query": "Chica"
+    },
+    {
+      "id": "expanded_chica_yika",
+      "command": "hola chica busca a Yika",
+      "status": "understood",
+      "action": "people_search",
+      "query": "Yika"
+    },
+    {
+      "id": "expanded_directory_contacts",
+      "command": "directorio de contactos",
+      "status": "understood",
+      "action": "directory_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_people_list",
+      "command": "listado de personas",
+      "status": "understood",
+      "action": "directory_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_calendar_view",
+      "command": "vista calendario",
+      "status": "understood",
+      "action": "calendar_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_contacts_agenda_noun",
+      "command": "agenda de contactos",
+      "status": "understood",
+      "action": "directory_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_person_agenda",
+      "command": "busca a Agenda",
+      "status": "understood",
+      "action": "people_search",
+      "query": "Agenda"
+    },
+    {
+      "id": "expanded_ilica_press",
+      "command": "Ilica, pulsa en eventos por favor",
+      "status": "understood",
+      "action": "events_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_jica_navigate",
+      "command": "Jica uno, navega al directorio",
+      "status": "understood",
+      "action": "directory_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_llica_enter",
+      "command": "Llica-1, entra al calendario",
+      "status": "understood",
+      "action": "calendar_open",
+      "query": ""
+    },
+    {
+      "id": "expanded_search_chica_surname",
+      "command": "Busca a María Chica",
+      "status": "understood",
+      "action": "people_search",
+      "query": "María Chica"
+    },
+    {
+      "id": "expanded_search_agent_name",
+      "command": "Encuentra a Jica",
+      "status": "understood",
+      "action": "people_search",
+      "query": "Jica"
+    },
+    {
+      "id": "expanded_ambiguous_agenda",
+      "command": "agenda",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_show_agenda",
+      "command": "muéstrame la agenda",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_ambiguous_program",
+      "command": "programa",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_event_program",
+      "command": "abre el programa del evento",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_ambiguous_schedule",
+      "command": "cronograma",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_set_agenda",
+      "command": "pon mi agenda",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_agenda_date",
+      "command": "abre agenda del evento mañana",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_chica_negative",
+      "command": "hola chica no abras eventos",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_never_press",
+      "command": "chica nunca pulsa calendario",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_negative_now",
+      "command": "ahora no navegues directorio",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_admin_click",
+      "command": "haz clic en usuarios",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_settings",
+      "command": "pulsa configuración",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_keys",
+      "command": "entra a claves",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_url",
+      "command": "navega a https://example.invalid",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_permissions",
+      "command": "pon permisos",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_payments",
+      "command": "presiona pagos",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_then_click",
+      "command": "haz clic directorio y luego calendario",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_multiple_targets",
+      "command": "pulsa eventos y calendario",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_multiple_commands",
+      "command": "entra en eventos; abre directorio",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_multiple_themes",
+      "command": "pon modo claro y modo oscuro",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_agenda_or_events",
+      "command": "navega a agenda o eventos",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_condition",
+      "command": "si puedes pulsa eventos",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_when",
+      "command": "muestra eventos cuando termines",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_reported_click",
+      "command": "el texto dice haz clic en eventos",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_reported_press",
+      "command": "ella dijo pulsa directorio",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_quoted_press",
+      "command": "'pulsa calendario'",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_how_to",
+      "command": "¿cómo abrir eventos?",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_date_filter",
+      "command": "haz clic en eventos del martes",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_contacts_filter",
+      "command": "presiona contactos de GICA",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_out_of_scope",
+      "command": "entra en mi calendario y comparte",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_server_admin",
+      "command": "Chica, reinicia el servidor",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_shell",
+      "command": "hola chica ejecuta powershell",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_path",
+      "command": "directorio../../admin",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_markup",
+      "command": "pulsa <button>Eventos</button>",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_control",
+      "command": "entra en eventos\n",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_many_people",
+      "command": "Busca a Ana y Chica",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_missing_name",
+      "command": "búscame",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_missing_destination",
+      "command": "selecciona",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_now_only",
+      "command": "ahora",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_unfamiliar_agenda",
+      "command": "agendauniversitaria",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_week_filter",
+      "command": "haz clic calendario de la semana",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_delete_after_navigation",
+      "command": "navega al calendario y borra eventos",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_quoted_person",
+      "command": "busca a 'Chica'",
+      "status": "refused"
+    },
+    {
+      "id": "expanded_missing_placeholder_imperative",
+      "command": "localiza a alguien",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_missing_placeholder_infinitive",
+      "command": "localizar a alguien",
+      "status": "clarify"
+    },
+    {
+      "id": "expanded_placeholder_word_in_real_name",
+      "command": "busca a Alguien Pérez",
+      "status": "understood",
+      "action": "people_search",
+      "query": "Alguien Pérez"
+    }
+  ]
+}

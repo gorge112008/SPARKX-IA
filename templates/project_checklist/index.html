@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Checklist SparkX · SparkX{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/project-checklist.css' %}?v=20261112-checklist2">{% endblock %}
+{% block content %}
+<main id="main-content" class="page-content project-checklist">
+  <header class="page-heading">
+    <div><p class="checklist-eyebrow"><svg class="icon" aria-hidden="true"><use href="#i-checklist"/></svg>Solo para Jorge · temporal</p><h1 data-reveal="words">Tu checklist para avanzar</h1><p class="lead">Las gestiones que necesitan tu participación, con pasos y comprobaciones.</p></div>
+    <a class="button button-secondary" href="{% url 'ai_management:index' %}">Ir a Gestión de IA<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+  </header>
+  <section class="checklist-overview" aria-labelledby="checklist-progress-title">
+    <div class="checklist-progress-copy"><h2 id="checklist-progress-title">Avance personal</h2><p><strong data-checklist-completed>{{ stats.completed }}</strong> de <strong data-checklist-applicable>{{ stats.applicable }}</strong> puntos aplicables completados. <span>{{ stats.not_applicable }} no aplica{{ stats.not_applicable|pluralize:"n" }}.</span></p><progress max="100" value="{{ stats.percent }}" aria-label="Avance del checklist">{{ stats.percent }}%</progress></div>
+    <div class="checklist-percent"><strong data-checklist-percent>{{ stats.percent }}%</strong><span>{{ stats.in_progress }} en proceso</span></div>
+  </section>
+  <p class="checklist-scope">El avance se guarda en tu cuenta. Completar un punto registra tu confirmación personal; no configura servicios ni autoriza pagos, publicaciones o envíos. Mantén las claves y contraseñas fuera de este checklist.</p>
+  {% if stats.needs_review %}<p class="notice" role="status">Conservamos {{ stats.needs_review }} punto{{ stats.needs_review|pluralize }} que ya habías completado. Revisa sus nuevas confirmaciones para incluirlo{{ stats.needs_review|pluralize }} en el porcentaje actual.</p>{% endif %}
+  {% if checklist_error %}<div class="notice notice-error" role="alert">{{ checklist_error }}</div>{% endif %}
+  <section class="checklist-local-overview" aria-labelledby="checklist-local-title">
+    <div><h2 id="checklist-local-title">Comprobación local</h2><p>Revisa lo que esta instalación puede comprobar. No consulta saldos ni confirma beneficios, permisos o resultados en tus cuentas externas.</p>{% if last_checked %}<p class="checklist-last-check">Comprobación de esta vista: {{ last_checked|date:"d/m/Y H:i" }}.</p>{% else %}<p class="checklist-last-check">Pulsa el botón para obtener una comprobación actual.</p>{% endif %}</div>
+    {% if checklist_check_url %}<form method="post" action="{{ checklist_check_url }}">{% csrf_token %}<button class="button button-secondary" type="submit">Comprobar configuración local</button></form>{% endif %}
+  </section>
+  <nav class="checklist-stage-nav" aria-label="Etapas del checklist">{% for group in checklist_groups %}<a href="{% url 'project_checklist:index' %}?section={{ group.key }}#group-{{ group.key }}"{% if active_group == group.key %} aria-current="step"{% endif %}><span>{{ forloop.counter|stringformat:"02d" }}</span>{{ group.title }}</a>{% endfor %}</nav>
+  <div class="checklist-groups">
+    {% for group in checklist_groups %}
+    <details class="checklist-group" id="group-{{ group.key }}"{% if active_group == group.key %} open{% endif %}>
+      <summary><span class="checklist-group-number" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</span><span class="checklist-group-heading"><strong>{{ group.title }}</strong><span>{{ group.description }}</span></span><span class="checklist-group-count">{{ group.items|length }} puntos</span><svg class="icon checklist-chevron" aria-hidden="true"><use href="#i-chevron-right"/></svg></summary>
+      <ol class="checklist-items" aria-label="Puntos de {{ group.title }}">
+        {% for item in group.items %}
+        <li class="checklist-item checklist-item-{{ item.status }}" id="{{ item.anchor }}" data-checklist-key="{{ item.key }}">
+          {% if item.needs_review %}<p class="notice">Tu estado anterior se conserva. Revisa las confirmaciones nuevas y guarda para completar la revisión.</p>{% endif %}
+          <div class="checklist-item-main"><span class="checklist-state-icon" aria-hidden="true">{% if item.status == 'completed' %}<svg class="icon"><use href="#i-checklist"/></svg>{% elif item.status == 'in_progress' %}<svg class="icon"><use href="#i-clock"/></svg>{% elif item.status == 'not_applicable' %}—{% else %}<span></span>{% endif %}</span><div><h3>{{ item.title }}</h3><p>{{ item.description }}</p>{% if item.optional %}<p class="checklist-condition">Condicional · {{ item.condition }}</p>{% endif %}</div></div>
+          <div class="checklist-local-result{% if item.local_check %} checklist-local-{{ item.local_check.status }}{% endif %}">
+            <span class="checklist-local-label">Comprobación local</span>
+            {% if item.local_check %}<span class="checklist-local-status">{% if item.local_check.status == 'ready' %}Disponible{% elif item.local_check.status == 'pending' %}Pendiente{% else %}Informativo{% endif %}</span><p>{{ item.local_check.message }}</p>{% if item.local_check.scope %}<p class="checklist-local-scope">Alcance: {{ item.local_check.scope }}</p>{% endif %}{% if item.local_check.checked_at %}<span class="checklist-local-date">Comprobado {{ item.local_check.checked_at|date:"d/m/Y H:i" }}</span>{% endif %}{% else %}<p>Aún no comprobado localmente.</p>{% endif %}
+          </div>
+          <form method="post" action="{{ item.update_url }}" class="checklist-item-form" aria-label="Actualizar {{ item.title }}">
+            {% csrf_token %}{{ item.form.expected_version }}
+            <details class="checklist-guide"{% if item.form.errors %} open{% endif %}>
+              <summary><svg class="icon checklist-guide-chevron" aria-hidden="true"><use href="#i-chevron-right"/></svg><span>Cómo completar este punto</span>{% if item.confirmations %}<span class="checklist-guide-count">{{ item.confirmations|length }} confirmaciones</span>{% endif %}</summary>
+              <div class="checklist-guide-content">
+                {% if item.steps %}<ol class="checklist-steps">{% for step in item.steps %}<li>{{ step }}</li>{% endfor %}</ol>{% endif %}
+                {% if item.links %}<ul class="checklist-links" aria-label="Enlaces para {{ item.title }}">{% for link in item.links %}<li><a href="{{ link.url }}" target="_blank" rel="noopener noreferrer">{{ link.label }}<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg><span class="sr-only"> (abre en otra pestaña)</span></a></li>{% endfor %}</ul>{% endif %}
+                {% if item.confirmations %}<fieldset class="checklist-confirmations"><legend>Confirmaciones personales</legend><p>Marca únicamente lo que hayas comprobado. Para completar este punto, confirma todos los criterios y guarda el estado.</p>{% for confirmation in item.confirmations %}<label><input type="checkbox" name="confirmations" value="{{ confirmation.key }}"{% if confirmation.key in item.confirmed_checks %} checked{% endif %}><span>{{ confirmation.label }}</span></label>{% endfor %}</fieldset>{% endif %}
+              </div>
+            </details>
+            <div class="checklist-item-footer"><div class="checklist-saved"><span class="checklist-status" data-checklist-status>{{ item.status_label }}</span>{% if item.updated_at %}<span>Guardado {{ item.updated_at|date:"d/m/Y H:i" }}</span>{% else %}<span>Sin registrar</span>{% endif %}</div>
+              <div class="checklist-update"><label for="{{ item.form.status.id_for_label }}" class="sr-only">Estado de {{ item.title }}</label>{{ item.form.status }}<button class="button button-secondary button-small" type="submit" aria-label="Guardar estado de {{ item.title }}">Guardar</button></div>
+            </div>
+            {% if item.form.errors %}<div class="checklist-errors" role="alert">{{ item.form.status.errors }}{{ item.form.confirmations.errors }}{{ item.form.expected_version.errors }}{{ item.form.non_field_errors }}</div>{% endif %}
+          </form>
+        </li>
+        {% endfor %}
+      </ol>
+    </details>
+    {% endfor %}
+  </div>
+  <aside class="checklist-boundary" aria-label="Trabajo técnico del asistente"><svg class="icon" aria-hidden="true"><use href="#i-mentor"/></svg><div><h2>La parte técnica sigue de nuestro lado</h2><p>Código, configuración, worker, PostgreSQL, pruebas y preparación de documentos. Este listado reúne las gestiones de tu cuenta, decisiones y revisiones personales.</p><p>La entrega indicada en el comunicado es el <strong>15 de noviembre de 2026</strong>; la clausura, el <strong>25 y 26 de noviembre</strong>. Hora, zona y turno por confirmar.</p></div></aside>
+</main>
+{% endblock %}

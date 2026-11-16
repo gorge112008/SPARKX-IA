@@ -1,0 +1,39 @@
+.gica-profile-page{max-width:1440px;margin-inline:auto;padding-block:36px 72px}
+.gica-profile-eyebrow{margin:0 0 9px;color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.gica-profile-layout{display:grid;grid-template-columns:minmax(240px,300px) minmax(0,1fr);gap:48px;align-items:start;margin-top:34px}
+.gica-profile-identity{padding:30px 25px;border:1px solid var(--line);border-radius:16px;background:var(--sidebar);text-align:center;position:sticky;top:28px}
+.gica-appearance-ocean{--gica-avatar-color:#126787;--gica-avatar-light:#268bb1}
+.gica-appearance-slate{--gica-avatar-color:#384455;--gica-avatar-light:#62748b}
+.gica-appearance-forest{--gica-avatar-color:#176d5e;--gica-avatar-light:#31947c}
+.gica-profile-avatar{width:128px;height:128px;margin:0 auto 24px;border-radius:36px;background:linear-gradient(145deg,var(--gica-avatar-light),var(--gica-avatar-color));box-shadow:0 12px 32px #06172c1c}
+.gica-profile-avatar img{display:block;width:100%;height:100%}
+.gica-profile-identity h2{margin:0 0 12px;font-size:24px;letter-spacing:-.04em}
+.gica-profile-identity>p:not(.gica-profile-eyebrow){font-size:12px;line-height:1.7;color:var(--muted)}
+.gica-profile-greeting{margin:24px 0;padding:16px 0;border-block:1px solid var(--line);font-size:13px;line-height:1.8;text-align:left}
+.gica-profile-content{min-width:0}
+.gica-profile-section{padding:0 0 30px;margin:0 0 30px;border-bottom:1px solid var(--line)}
+.gica-profile-section:last-child{border-bottom:0;margin-bottom:0}
+.gica-profile-section h2{font-size:17px;font-weight:600;margin:0 0 18px;letter-spacing:-.025em}
+.gica-profile-section-heading{display:flex;align-items:baseline;justify-content:space-between;gap:16px}
+.gica-profile-section-heading>span{font-size:11px;color:var(--muted)}
+.gica-profile-form fieldset{padding:0;border:0;margin:0 0 24px;min-width:0}
+.gica-profile-form legend{font-size:12px;font-weight:600;margin-bottom:8px}
+.gica-profile-options{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.gica-profile-option{display:flex;gap:8px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:8px;font-size:12px;cursor:pointer;transition:border-color .15s,background .15s}
+.gica-profile-option:has(input:checked){border-color:var(--link);background:color-mix(in srgb,var(--link) 7%,transparent)}
+.gica-profile-option input{width:14px;height:14px;margin:0;accent-color:var(--link)}
+.gica-profile-swatch{width:14px;height:14px;border-radius:50%;background:var(--gica-avatar-color)}
+.gica-profile-save{display:flex;align-items:center;flex-wrap:wrap;gap:14px}
+.gica-profile-capabilities{padding:0;margin:0;list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.gica-profile-capabilities li{display:grid;align-content:start;gap:8px;font-size:12px;line-height:1.7}
+.gica-profile-capabilities strong{font-size:12px;font-weight:600}
+.gica-profile-capabilities span{color:var(--muted)}
+.gica-profile-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.gica-profile-links a{display:grid;gap:7px;padding:16px;border:1px solid var(--line);border-radius:9px;text-decoration:none;color:var(--ink);font-size:12px;line-height:1.6}
+.gica-profile-links a:hover{border-color:var(--link)}
+.gica-profile-links span{color:var(--muted);font-size:11px}
+.gica-profile-boundary{margin:20px 0 0;line-height:1.7}
+.gica-profile-settings .field-help{line-height:1.7}
+@media(max-width:1000px){.gica-profile-layout{gap:28px;grid-template-columns:240px minmax(0,1fr)}.gica-profile-capabilities{grid-template-columns:1fr;gap:16px}}
+@media(max-width:700px){.gica-profile-page{padding-block:24px 48px}.gica-profile-layout{grid-template-columns:1fr;gap:30px;margin-top:24px}.gica-profile-identity{position:static;padding:26px 22px}.gica-profile-avatar{width:100px;height:100px;border-radius:28px;margin-bottom:20px}.gica-profile-identity>p:not(.gica-profile-eyebrow){max-width:380px;margin-inline:auto}.gica-profile-greeting{max-width:380px;margin-inline:auto}.gica-profile-section-heading{align-items:start;flex-direction:column;gap:0;margin-bottom:14px}.gica-profile-section-heading h2{margin-bottom:4px}.gica-profile-links{grid-template-columns:1fr}.gica-profile-options{gap:8px}.gica-profile-option{flex:1 1 135px;padding:11px 12px}}
+@media(prefers-reduced-motion:reduce){.gica-profile-option{transition:none}}

@@ -1,0 +1,104 @@
+{% extends 'base.html' %}{% load tz static event_history %}
+{% block title %}{{ event.title }} · SparkX{% endblock %}
+{% block extra_head %}{% endblock %}
+{% block content %}
+<main id="main-content" class="event-workspace event-main{% if demo %} is-demo-event{% endif %}" data-workspace data-event-id="{{ event.pk }}" data-event-revision="{{ event.revision }}"{% if event.pk|stringformat:'s' == '9c1cb0ba-4025-49dc-b9e8-d0f6cf3e84aa' and not event.is_synthetic %} data-gica-pilot="true"{% endif %} data-default-panel="{% if active_panel %}{{ active_panel }}{% elif candidate and not demo %}proposals{% else %}plan{% endif %}">
+  <div class="workspace-topline">
+    <nav class="breadcrumb" aria-label="Ruta"><a href="{% url 'events:index' %}">Eventos</a><span aria-hidden="true">/</span><span>Mi evento</span></nav>
+    <button class="icon-button" type="button" data-motion-replay aria-label="Repetir animación de entrada" title="Repetir animación de entrada" hidden><svg class="icon" aria-hidden="true"><use href="#i-replay"/></svg></button>
+  </div>
+  <header class="event-heading">
+    <div class="event-heading-copy"><h1 data-reveal="title">{{ event.title }}</h1><p class="lead">{% if demo %}Tus jueves con GICA · Seminario virtual de mantenimiento y confiabilidad{% else %}Agenda, preparación y decisiones en un solo lugar.{% endif %}</p></div>
+    <div class="heading-actions">{% if journey_demo %}<a class="button button-secondary" href="{% url 'events:journey_demo' event.id %}">Continuar demo guiada</a>{% endif %}<a class="button button-secondary" href="{% url 'events:edit' event.id %}">Editar ficha</a><a class="button button-secondary" href="#agenda"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>Ver agenda</a><a class="button button-primary" href="#proposal-form">Crear propuesta</a></div>
+  </header>
+  {% if demo %}<div class="demo-banner"><div><span class="demo-badge">{{ demo.badge }}</span><p>Caso preparado a partir de tu afiche. La carga inicial y su alternativa son manuales; no acreditan acciones realizadas ni generación con IA.</p></div><a class="text-link" href="#demo-context">Ver ficha y afiche<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>{% endif %}
+  {% if event.pk|stringformat:'s' == '9c1cb0ba-4025-49dc-b9e8-d0f6cf3e84aa' and not event.is_synthetic %}<p class="pilot-heading">Piloto con datos reales declarados · Gicaingenieros</p>{% endif %}
+  {% primary_event_speaker event as selected_speaker %}{% if selected_speaker %}<p class="section-description" data-event-speaker>Expositor: <strong>{{ selected_speaker.full_name }}</strong> · Participación por confirmar</p>{% endif %}
+  <div class="event-meta" aria-label="Datos del evento">
+    <div class="meta-tile" data-reveal="block"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><div><span class="meta-label">Fecha y hora</span><span class="meta-value">{% if event.starts_at %}{% timezone event.timezone %}{{ event.starts_at|date:"d M Y · H:i" }}{% endtimezone %}{% elif event.scheduled_dates %}{{ event.scheduled_dates_display.0|date:"d M Y" }} · hora por confirmar{% else %}Por confirmar{% endif %}</span>{% if event.scheduled_dates|length > 1 %}<details class="event-selected-days"><summary>{{ event.scheduled_dates|length }} fechas del evento</summary><ul>{% for day in event.scheduled_dates_display %}<li>{{ day|date:"j F Y" }}</li>{% endfor %}</ul></details>{% endif %}{% if demo %}<span class="meta-note">Año supuesto para la demo</span>{% endif %}</div></div>
+    <div class="meta-tile" data-reveal="block"><svg class="icon" aria-hidden="true"><use href="#i-globe"/></svg><div><span class="meta-label">Zona horaria</span><span class="meta-value">{{ event.timezone }}</span>{% if demo %}<span class="meta-note">Supuesto de la demo</span>{% endif %}</div></div>
+    <div class="meta-tile" data-reveal="block"><svg class="icon" aria-hidden="true"><use href="#i-people"/></svg><div><span class="meta-label">Capacidad prevista</span><span class="meta-value">{{ event.capacity }}</span><span class="meta-note">{% if demo %}Supuesto de la demo{% else %}Personas planificadas{% endif %}</span></div></div>
+  </div>
+  {% if event.is_synthetic %}<div class="notice"><strong>Demostración con datos ficticios.</strong> La propuesta y las personas requieren revisión; no representan un anuncio oficial ni inscripciones reales.</div>{% endif %}
+  <p class="section-description"><a href="{% url 'events:interview' event.id %}">Entrevista guiada</a> · {{ interview.reviewed_count }} de {{ interview.total }} puntos revisados{% if interview.pending_count %} · {{ interview.pending_count }} pendientes{% endif %}. Define el contexto de tu próxima propuesta. · <a href="{% url 'accounts:event_reviewers' event.id %}">Acceso de revisores</a> · <a href="{% url 'directory:roster' event.id %}">Personas del evento</a></p>
+  <div class="heading-actions">{% if event.active_plan_id %}<a class="button button-secondary" href="{% url 'events:schedule_editor' event.id %}" data-gica-adjust-hours>Ajustar horarios</a>{% endif %}<a class="button button-secondary" href="{% url 'events:constraints' event.id %}">Restricciones y alternativas</a><a class="button button-secondary" href="{% url 'events:preparation' event.id %}">Responsables y evidencias</a><a class="button button-secondary" href="{% url 'event_registration:manage' event.id %}">Inscripciones</a></div>
+  <nav class="section-nav" data-workspace-nav aria-label="Secciones del evento">
+    <a id="nav-plan" href="#plan" data-panel-link="plan" class="is-current" aria-current="location">Agenda</a>
+    <a id="nav-preparation" href="#preparation" data-panel-link="preparation">Preparación</a>
+    <a id="nav-proposals" href="#proposals" data-panel-link="proposals">Propuestas</a>
+    <a id="nav-activity" href="#activity" data-panel-link="activity">Actividad</a>
+  </nav>
+  <div class="workspace-columns">
+    <div class="workspace-primary">
+      <section id="plan" class="plan-overview" data-workspace-panel="plan" aria-labelledby="plan-title">
+        <h2 id="plan-title" data-reveal="section" tabindex="-1">Agenda del evento</h2>
+        <p class="section-description">{% if event.active_plan_id %}Estás viendo la versión {{ event.active_plan.version }} aprobada de tu plan.{% else %}Describe el evento y prepara una propuesta para revisar.{% endif %}</p>
+        {% if event.active_plan_id %}
+          {% include 'events/_agenda.html' with payload=event.active_plan.payload proposed=False preview=True %}
+          {% if event.active_plan.payload.summary or event.active_plan.payload.risks %}<details class="plan-notes"><summary>Resumen y riesgos del plan</summary>{% if event.active_plan.payload.summary %}<p>{{ event.active_plan.payload.summary }}</p>{% endif %}{% if event.active_plan.payload.risks %}<h3>Riesgos a revisar</h3><ul>{% for risk in event.active_plan.payload.risks %}<li>{{ risk }}</li>{% endfor %}</ul>{% endif %}</details>{% endif %}
+        {% else %}
+          <section class="plan-section empty-plan-panel" id="agenda" aria-label="Agenda">
+            <h3>Sesiones</h3><div class="panel-empty-content"><svg class="icon panel-empty-icon" aria-hidden="true"><use href="#i-calendar"/></svg><p class="section-empty">Aún no tienes un plan aprobado. Prepara una propuesta para definir sesiones y horarios.</p><a class="text-link panel-link" href="#proposal-form">Preparar propuesta<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+          </section>
+        {% endif %}
+        {% if demo %}{% include 'events/_demo_context.html' %}{% endif %}
+        <div class="next-step-band" data-reveal="block"><div><h3>Tu siguiente paso</h3><p>{% if event.active_plan_id %}Prepara y revisa los cambios de tu próxima propuesta.{% else %}Define las prioridades de tu primera propuesta.{% endif %}</p></div><a class="button button-primary" href="#proposal-form">Ir a propuestas</a></div>
+      </section>
+      <section id="preparation" data-workspace-panel="preparation" aria-labelledby="preparation-title">
+        <h2 id="preparation-title" data-reveal="section" tabindex="-1">Preparación del evento</h2>
+        <p class="section-description">{% if event.active_plan_id %}Tareas de la versión {{ event.active_plan.version }} aprobada. Revisa qué necesitas preparar y en qué orden.{% else %}Aprueba una propuesta para organizar las tareas del evento.{% endif %}</p>
+        {% if event.active_plan_id %}
+          {% include 'events/_preparation.html' with payload=event.active_plan.payload proposed=False preview=True %}
+        {% else %}
+          <section class="plan-section empty-plan-panel" aria-label="Preparación"><h3>Tareas del plan</h3><div class="panel-empty-content"><svg class="icon panel-empty-icon" aria-hidden="true"><use href="#i-checklist"/></svg><p class="section-empty">Las tareas se mostrarán aquí cuando apruebes tu primera propuesta.</p><a class="text-link panel-link" href="#proposal-form">Preparar propuesta<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></div></section>
+        {% endif %}
+      </section>
+      <section id="proposals" class="proposals-view" data-workspace-panel="proposals" aria-labelledby="proposals-title">
+        {% event_proposal_history event as proposal_history %}{% if proposal_history %}<section class="proposal-history" aria-label="Historial de propuestas"><h3>Propuestas guardadas</h3><ol class="event-history">{% for item in proposal_history %}<li><strong>{% if item.version %}Versión {{ item.version }} · {% endif %}{{ item.status }}</strong><time>{{ item.created_at|date:'d/m/Y H:i' }} · Revisión de ficha {{ item.base_revision }}</time><p>{{ item.summary }}</p></li>{% endfor %}</ol></section>{% endif %}
+        {% if candidate %}
+          <section class="candidate-section" id="candidate" aria-labelledby="candidate-title">
+            <div class="section-heading"><h2 data-reveal="section" id="candidate-title" tabindex="-1">Propuesta para revisar</h2><span class="muted">{{ candidate.get_status_display }}</span></div>
+            <p class="section-description">Revisa los horarios, las tareas y los supuestos antes de aplicarlos. Tu plan vigente se conserva hasta la aprobación.</p>
+            {% if demo and candidate.id == demo.scenario_candidate_id %}<p class="demo-scenario">{{ demo.scenario_note }}</p>{% endif %}
+            {% if candidate.base_revision != event.revision or candidate.base_plan_id != event.active_plan_id %}<div class="notice">Esta propuesta usa una versión anterior del evento o del plan. Genera una nueva propuesta antes de aprobar cambios.</div>{% endif %}
+            {% if candidate.validation %}<div class="notice notice-error"><strong>Hay comprobaciones que requieren atención</strong><ul>{% for issue in candidate.validation %}<li>{{ issue }}</li>{% endfor %}</ul></div>{% endif %}
+            {% if impact %}<details class="impact-details"><summary>Ver cambios respecto al plan vigente</summary><ul>{% for collection, changes in impact.items %}{% if changes.added or changes.removed or changes.changed %}<li>{% if collection == 'sessions' %}Sesiones{% elif collection == 'tasks' %}Tareas{% else %}{{ collection }}{% endif %}: {{ changes.added|length }} incorporadas, {{ changes.changed|length }} modificadas, {{ changes.removed|length }} retiradas.</li>{% endif %}{% endfor %}</ul></details>{% endif %}
+            {% include 'events/_plan.html' with payload=candidate.payload proposed=True %}
+            {% if candidate.status == 'pending' %}<div class="candidate-actions"><form method="post" action="{% url 'events:approve' event.id candidate.id %}">{% csrf_token %}<input type="hidden" name="expected_revision" value="{{ candidate.base_revision }}"><input type="hidden" name="expected_plan" value="{{ candidate.base_plan_id|default:'' }}"><input type="hidden" name="idempotency_key" value="{{ candidate.id }}"><button class="button button-primary" type="submit"{% if candidate.validation or candidate.base_revision != event.revision or candidate.base_plan_id != event.active_plan_id %} disabled{% endif %}>Aprobar propuesta</button></form><form method="post" action="{% url 'events:reject' event.id candidate.id %}">{% csrf_token %}<button class="button button-secondary" type="submit">Descartar</button></form></div>{% endif %}
+          </section>
+        {% endif %}
+        <section class="proposal-section" aria-labelledby="proposals-title">
+          <h2 data-reveal="section" id="proposals-title" tabindex="-1">{% if event.active_plan_id %}Preparar un cambio{% else %}Prepara tu primera propuesta{% endif %}</h2>
+          <p class="section-description">Define prioridades y restricciones antes de generar.</p>
+          {% if event.pk|stringformat:'s' == '9c1cb0ba-4025-49dc-b9e8-d0f6cf3e84aa' and not event.is_synthetic %}<div class="pilot-plan-controls"><button class="button button-secondary" type="button" data-gica-pilot-plan="{% if event.active_plan_id %}replan{% else %}plan{% endif %}" data-event-id="{{ event.pk }}" data-expected-revision="{{ event.revision }}">Preparar agenda del piloto</button><p>Usa una plantilla local de cinco sesiones y once tareas. Revisa y aprueba la propuesta para aplicarla.</p><p class="pilot-status" data-gica-pilot-feedback role="status"></p></div>{% endif %}
+          <form id="proposal-form" class="proposal-form" method="post" action="{% url 'events:generate' event.id %}" hx-post="{% url 'events:generate' event.id %}" hx-target="#job-region" hx-swap="afterbegin" hx-disabled-elt="find button[type='submit']" data-reveal="block">
+            <input type="hidden" name="expected_revision" value="{{ event.revision }}"><input type="hidden" id="generate-request-key" name="idempotency_key" value="{{ generate_key }}">{% csrf_token %}
+            {% include 'events/_model_policy.html' with policy_prefix='generate' model_policy=generate_model_policy %}
+            <details id="event-context" class="event-context"><summary>Ver el contexto guardado del evento</summary><p>{{ event.brief }}</p></details>
+            <div class="field"><label for="proposal-brief">Instrucciones adicionales (opcional)</label><textarea id="proposal-brief" name="brief" rows="8" maxlength="6000" placeholder="Ej.: prioriza sesiones de 45 minutos y reserva tiempo para preguntas…"></textarea><p class="field-help">El agente ya recibe la descripción guardada de tu evento. Añade aquí prioridades o cambios para esta propuesta.</p></div>
+            <div class="proposal-actions"><button class="button button-primary" type="submit"{% if not ai_configured %} disabled aria-describedby="ai-unavailable"{% endif %}>Generar propuesta</button>{% if not ai_configured %}<p id="ai-unavailable" class="field-help">Configura un perfil y un presupuesto en <a href="{% url 'ai_management:index' %}">Gestión de IA</a> para generar.</p>{% endif %}</div>
+          </form>
+          <p class="proposal-footnote">El plan vigente se conserva hasta que apruebes una propuesta.</p>
+        </section>
+      </section>
+      <section id="activity" class="activity-section" data-workspace-panel="activity" aria-labelledby="activity-heading">
+        <h2 data-reveal="section" id="activity-heading" tabindex="-1">Actividad</h2>
+        {% event_plan_history event as plan_history %}{% if plan_history %}<h3>Historial de planificación</h3><ol class="event-history">{% for item in plan_history %}<li><strong>Versión {{ item.version }} aprobada</strong><br>{{ item.speaker }}<br>Inicio planificado: {{ item.start }}<time>{{ item.approved_at|date:'d/m/Y H:i' }}</time></li>{% endfor %}</ol>{% endif %}
+        <div id="job-region">{% for job in jobs %}{% include 'events/_job.html' with job=job %}{% empty %}<p class="section-empty" id="no-jobs">Los trabajos del agente aparecerán aquí.</p>{% endfor %}</div>
+      </section>
+    </div>
+    <aside id="agent-panel" class="agent-panel romeo-panel" aria-labelledby="agent-title">
+      <header class="agent-header">
+        <div class="agent-heading"><div><h2 id="agent-title" tabindex="-1">Gica-1</h2><p>Tu agente para organizar este evento.</p></div><button class="icon-button agent-expand" type="button" data-agent-expand aria-pressed="false" aria-label="Ampliar Gica-1" title="Ampliar Gica-1" hidden><svg class="icon" aria-hidden="true"><use href="#i-expand"/></svg></button></div>
+        <div class="provider-status"><span class="status-dot{% if ai_configured %} is-connected{% endif %}" aria-hidden="true"></span>{% if ai_configured %}{{ ai_model_name }} · configuración local{% else %}IA pendiente de configurar{% endif %}</div>
+        {% if ai_model_isolated %}<p class="field-help">Cada modelo usa su propio historial. Cambiar de IA no le comparte respuestas ni planes de otra; la ficha declarada del evento sigue disponible.</p>{% endif %}
+      </header>
+      <div class="romeo-tabs" role="tablist" aria-label="Vista de Gica-1"><button id="romeo-follow-tab" role="tab" type="button" data-romeo-tab="follow" aria-controls="romeo-follow-view" aria-selected="true">Seguimiento</button><button id="romeo-chat-tab" role="tab" type="button" data-romeo-tab="chat" aria-controls="romeo-chat-view" aria-selected="false" tabindex="-1">Conversación</button></div>
+      <div id="romeo-follow-view" class="romeo-view" role="tabpanel" aria-labelledby="romeo-follow-tab" data-romeo-view="follow">{% include 'events/_romeo_monitor.html' %}</div>
+      <div id="romeo-chat-view" class="romeo-view" role="tabpanel" aria-labelledby="romeo-chat-tab" data-romeo-view="chat" hidden>{% include 'events/_chat_messages.html' %}</div>
+      <div class="chat-composer"><p class="composer-note">Las propuestas requieren tu revisión.</p><details class="composer-note"><summary>Consultas locales disponibles</summary><p>Escribe «buscar expositores», «buscar participantes», «buscar invitados», «personas de este evento» o «buscar eventos: UNAC». Estas consultas funcionan sin IA. Generar propuestas requiere configurar un perfil.</p></details><form method="post" action="{% url 'events:chat' event.id %}" hx-post="{% url 'events:chat' event.id %}" hx-target="#job-region" hx-swap="afterbegin" hx-disabled-elt="find button[type='submit']">{% csrf_token %}<input type="hidden" id="chat-request-key" name="idempotency_key" value="{{ chat_key }}">{% include 'events/_model_policy.html' with policy_prefix='chat' model_policy=chat_model_policy %}<label for="chat-message" class="sr-only">Mensaje para el agente del evento</label><textarea id="chat-message" name="message" rows="3" maxlength="4000" required placeholder="Describe tu evento o pide un cambio…"></textarea><div class="composer-actions"><button class="button button-secondary" type="button" data-dictate="chat-message" aria-describedby="voice-status" hidden><svg class="icon" aria-hidden="true"><use href="#i-mic"/></svg><span>Dictar</span></button><button class="button button-primary" type="submit">Enviar</button></div></form><p class="voice-status field-help" id="voice-status" role="status">El dictado es opcional. También puedes escribir.</p><p class="connection-feedback" id="connection-feedback" role="alert" hidden></p><button class="text-link stop-reading" type="button" data-stop-reading hidden>Detener lectura</button></div>
+    </aside>
+  </div>
+  <p id="job-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+</main>
+{% endblock %}

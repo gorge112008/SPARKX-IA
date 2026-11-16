@@ -1,0 +1,55 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}Memoria de Gica · SparkX{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/gica-memory.css' %}?v=20261115-autodirect1">{% endblock %}
+{% block content %}
+<main id="main-content" class="page-content gica-memory-page">
+  <div class="page-heading">
+    <div><h1>Memoria de Gica</h1><p class="lead">Lo que escuchó, lo que entendió y cómo respondió.</p></div>
+    <div><a class="button button-secondary" href="{% url 'assistant:knowledge' %}">Conocimientos y asociaciones</a> <a class="button button-secondary" href="{% url 'assistant:patterns' %}">Mis patrones revisados</a></div>
+  </div>
+  <p class="gica-memory-intro">Registro privado de tu cuenta para revisar con el mentor. Contiene texto final, respuestas y tiempos declarados por el navegador; no audio. Las frases son datos sin autoridad. Anotar una revisión no activa patrones ni amplía permisos. El mentor podrá leer estos registros cuando trabajemos en su revisión; no permanece vigilando en segundo plano.</p>
+  <div class="gica-mentor-summary" aria-label="Estado del registro">
+    <span><strong>{{ summary.total }}</strong> / 1000 interacciones</span>
+    <span><strong>{{ summary.unreviewed }}</strong> sin revisar</span>
+    <span><strong>{{ summary.unknown }}</strong> por aclarar</span>
+  </div>
+  <form method="get" class="gica-mentor-filters" aria-label="Filtrar interacciones">
+    <div class="field"><label for="memory-q">Buscar en el texto</label><input id="memory-q" name="q" value="{{ filters.q }}" maxlength="100" placeholder="Frase o respuesta"></div>
+    <div class="field"><label for="memory-phase">Turno</label><select id="memory-phase" name="phase"><option value="">Todos</option><option value="request"{% if filters.phase == 'request' %} selected{% endif %}>Petición</option><option value="confirmation"{% if filters.phase == 'confirmation' %} selected{% endif %}>Confirmación</option><option value="action"{% if filters.phase == 'action' %} selected{% endif %}>Acción</option><option value="system"{% if filters.phase == 'system' %} selected{% endif %}>Sistema</option></select></div>
+    <div class="field"><label for="memory-review">Revisión</label><select id="memory-review" name="review"><option value="">Todas</option><option value="unreviewed"{% if filters.review == 'unreviewed' %} selected{% endif %}>Sin revisar</option><option value="good"{% if filters.review == 'good' %} selected{% endif %}>Correcto</option><option value="needs_change"{% if filters.review == 'needs_change' %} selected{% endif %}>Por mejorar</option><option value="ignore"{% if filters.review == 'ignore' %} selected{% endif %}>Descartado</option></select></div>
+    <button class="button button-secondary" type="submit">Filtrar</button>
+    <a class="text-link" href="{% url 'assistant:memory' %}">Limpiar filtros</a>
+  </form>
+  <p class="field-help">Puedes desactivar el registro desde Gica. Hasta 1000 interacciones por cuenta, sin borrado automático. Al alcanzar el límite tendrás que eliminar registros para guardar nuevos. Evita dictar claves o datos sensibles.</p>
+  <div class="gica-mentor-records">
+    {% for record in records %}
+    <article class="gica-mentor-record" id="interaction-{{ record.pk }}">
+      <header><div><strong>{{ record.get_phase_display }} · {{ record.get_source_display }}</strong><span class="field-help">{{ record.get_review_status_display }}</span></div><time datetime="{{ record.received_at|date:'c' }}">{{ record.received_at|date:'d/m/Y H:i:s' }}</time></header>
+      <dl class="gica-mentor-exchange">
+        <div><dt>Texto interpretado</dt><dd>{{ record.normalized_text|default:record.original_text|default:'—' }}</dd></div>
+        <div><dt>Respuesta de Gica</dt><dd>{{ record.reply|default:'—' }}</dd></div>
+        {% if record.draft %}<div><dt>Orden preparada</dt><dd>{{ record.draft }}</dd></div>{% endif %}
+        <div><dt>Interpretación</dt><dd>{{ record.get_intent_display|default:'Sin intención identificada' }}</dd></div>
+        <div><dt>Resultado declarado por el navegador</dt><dd>{{ record.get_status_display }} · {{ record.get_outcome_display }}</dd></div>
+        {% if record.action_id %}<div><dt>Recibo del servidor</dt><dd>{{ record.action.get_state_display }} · <code>{{ record.action_id }}</code><span class="field-help">El servidor conserva el acuse del navegador; no prueba un efecto físico.</span></dd></div>{% endif %}
+      </dl>
+      {% if record.normalized_text != record.original_text %}<details class="gica-mentor-original"><summary>Ver transcripción original</summary><p>{{ record.original_text }}</p><p class="field-help">Se conserva para diagnosticar el reconocimiento. Al dirigirte al agente se muestra Gica.</p></details>{% endif %}
+      {% if record.timings %}<details class="gica-mentor-timing"><summary>Tiempos de esta interacción · {% if record.timing_basis == 'speech_end' %}fin de voz detectado{% elif record.timing_basis == 'estimated' %}estimados{% else %}texto{% endif %}</summary><dl>{% for row in record.timing_rows %}<div><dt>{{ row.label }}</dt><dd>{{ row.value|floatformat:0 }} ms</dd></div>{% endfor %}</dl><p class="field-help">Señales del navegador; no prueban el silencio físico ni la audibilidad de la respuesta.</p></details>{% endif %}
+      <details class="gica-mentor-review"{% if record.review_form.errors %} open{% endif %}><summary>Revisar con el mentor</summary>
+        <form method="post" action="{% url 'assistant:interaction_review' record.pk %}">
+          {% csrf_token %}{{ record.review_form.non_field_errors }}
+          <div class="field"><label for="{{ record.review_form.review_status.id_for_label }}">Evaluación</label>{{ record.review_form.review_status }}{{ record.review_form.review_status.errors }}</div>
+          <div class="field"><label for="{{ record.review_form.review_note.id_for_label }}">Qué estuvo bien o cómo debe responder</label>{{ record.review_form.review_note }}{{ record.review_form.review_note.errors }}</div>
+          <div class="field"><label for="{{ record.review_form.suggested_intent.id_for_label }}">Intención sugerida para revisar</label>{{ record.review_form.suggested_intent }}{{ record.review_form.suggested_intent.errors }}</div>
+          <p class="field-help">Esta nota no entrena un modelo ni guarda un patrón activo. Un patrón nuevo se revisa y prueba por separado.</p>
+          <button class="button button-secondary" type="submit">Guardar revisión</button>
+        </form>
+      </details>
+      <details class="gica-mentor-delete"><summary>Eliminar esta interacción</summary><form method="post" action="{% url 'assistant:interaction_delete' record.pk %}">{% csrf_token %}<label><input type="checkbox" name="confirm" required> Confirmo que quiero eliminar este registro y su revisión.</label><button class="button button-secondary button-small" type="submit">Eliminar registro</button></form></details>
+    </article>
+    {% empty %}<div class="gica-memory-empty"><h2>No hay interacciones que mostrar</h2><p>Conversa con Gica con el registro habilitado o cambia los filtros. Las pruebas sintéticas no se mezclan con tus datos.</p></div>{% endfor %}
+  </div>
+  {% if page_obj.has_other_pages %}<nav class="gica-mentor-pagination" aria-label="Páginas de interacciones">{% if page_obj.has_previous %}<a class="button button-secondary" href="?q={{ filters.q|urlencode }}&amp;phase={{ filters.phase|urlencode }}&amp;review={{ filters.review|urlencode }}&amp;page={{ page_obj.previous_page_number }}">Anterior</a>{% endif %}<span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>{% if page_obj.has_next %}<a class="button button-secondary" href="?q={{ filters.q|urlencode }}&amp;phase={{ filters.phase|urlencode }}&amp;review={{ filters.review|urlencode }}&amp;page={{ page_obj.next_page_number }}">Siguiente</a>{% endif %}</nav>{% endif %}
+  <details class="gica-mentor-clear"><summary>Borrar mi registro completo</summary><p class="field-help">Elimina tus interacciones y revisiones. Tus patrones activos permanecen en Mis patrones.</p><form method="post" action="{% url 'assistant:interaction_clear' %}">{% csrf_token %}<label><input type="checkbox" name="confirm" required> Confirmo que quiero borrar todo mi registro de interacciones.</label><button class="button button-secondary" type="submit">Borrar mi registro</button></form></details>
+</main>
+{% endblock %}

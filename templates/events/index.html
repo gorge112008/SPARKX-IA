@@ -1,0 +1,35 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}Mis eventos · SparkX{% endblock %}
+{% block extra_head %}{% if journey_demo_event and not portal_can_organize %}<link rel="stylesheet" href="{% static 'css/journey-demo.css' %}?v=20261114-journey1">{% endif %}{% endblock %}
+{% block content %}<main id="main-content" class="page-content index-page" data-romeo-destination="events"{% if catalog_error %} data-romeo-destination-error="true"{% endif %}>
+  <header class="page-heading"><div><h1 data-reveal="title">{% if portal_is_reviewer %}Eventos asignados{% else %}Mis eventos{% endif %}</h1><p class="lead">{% if portal_is_reviewer %}Consulta la ficha, la agenda aprobada y el avance de preparación.{% else %}Del primer objetivo a un plan que puedes revisar.{% endif %}</p></div>{% if portal_can_organize %}<div class="heading-actions"><button class="button button-secondary" type="button" data-gica-demo-start>Iniciar piloto guiado</button><a class="button button-primary" href="{% url 'events:create' %}"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>Nuevo evento</a></div>{% endif %}</header>
+  {% if journey_demo_event %}<section class="journey-entry" aria-labelledby="journey-entry-title"><div><h2 id="journey-entry-title">Demo 2 · Recorre la planificación completa</h2><p>Ficha, propuesta de ejemplo, aprobación, cambio y seguimiento. Datos ficticios; sin consumo de IA.</p></div><a class="button button-secondary" href="{% url 'events:journey_demo' journey_demo_event.id %}">Abrir demo guiada<svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></section>{% endif %}
+  {% if catalog_error %}
+    <div class="notice notice-error" role="alert">{{ catalog_error }}</div><a class="button button-secondary" href="{% url 'events:index' %}">Volver a eventos</a>
+  {% else %}
+  <details class="demo-context"{% if catalog.has_filters %} open{% endif %}>
+    <summary>Buscar y filtrar eventos{% if catalog.has_filters %} · {{ catalog.total }} resultado{{ catalog.total|pluralize }}{% endif %}</summary>
+    <form method="get" action="{% url 'events:index' %}" class="event-form" aria-label="Filtros de eventos">
+      <div class="field-grid">
+        <div class="field"><label for="event-search">Buscar</label><input id="event-search" type="search" name="q" value="{{ catalog.filter_values.q }}" maxlength="200" placeholder="Nombre, descripción o empresa"></div>
+        <div class="field"><label for="event-organization">Empresa</label><select id="event-organization" name="organization"><option value="">Todas las empresas</option>{% for organization in catalog.organization_options %}<option value="{{ organization.pk }}"{% if catalog.filter_values.organization == organization.pk|stringformat:'s' %} selected{% endif %}>{{ organization.name }}{% if not organization.is_active %} · Inactiva{% endif %}</option>{% endfor %}</select></div>
+      </div>
+      <div class="field-grid">
+        <div class="field"><label for="event-from">Desde</label><input id="event-from" name="from" type="date" value="{{ catalog.filter_values.from }}" min="1900-01-01" max="2100-12-31"></div>
+        <div class="field"><label for="event-to">Hasta</label><input id="event-to" name="to" type="date" value="{{ catalog.filter_values.to }}" min="1900-01-01" max="2100-12-31"></div>
+      </div>
+      <div class="field field-half"><label for="event-plan">Plan</label><select id="event-plan" name="plan"><option value="">Todos</option><option value="approved"{% if catalog.filter_values.plan == 'approved' %} selected{% endif %}>Con plan aprobado</option><option value="pending"{% if catalog.filter_values.plan == 'pending' %} selected{% endif %}>Sin plan aprobado</option></select></div>
+      <p class="field-help">Las fechas usan la zona horaria de cada evento e incluyen sus sesiones aprobadas. Sin fecha, el evento no aparece en un rango.</p>
+      <div class="form-actions"><button class="button button-secondary" type="submit">Aplicar filtros</button><a class="button button-secondary" href="{% url 'events:index' %}">Limpiar</a></div>
+    </form>
+  </details>
+  {% if event_entries %}<p class="field-help" role="status">{{ catalog.total }} evento{{ catalog.total|pluralize }} · Página {{ event_page.number }} de {{ event_page.paginator.num_pages }}</p><div class="event-list" aria-label="Eventos de tu equipo">
+    {% for entry in event_entries %}<a class="event-row" data-reveal="block" href="{{ entry.url }}"><div class="event-row-icon"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg></div><div class="event-row-main">
+      {% if entry.event.id == demo_event_id %}<span class="demo-badge event-demo-badge">Demo · GICA</span>{% elif journey_demo_event and entry.event.id == journey_demo_event.id %}<span class="demo-badge event-demo-badge">Demo 2 · Datos ficticios</span>{% endif %}{% if entry.is_synthetic %}<span class="demo-badge event-demo-badge">Ficticio</span>{% endif %}
+      <h2>{{ entry.event.title }}</h2><p>{% if entry.date %}{{ entry.date|date:'d M Y' }} · {{ entry.start_time }}{% else %}Fecha por confirmar{% endif %} · {{ entry.timezone }}{% if entry.organization %} · {{ entry.organization.name }}{% endif %}</p>{% if entry.date_source == 'plan' %}<p class="field-help">Fecha tomada del plan; la fecha de la ficha sigue pendiente.</p>{% endif %}{% if entry.timezone_warning %}<p class="field-help">Zona no válida; se muestran las horas en UTC.</p>{% endif %}
+    </div><span class="event-state">{% if entry.event.id == demo_event_id %}Plan de ejemplo{% elif entry.has_plan %}Plan aprobado{% else %}En preparación{% endif %}</span><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>{% endfor %}
+  </div>
+  {% if event_page.has_other_pages %}<nav class="form-actions" aria-label="Páginas de eventos">{% if previous_url %}<a class="button button-secondary" href="{{ previous_url }}">Anterior</a>{% endif %}{% if next_url %}<a class="button button-secondary" href="{{ next_url }}">Siguiente</a>{% endif %}</nav>{% endif %}
+  {% else %}<section class="empty-state"><svg class="icon empty-icon" aria-hidden="true"><use href="#i-calendar"/></svg>{% if catalog.has_filters %}<h2>No hay eventos con estos filtros</h2><p>Prueba otra fecha, empresa o búsqueda.</p><a class="button button-secondary" href="{% url 'events:index' %}">Limpiar filtros</a>{% elif portal_is_reviewer %}<h2>Todavía no tienes eventos asignados</h2><p>El organizador debe concederte acceso para que puedas consultarlos.</p>{% else %}<h2 data-reveal="section">Tu próximo evento empieza aquí</h2><p>Define qué quieres organizar. El agente te ayudará a preparar una propuesta; tú decidirás qué se aplica.</p><a class="button button-primary" href="{% url 'events:create' %}">Crear mi primer evento</a>{% endif %}</section>{% endif %}
+  {% endif %}
+</main>{% endblock %}

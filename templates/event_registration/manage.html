@@ -1,0 +1,35 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}Inscripciones · {{ event.title }} · SparkX{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/event-registration.css' %}?v=20261115-registration1">{% endblock %}
+{% block content %}
+<main id="main-content" class="page-content registration-management">
+  <nav class="breadcrumb" aria-label="Ruta"><a href="{% url 'events:index' %}">Eventos</a><span aria-hidden="true">/</span><a href="{% url 'events:detail' event.id %}">{{ event.title }}</a><span aria-hidden="true">/</span><span>Inscripciones</span></nav>
+  <header class="page-heading"><div><h1>Inscripciones</h1><p class="lead">{{ event.title }}</p></div><a class="button button-secondary" href="{% url 'events:detail' event.id %}">Volver al evento</a></header>
+  <div class="registration-layout">
+    <section class="registration-card" aria-labelledby="publication-heading">
+      <h2 id="publication-heading">{% if publication_paused %}Inscripciones en pausa{% elif publication %}Inscripciones {{ publication.get_state_display|lower }}{% else %}Prepara la inscripción{% endif %}</h2>
+      <dl class="registration-counts"><div><dt>Inscripciones activas</dt><dd>{{ counts.active }}</dd></div><div><dt>Aforo actual</dt><dd>{{ counts.capacity }}</dd></div><div><dt>Cupos disponibles</dt><dd>{{ counts.remaining }}</dd></div></dl>
+      {% if publication %}
+        <div class="field"><label for="registration-public-link">Enlace para compartir</label><input id="registration-public-link" readonly value="{{ public_url }}"><p class="field-help"><a href="{{ public_path }}">Abrir página de inscripción</a>. Comparte la dirección de esa página con tus participantes.</p></div>
+        <p class="field-help">El enlace muestra el nombre, la fecha, la zona horaria y los cupos del evento. Los datos de las personas inscritas sólo se consultan en este espacio.</p>
+      {% else %}<p>Al abrir las inscripciones se creará un enlace público para este evento. La página pedirá únicamente nombre y correo.</p>{% endif %}
+      {% if not event.active_plan_id %}<div class="notice">Aprueba un plan antes de abrir las inscripciones.</div>{% endif %}
+      {% if publication_paused %}<div class="notice">El plan aprobado cambió desde la última apertura. Revisa el evento y confirma una nueva publicación para volver a recibir inscripciones.</div>{% endif %}
+      {% if counts.active > counts.capacity %}<div class="notice">El aforo actual es menor que las inscripciones activas. Se conservan los registros y no se aceptan nuevos cupos.</div>{% endif %}
+      <form method="post" action="{% url 'event_registration:change_state' event.id %}" class="registration-state-form">
+        {% csrf_token %}{% for hidden in form.hidden_fields %}{{ hidden }}{{ hidden.errors }}{% endfor %}
+        {% if form.non_field_errors %}<div class="notice notice-error" role="alert">{{ form.non_field_errors }}<p><a href="{% url 'event_registration:manage' event.id %}">Recargar el estado actual</a></p></div>{% endif %}
+        <div class="field"><label for="{{ form.confirmed.id_for_label }}">{{ form.confirmed }}{% if publication_paused %}Confirmo la acción elegida: publicar el plan actual o cerrar las inscripciones{% elif publication_action == 'closed' %}Confirmo cerrar las inscripciones y conservar los registros{% else %}Confirmo publicar la página y abrir las inscripciones{% endif %}</label>{{ form.confirmed.errors }}</div>
+        <button class="button {% if publication_action == 'closed' %}button-secondary{% else %}button-primary{% endif %}" type="submit"{% if not event.active_plan_id and publication_action != 'closed' %} disabled{% endif %}>{% if publication_action == 'closed' %}Cerrar inscripciones{% elif publication_paused %}Publicar el plan actual y abrir{% elif publication %}Volver a abrir inscripciones{% else %}Publicar y abrir inscripciones{% endif %}</button>
+        {% if publication_paused and publication_action != 'closed' %}<button class="button button-secondary" type="submit" name="action" value="closed">Cerrar inscripciones</button>{% endif %}
+      </form>
+      <p class="field-help">Abrir o cerrar conserva el plan aprobado y el avance de tareas. No se envían correos ni se realizan pagos.</p>
+    </section>
+    <section class="registration-card" aria-labelledby="registrations-heading">
+      <h2 id="registrations-heading">Personas inscritas</h2><p class="field-help">Este registro es independiente de los contactos de tu directorio.</p>
+      {% if registrations %}<div class="registration-table-scroll"><table class="registration-table"><thead><tr><th scope="col">Nombre</th><th scope="col">Correo</th><th scope="col">Estado</th></tr></thead><tbody>{% for entry in registrations %}<tr><td>{{ entry.full_name }}</td><td>{{ entry.email }}</td><td>{{ entry.get_status_display }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="section-empty">Todavía no hay inscripciones guardadas.</p>{% endif %}
+      {% if registrations.has_other_pages %}<nav class="registration-pagination" aria-label="Páginas de inscripciones">{% if registrations.has_previous %}<a href="?page={{ registrations.previous_page_number }}">Anterior</a>{% endif %}<span>Página {{ registrations.number }} de {{ registrations.paginator.num_pages }}</span>{% if registrations.has_next %}<a href="?page={{ registrations.next_page_number }}">Siguiente</a>{% endif %}</nav>{% endif %}
+    </section>
+  </div>
+</main>
+{% endblock %}
