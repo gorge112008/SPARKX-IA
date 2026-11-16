@@ -29,7 +29,7 @@ la guarda mediante el enlace que abre otra pestaña y vuelve a **Reanudar guía*
 Gica conserva ese paso y las respuestas ya elegidas. No se envía nada por guardar
 la clave. Hay que mantener abierta la pestaña original para conservar el recorrido.
 Consulta [gestión de IA](ai-management.md),
-[lenguaje de Gica](../arquitectura/romeo-language.md) y
+[lenguaje de Gica](../arquitectura/gica-language.md) y
 [directorio y catálogo](../arquitectura/directory-and-catalog.md).
 
 ## Presentación narrada y revisión manual

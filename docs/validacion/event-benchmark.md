@@ -32,7 +32,7 @@ automáticamente. Las tareas ya terminadas se leen sin volver a ejecutarlas.
 Los cuatro modelos con condiciones adicionales se usan solo con datos ficticios
 y aceptación registrada para esta prueba autorizada. Antes de cada ejecución se
 verifica que el catálogo mantenga el modelo y sus precios a cero. No se activa la
-API del agente de eventos ni se modifica la demo, cuenta o presupuesto de SparkX.
+API del agente de eventos ni se modifica la demo, cuenta o presupuesto de ArquiGica.
 
 ## Referencia y criterio fijados antes de inferir
 
@@ -70,7 +70,7 @@ Las referencias locales y las respuestas remotas se guardan por separado.
 
 ## Evidencia y límites
 
-Comandos desde la raíz de SparkX:
+Comandos desde la raíz de ArquiGica:
 
 ```powershell
 .\.venv\Scripts\python.exe -B -m unittest tools.opencode.test_event_benchmark
@@ -92,7 +92,7 @@ Seis casos y una ejecución por modelo/caso no permiten concluir superioridad
 estadística, seguridad integral, ahorro general ni capacidad multiusuario. La
 evaluación automática mide restricciones y formato; no acredita calidad docente,
 corrección de trámites de maestría o eficacia real de marketing. Tampoco prueba
-persistencia, permisos web o inferencia del agente integrado de SparkX.
+persistencia, permisos web o inferencia del agente integrado de ArquiGica.
 
 ## Resultados del 14 de noviembre de 2026
 

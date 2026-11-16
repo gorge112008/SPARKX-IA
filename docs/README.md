@@ -1,9 +1,9 @@
 # Documentación de ArquiGica
 
-Esta carpeta organiza la presentación técnica, la operación del prototipo y sus
-resultados verificables. Los documentos fechados conservan el contexto de cada
-entrega; una prueba local o simulada no acredita una inferencia real ni un
-despliegue de producción.
+Esta carpeta reúne la arquitectura vigente, las guías de operación y los
+resultados verificables del prototipo. Una prueba local o simulada no acredita
+una inferencia real ni un despliegue de producción. Las versiones sustituidas
+se consultan en el historial de Git.
 
 ## Recorrido de lectura
 
@@ -20,9 +20,8 @@ despliegue de producción.
 | Documento | Contenido |
 | --- | --- |
 | [Directorio y catálogo](arquitectura/directory-and-catalog.md) | Identidades, consultas, calendario y permisos. |
-| [Lenguaje de Gica](arquitectura/romeo-language.md) | Intenciones, normalización, patrones y comandos permitidos. |
+| [Lenguaje de Gica](arquitectura/gica-language.md) | Intenciones, normalización, patrones y comandos permitidos. |
 | [Sistema visual](arquitectura/design-system.md) | Tipografía, paletas, lectura y movimiento. |
-| [Evolución de la arquitectura](historial/architecture-evolucion.md) | Antecedentes y decisiones de las versiones anteriores. |
 
 ## Guías de uso y operación
 

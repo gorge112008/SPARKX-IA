@@ -2,8 +2,8 @@
 
 Implementación del 14 de noviembre de 2026. Es una herramienta de desarrollo
 separada del agente de eventos, del worker y del presupuesto de IA de ArquiGica.
-No se instalaron Hermes, Letta, servicios de voz ni otros proveedores: antes de la
-entrega del 15 de noviembre se prioriza un ayudante pequeño y comprobable.
+La integración se limita a un ayudante acotado de desarrollo. Hermes, Letta y
+otros servicios de agentes no son dependencias del producto.
 
 ## Instalación y estado comprobado
 

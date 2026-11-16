@@ -27,9 +27,9 @@
       "sha256": "3066ae6c3ffef8f839320e89a50e27e375b7909178fb2ab9165cbfe4276a1c20"
     },
     {
-      "bytes": 6603,
+      "bytes": 6520,
       "path": "README.md",
-      "sha256": "9c42ae986ecc48afcd274cca66ca113cdb35545b743ea20c29778a75acaa4274"
+      "sha256": "eb200af695ac867659edcf98b833b2d630534c7b0f05b740d1af07beea1eee5b"
     },
     {
       "bytes": 0,
@@ -1627,19 +1627,19 @@
       "sha256": "eae3ca58dd999ba3acca85130f6c2fbae3b7a511850b0bb692c9073c0d8a21d0"
     },
     {
-      "bytes": 2694,
+      "bytes": 2570,
       "path": "docs/README.md",
-      "sha256": "ce8575a3ecabd06a801794abce2e786a5d9007f2844f3a3c7d4eaa4235b12e1e"
+      "sha256": "c6a8e065d9ce584b9d0e9c07f36f57cf0fba8d3c7c6ff44526cea9f27701ab16"
     },
     {
-      "bytes": 7937,
+      "bytes": 7886,
       "path": "docs/architecture.md",
-      "sha256": "b633e7f00bf828fa03e5ad8d8c2038a6479c74fe56eed18ae348dd2e9391a5aa"
+      "sha256": "0e685c19c5f860548c1530228357969b758cfad9f8787d2145e33af2cd4f1178"
     },
     {
-      "bytes": 13758,
+      "bytes": 13475,
       "path": "docs/arquitectura/design-system.md",
-      "sha256": "d63897540f40261f37e0602b0046e5796953759bfe40f2ac85f18acea8d2ce60"
+      "sha256": "9ada86e7c06ba0760f3676241c2f821b19dd083595f44476fd44395a7edefaef"
     },
     {
       "bytes": 11298,
@@ -1648,28 +1648,28 @@
     },
     {
       "bytes": 37678,
-      "path": "docs/arquitectura/romeo-language.md",
+      "path": "docs/arquitectura/gica-language.md",
       "sha256": "ea4273bd3ada34aca5724d0b272c4a565831d8d6c4abd353f96567b6ab822e63"
     },
     {
-      "bytes": 51403,
+      "bytes": 4738,
       "path": "docs/construction-plan.md",
-      "sha256": "3e552246a713efbd98cd25656618feb41a8940b11171e2a75f681b6499650a43"
+      "sha256": "db6ee1e164e7c5c45c6a12c9384249cd77a5c01e2e7aadb58f79e84e7b662689"
     },
     {
-      "bytes": 13233,
+      "bytes": 13239,
       "path": "docs/decisiones/motion-dependency-review.md",
-      "sha256": "e1a4abf8b7888aa40bc4292467606ef5f17652a63c4a564861fbe5d06598efc6"
+      "sha256": "69f62f154cb9c857aa0e06fb1b05e30427bbfc935b4842e321413af2c5814952"
     },
     {
-      "bytes": 5566,
+      "bytes": 5565,
       "path": "docs/guias/agents-and-voice.md",
-      "sha256": "36a0603f825c3a76b575c9643284ac16c05004f5469d10cdc4ac7a0a83449c49"
+      "sha256": "3e2a40c599565991ef3536506dadde00616485448032aeb668f4fcbdab841370"
     },
     {
-      "bytes": 81431,
+      "bytes": 13936,
       "path": "docs/guias/ai-management.md",
-      "sha256": "6c55e38e193fa6ffca9de3714f4d9d3f2d47605ed76b07f9e6cb502b7da2a731"
+      "sha256": "b77a106858bc23849231fa6c9634824f1efdc524f6f9907238176e376911ef95"
     },
     {
       "bytes": 1877,
@@ -1687,9 +1687,9 @@
       "sha256": "c7e4f8885e4ed93e310181d3607a3717447c1821eecbafc8e08dcd8e9f19a0ed"
     },
     {
-      "bytes": 16788,
+      "bytes": 16769,
       "path": "docs/guias/opencode.md",
-      "sha256": "ed3939cd608ab875e1c3c7d6729ae11d4d477af2142b7b9aaed92f1780146558"
+      "sha256": "7d67b5c6ca1dbfaad0a1b0b28aa4a707502fad9b126d0de5b7020733983d528c"
     },
     {
       "bytes": 6647,
@@ -1697,29 +1697,19 @@
       "sha256": "b4828898b7e614d735d8c140d557f720cc3737a494810350e72d2bfe909dc5f8"
     },
     {
-      "bytes": 53634,
-      "path": "docs/historial/README-2026-11-16.md",
-      "sha256": "f180db70f14355c6afabd5aa838ca7156a9cd4e753f5cd09bda73f6e95a460f1"
-    },
-    {
-      "bytes": 84911,
-      "path": "docs/historial/architecture-evolucion.md",
-      "sha256": "fb41c23c4f01331b226976dd2b6e477f399dc7d2b76a37fdf8606c69c8b2d7f1"
-    },
-    {
       "bytes": 9463,
       "path": "docs/validacion/audit.md",
       "sha256": "195598b80b8399e22d94d0d80fbc73142f6b0ffde235af3c932c05b9577f4939"
     },
     {
-      "bytes": 10467,
+      "bytes": 10476,
       "path": "docs/validacion/event-benchmark.md",
-      "sha256": "a9e7a6937f72956f54594cd0a5516e2013bbbcc886db013fc88f9961a19d746b"
+      "sha256": "782bd81b129cc8fa3fb30fd83c29f17a42902415e56dee47dfc034bf788f8947"
     },
     {
-      "bytes": 283279,
+      "bytes": 4860,
       "path": "docs/verification.md",
-      "sha256": "8d74bf8a9d1978d6beb3052bb59a13187f2833de1ad3f0c68f7c3b676f3fcb96"
+      "sha256": "ca15c25a6fdc20ec1eedadb021e8e6f303dbb1bb78e36b4779346ad34f1867e2"
     },
     {
       "bytes": 375,
@@ -1734,7 +1724,7 @@
     {
       "bytes": 261,
       "path": "pyproject.toml",
-      "sha256": "d4b11d35bfab5e0bdd1c19eadec2fde45675ebea5015391a4aaa25e0c1d89b7a"
+      "sha256": "4e83377ca7c919dbffbeb9340c9cd39ca76abbb796f77b5b123e1f82d2f6e75e"
     },
     {
       "bytes": 68,
@@ -1747,9 +1737,9 @@
       "sha256": "4ed58b9bb2cf0c0b91ebbb18b4fe931a70402f3255be202cc6eddceba731857b"
     },
     {
-      "bytes": 1387,
+      "bytes": 1390,
       "path": "static/audio/romeo/NOTICE.txt",
-      "sha256": "cf62d09e8e414947260dc25c3f39004c4ab0a1f4cc481a3dc2b2901e8fdbf3e7"
+      "sha256": "f4afdafcb4e7330ab296df72f90cfc1c30ab92f9563608623577110dec97d25a"
     },
     {
       "bytes": 170028,
@@ -2465,5 +2455,5 @@
   "project": "ArquiGica",
   "schema": 1,
   "type": "source-only",
-  "version": "0.1.0"
+  "version": "0.1.1"
 }

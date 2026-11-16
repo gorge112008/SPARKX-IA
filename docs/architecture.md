@@ -6,9 +6,9 @@ MTV de Django: modelos para persistencia, plantillas para presentación y vistas
 para atender solicitudes. Los servicios concentran operaciones y transacciones;
 las reglas de dominio validan decisiones antes de guardar.
 
-Esta página presenta el código vigente. Los cambios y decisiones anteriores se
-conservan como [evolución técnica](historial/architecture-evolucion.md); los
-resultados medidos están en [verificación](verification.md).
+Esta página presenta el código vigente. Los resultados medidos están en
+[verificación](verification.md); las versiones sustituidas se conservan en el
+historial de Git.
 
 ## Vista general
 

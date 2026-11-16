@@ -8,7 +8,7 @@ WAV SHA-256: 1ff163ee443f4f4bf44285af4f426ab03b6cbcfcd14a89c4b9c06165c884facc
 Generator: Piper TTS 1.8.0 (GPL-3.0-or-later)
 https://github.com/OHF-Voice/piper1-gpl
 https://pypi.org/project/piper-tts/1.8.0/
-The engine runs only in a separate local test environment. SparkX serves this
+The engine runs only in a separate local test environment. ArquiGica serves this
 fixed WAV; it neither includes nor invokes Piper to answer requests.
 
 Voice: es_ES-davefx-medium (single speaker, Spanish / Spain)

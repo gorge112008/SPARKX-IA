@@ -116,7 +116,7 @@ Esta búsqueda detecta patrones concretos; no es un análisis completo del flujo
 
 Se encontró un helper de **`animateView`** que crea un elemento `<style>` con id `motion-view`, asigna reglas mediante `textContent` y lo inserta en `document.head`. Puede chocar con una política estricta de estilos. **No usar `animateView` en esta integración**. Limitar el wrapper a `animateMini`, `inView` y `stagger`; no añadir `unsafe-eval`, `unsafe-inline` ni nuevos orígenes a CSP por esta dependencia.
 
-Con self-hosting el script debe cargarse desde el mismo origen como recurso externo, antes del wrapper del proyecto. No necesita peticiones de terceros. La animación usa propiedades de estilo y APIs del navegador: **la integración se comprobó posteriormente bajo la CSP vigente de SparkX**, según la sección de cierre de este documento. La inspección estática por sí sola no habría acreditado ese resultado.
+Con self-hosting el script debe cargarse desde el mismo origen como recurso externo, antes del wrapper del proyecto. No necesita peticiones de terceros. La animación usa propiedades de estilo y APIs del navegador: **la integración se comprobó posteriormente bajo la CSP vigente de ArquiGica**, según la sección de cierre de este documento. La inspección estática por sí sola no habría acreditado ese resultado.
 
 ## Reproducción de la comprobación de integridad
 
@@ -176,7 +176,7 @@ La investigación actual midió Hyrup en navegador y contrastó sus módulos pú
 [encabezado](https://framerusercontent.com/sites/5cOZuFk9Ptv7eCdHmZtLsY/mqsFFrCNq.CBh20wxz.mjs)
 y [CTA/nav](https://framerusercontent.com/sites/5cOZuFk9Ptv7eCdHmZtLsY/toplevel-deps.Bbt7x8WC.mjs).
 El H1 entra como bloque tras una máscara; CTA/nav desplazan un segundo rótulo
-durante 400 ms con curva [.4,0,.4,1]. La demora de marketing se acorta para SparkX;
+durante 400 ms con curva [.4,0,.4,1]. La demora de marketing se acorta para ArquiGica;
 H2 por palabras, foco y presión son adaptaciones propias. No se copian activos
 del sitio ni se incorporan bibliotecas nuevas. Detalle en
 [sistema visual](../arquitectura/design-system.md#movimiento-de-títulos-y-controles).

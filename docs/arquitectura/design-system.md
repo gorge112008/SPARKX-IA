@@ -29,12 +29,9 @@ Se inspeccionaron dashboard_web/styles.css y calendar.js de FIME. La referencia 
 renderizó con su CSS y calendario reales, datos ficticios identificados y red bloqueada;
 no se ejecutó el backend ni se abrieron correo o credenciales.
 
-- [Referencia FIME 1663×946](../../Temporal/referencias/fime/calendar-reference-1663.png).
-- [Referencia FIME 1440×900](../../Temporal/referencias/fime/calendar-reference-1440.png).
-- [Medidas y procedencia](../../Temporal/referencias/fime/reference-metrics.json).
-- [Concepto claro](../../Temporal/referencias/calendario/calendar-light.png) y
-  [concepto oscuro](../../Temporal/referencias/calendario/calendar-dark.png), 1662×946.
-- [Prompts y precisiones](../../Temporal/referencias/calendario/concept-prompts.md).
+Las referencias se revisaron a 1663×946 y 1440×900 píxeles. Los conceptos claro
+y oscuro se prepararon a 1662×946. Las capturas y los registros auxiliares son
+material privado de desarrollo y no forman parte del código distribuido.
 
 Los conceptos se generaron con Image Gen integrado y se inspeccionaron con view_image.
 Las medidas efectivas de la referencia del usuario prevalecen sobre los errores de

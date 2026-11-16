@@ -34,7 +34,7 @@ problemas de arranque, consulta [Inicio e instalación](docs/guias/inicio.md).
 ## Estructura del código
 
 ```text
-SPARKX3.0/
+ArquiGica/
 ├── apps/                         Módulos de negocio
 │   ├── accounts/                 Login, usuarios, roles y acceso
 │   ├── events/                   Ficha, calendario y programación
@@ -43,8 +43,7 @@ SPARKX3.0/
 │   ├── assistant/                Gica, conversación y adaptadores de IA
 │   ├── jobs/                     Cola, ejecución y seguimiento
 │   ├── ai_management/            APIs, permisos, tokens y presupuesto
-│   ├── registration/             Inscripciones al evento
-│   └── project_checklist/        Compatibilidad histórica; deshabilitado
+│   └── registration/             Inscripciones al evento
 ├── config/                       Configuración, rutas y ciclo del servidor
 ├── templates/                    Interfaz Django, agrupada por módulo
 ├── static/                       CSS, JavaScript, recursos y licencias
