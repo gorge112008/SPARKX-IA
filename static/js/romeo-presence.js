@@ -19,7 +19,7 @@
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   const UUID = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
   const validID = new RegExp('^' + UUID + '$');
-  const AUTHORIZED_PILOT = '9c1cb0ba-4025-49dc-b9e8-d0f6cf3e84aa';
+  const AUTHORIZED_PILOT = 'bcf52dbd-206b-4d22-a294-8c487c770c56';
   const currentEventID = () => location.pathname.match(new RegExp('^/events/(' + UUID + ')/$'))?.[1] || null;
   let eventID = currentEventID(), navigationID = null, pageGeneration = 0;
   const states = new Set(['queued', 'running', 'succeeded', 'failed', 'cancelled', 'stale']);
@@ -57,8 +57,8 @@
   const demoNames = new Set(['title', 'organization_id', 'speaker_id', 'brief', 'scheduled_dates', 'starts_at', 'timezone', 'capacity', 'is_synthetic',
     'objective', 'audience', 'modality', 'duration_minutes', 'location', 'resources', 'constraints']);
 
-  // The narrated tour owns this SVG marker only. Its fixed GET links and
-  // read-only form targets are not general agent clicks or mouse automation.
+  // The narrated tour owns this SVG marker only. Its bounded controls are not
+  // general agent clicks or mouse automation. Pointing grants no activation.
   function demoLease(signal) {
     return !disposed && !document.hidden && !signal?.aborted && root.isConnected &&
       root.dataset.gicaDemoActive === 'true' && root.dataset.uiActionActive !== '1' &&
@@ -67,6 +67,10 @@
   }
   function demoTarget(element) {
     if (!(element instanceof Element) || !element.isConnected || element.closest('[hidden],[inert]')) return '';
+    if (root.dataset.gicaPilotEvent === AUTHORIZED_PILOT && element.matches('button[data-gica-prompt-execute]') &&
+        window.SparkXGicaPilotAI?.canExecute?.(element) === true) return 'control';
+    if(element.matches('button[data-gica-directory-select],button[data-gica-directory-option]')&&window.SparkXGicaDemo?.canDirectoryControl?.(element)===true)return 'control';
+    if(element.matches('button[data-gica-simulate-status]')&&window.SparkXGicaDemo?.canSimulationControl?.(element)===true)return 'control';
     if (element instanceof HTMLAnchorElement) {
       const url = new URL(element.href, location.origin);
       if (url.origin !== location.origin || url.username || url.password ||
@@ -74,12 +78,15 @@
       if (url.pathname === '/calendar/' && !url.hash && ['2026-11-19', '2026-11-26'].includes(element.dataset.calendarDay) &&
           element.matches('main[data-romeo-destination="calendar"] a[data-calendar-day]') && url.searchParams.get('day') === element.dataset.calendarDay &&
           url.searchParams.get('month') === '2026-11' && [...url.searchParams.keys()].every((key) => ['month', 'day'].includes(key))) return 'navigation';
+      if(url.pathname==='/directory/'&&!url.hash&&element.matches('main[data-romeo-destination="directory"] .directory-tabs a')&&['','?tab=organizations'].includes(url.search))return 'navigation';
       if (url.search) return '';
       if (!url.hash && url.pathname === '/' && element.matches('.main-nav a[data-romeo-nav="events"]')) return 'navigation';
       if (!url.hash && url.pathname === '/calendar/' && element.matches('.main-nav a[data-romeo-nav="calendar"]')) return 'navigation';
       if (!url.hash && url.pathname === '/directory/' && element.matches('.main-nav a[data-romeo-nav="directory"]')) return 'navigation';
+      if (!url.hash && url.pathname === '/assistant/profile/' && element.matches('.main-nav a[data-romeo-nav="profile"]')) return 'navigation';
       if (!url.hash && url.pathname === '/events/new/' && element.matches('main .page-heading a.button')) return 'navigation';
       if (!url.hash && url.pathname === '/directory/organizations/new/' && element.matches('main [data-gica-field="organization"] a')) return 'navigation';
+      if(!url.hash&&['/directory/organizations/new/','/directory/people/new/'].includes(url.pathname)&&element.matches('main[data-romeo-destination="directory"] .directory-actions a'))return 'navigation';
       const pilot = root.dataset.gicaPilotEvent;
       if (pilot === AUTHORIZED_PILOT && element.closest('main#main-content')) {
         if (url.pathname === `/events/${pilot}/` && ['', '#plan', '#agenda', '#preparation', '#proposals', '#activity'].includes(url.hash)) {
@@ -90,8 +97,9 @@
       }
       return '';
     }
-    if (element.matches('main[data-gica-pilot="true"] button[data-gica-pilot-plan]') && ['plan', 'replan'].includes(element.dataset.gicaPilotPlan)) return 'control';
+    if (element.matches('main[data-gica-pilot="true"] button[data-gica-pilot-plan]') && ['plan', 'replan', 'change'].includes(element.dataset.gicaPilotPlan)) return 'control';
     if (element.matches('main[data-gica-pilot="true"] #preparation [data-task-instructions] > summary')) return 'control';
+    if (element.matches('main[data-gica-pilot="true"] #preparation [data-task-followup] > summary')) return 'control';
     const scheduleForm = element.closest('main[data-gica-pilot-schedule="true"] form[data-pilot-schedule]');
     if (scheduleForm && root.dataset.gicaPilotEvent === AUTHORIZED_PILOT && location.pathname === `/events/${AUTHORIZED_PILOT}/schedule/`) {
       if (element.matches('[data-gica-schedule-submit]')) return 'submit';
@@ -104,8 +112,14 @@
     }
     const organizationForm = element.closest('main .directory-form');
     if (organizationForm && location.pathname === '/directory/organizations/new/') {
+      if(element.matches('input[type="checkbox"][name="is_active"],input[type="checkbox"][name="is_synthetic"]'))return 'control';
       if (element.matches('input[name="name"],textarea[name="aliases"],input[name="is_active"],input[name="is_synthetic"]')) return 'field';
       if (element.matches('button[type="submit"]')) return 'submit';
+    }
+    if(organizationForm&&location.pathname==='/directory/people/new/'){
+      if(element.matches('input[type="checkbox"][name="is_active"],input[type="checkbox"][name="is_synthetic"]'))return 'control';
+      if(element.matches('input[name="full_name"],textarea[name="aliases"],input[name="email"],textarea[name="expertise"]'))return 'field';
+      if(element.matches('button[type="submit"]'))return 'submit';
     }
     const form = document.querySelector('main form[data-event-block-form][data-gica-demo-live="true"], main form[data-gica-event-form="create"][data-gica-demo-preview="true"]');
     if (!form || form.dataset.gicaGuidedDraft) return '';
@@ -123,9 +137,76 @@
     }
     return '';
   }
+  function demoPointTarget(element) {
+    if (!(element instanceof Element) || !element.isConnected || element.closest('[hidden],[inert]') ||
+        root.dataset.gicaPilotEvent !== AUTHORIZED_PILOT || element.closest('form,button,input,textarea,select')) return '';
+    const main = element.closest('main#main-content');
+    if (!main) return '';
+    if(location.pathname==='/assistant/profile/'&&main.matches('[data-romeo-destination="profile"]')&&
+        element.closest('.gica-profile-identity,.gica-profile-section')&&element.matches('h2,h3,p,ul,li,span,strong,blockquote'))return 'explanation';
+    const article = element.closest('.calendar-event-detail');
+    if (main.matches('[data-romeo-destination="calendar"]') && location.pathname === '/calendar/' && article) {
+      const link = article.querySelector('a.calendar-open-event');
+      if (!link) return '';
+      const url = new URL(link.href, location.origin);
+      if (url.origin !== location.origin || url.username || url.password || url.search ||
+          url.pathname !== `/events/${AUTHORIZED_PILOT}/` || !['', '#plan'].includes(url.hash)) return '';
+      return element === article || element.matches('h3,h4,p,ol,li,span,div') ? 'explanation' : '';
+    }
+    if (location.pathname !== `/events/${AUTHORIZED_PILOT}/` || main.dataset.eventId !== AUTHORIZED_PILOT ||
+        main.dataset.gicaPilot !== 'true') return '';
+    const region = element.closest('[data-event-speaker], .event-meta, [data-workspace-panel]');
+    return region && main.contains(region) && (element === region || element.matches('h2,h3,h4,p,ol,ul,li,span,strong,div,time')) ? 'explanation' : '';
+  }
+  function demoRunTarget(run) { return run.mode === 'point' ? demoPointTarget(run.element) : demoTarget(run.element); }
+  function demoBounds() {
+    const viewport = window.visualViewport;
+    const left = viewport?.offsetLeft || 0, top = viewport?.offsetTop || 0;
+    return { left: left + 5, top: top + 5,
+      right: left + (viewport?.width || innerWidth) - 5, bottom: top + (viewport?.height || innerHeight) - 5 };
+  }
+  function demoAnchor(element, mode) {
+    if (mode === 'point') {
+      const rect = element.getBoundingClientRect(), bounds = demoBounds();
+      if (rect.height > (bounds.bottom - bounds.top) * .65 || rect.width > (bounds.right - bounds.left) * .92) {
+        const headings = [...element.querySelectorAll('h2,h3,h4')].filter((node) => !node.closest('[hidden],[inert]'));
+        return headings[0] || element;
+      }
+      return element;
+    }
+    const candidates = element.matches('input,textarea,select,button') ? [element] :
+      [...element.querySelectorAll('input:not([type="hidden"]),textarea,select,[data-event-select-toggle],[data-event-date-toggle]')];
+    // A field wrapper includes its label. Place the cursor inside its actual
+    // visible control, including progressive selectors whose native select hides.
+    return candidates.find((node) => visible(node) && getComputedStyle(node).visibility !== 'hidden') || element;
+  }
+  function demoDestination(element, mode) {
+    const anchor = demoAnchor(element, mode), box = anchor.getBoundingClientRect();
+    const bounds = demoBounds(), left = Math.max(box.left, bounds.left), right = Math.min(box.right, bounds.right);
+    const top = Math.max(box.top, bounds.top), bottom = Math.min(box.bottom, bounds.bottom);
+    const center = { x: (left + right) / 2, y: (top + bottom) / 2 };
+    if (mode === 'point' || anchor.matches('input,textarea')) return center;
+    // Keep the tip vertically centered, in the control's trailing padding or
+    // chevron, so neither the arrow nor an agent label covers its caption.
+    if (anchor.matches('select,button,a,summary')) {
+      const style = getComputedStyle(anchor), inset = Math.max(7, Math.min(14, (parseFloat(style.paddingRight) || 14) / 2));
+      return { x: Math.max(left + 4, right - inset), y: center.y };
+    }
+    return center;
+  }
+  function drawExplanation(run) {
+    if (!run.outline || run.expired || !visible(run.element)) return;
+    const box = demoAnchor(run.element, 'point').getBoundingClientRect(), bounds = demoBounds();
+    const left = Math.max(bounds.left + 3, box.left - 6), right = Math.min(bounds.right - 3, box.right + 6);
+    const top = Math.max(bounds.top + 3, box.top - 6), bottom = Math.min(bounds.bottom - 3, box.bottom + 6);
+    demoDraw((left + right) / 2, (top + bottom) / 2);
+    run.outline.setAttribute('x', String(-(right - left) / 2)); run.outline.setAttribute('y', String(-(bottom - top) / 2));
+    run.outline.setAttribute('width', String(Math.max(0, right - left))); run.outline.setAttribute('height', String(Math.max(0, bottom - top)));
+  }
   function demoDraw(left, top) {
-    x = Math.max(2, Math.min(innerWidth - 24, left));
-    y = Math.max(2, Math.min(innerHeight - 44, top));
+    const bounds = demoBounds();
+    x = Math.max(bounds.left, Math.min(bounds.right - 1, left));
+    y = Math.max(bounds.top, Math.min(bounds.bottom - 1, top));
     glyph.setAttribute('transform', `translate(${x.toFixed(2)} ${y.toFixed(2)})`);
     overlay.querySelector('.romeo-cursor-label')?.setAttribute('transform', x > innerWidth - 126 ? 'translate(-104 0)' : 'translate(0 0)');
   }
@@ -133,7 +214,7 @@
     return new Promise((resolve) => {
       const started = performance.now();
       function frame(now) {
-        if (demoCursor !== run || !demoLease(run.signal) || !demoTarget(run.element) || !visible(run.element)) { resolve(false); return; }
+        if (demoCursor !== run || !demoLease(run.signal) || !demoRunTarget(run) || !visible(run.element)) { resolve(false); return; }
         const fraction = milliseconds <= 0 ? 1 : Math.min(1, (now - started) / milliseconds);
         draw?.(fraction);
         if (fraction >= 1) resolve(true);
@@ -146,40 +227,52 @@
     if (demoCursor) {
       demoCursor.ripple?.remove();
       demoCursor.animation?.cancel();
+      clearTimeout(demoCursor.expiry);
+      demoCursor.signal?.removeEventListener('abort', demoCursor.onAbort);
       // Keep its next frame alive once so an interrupted promise resolves.
       demoCursor = null;
     }
     delete overlay.dataset.gicaDemoCursor;
+    overlay.classList.remove('is-pointing', 'is-writing');
+    glyph.querySelector('.romeo-explanation-pointer')?.remove();
     target = home; position(true);
   }
-  async function demoMove(element, options = {}) {
-    if (!demoLease(options.signal) || !demoTarget(element) || demoCursor?.busy) return false;
-    const run = { element, signal: options.signal, busy: true };
+  async function demoMoveTo(element, options = {}, mode = 'action') {
+    if (!demoLease(options.signal) || !(mode === 'point' ? demoPointTarget(element) : demoTarget(element)) || demoCursor?.busy) return false;
+    clearTimeout(demoCursor?.expiry);
+    demoCursor?.signal?.removeEventListener('abort', demoCursor.onAbort);
+    glyph.querySelector('.romeo-explanation-pointer')?.remove();
+    overlay.classList.remove('is-writing');
+    overlay.classList.toggle('is-pointing', mode === 'point');
+    const run = { element, signal: options.signal, busy: true, mode };
     demoCursor = run;
+    run.onAbort = () => { if (demoCursor === run) releaseDemoCursor(); };
+    run.signal?.addEventListener('abort', run.onAbort, { once: true });
     cancelAnimationFrame(animation);
     overlay.dataset.gicaDemoCursor = 'true';
     overlay.classList.remove('is-docked', 'is-paused');
-    document.dispatchEvent(new CustomEvent('sparkx:gica-demo-target', { detail: { user: demoOwner, element } }));
-    const rect = element.getBoundingClientRect();
-    if (rect.top < 90 || rect.bottom > innerHeight - 45 || rect.left < 0 || rect.right > innerWidth) {
-      element.scrollIntoView({ block: 'center', inline: 'nearest', behavior: reduced.matches ? 'instant' : 'smooth' });
+    document.dispatchEvent(new CustomEvent('sparkx:gica-demo-target', { detail: { user: demoOwner, element: demoAnchor(element, mode) } }));
+    const anchor = demoAnchor(element, mode), rect = anchor.getBoundingClientRect(), bounds = demoBounds();
+    const topbar = document.querySelector('.app-topbar')?.getBoundingClientRect();
+    const safeTop = Math.max(bounds.top + 12, topbar && topbar.top <= bounds.top ? topbar.bottom + 12 : 76);
+    if (rect.top < safeTop || rect.bottom > bounds.bottom - 24 || rect.left < bounds.left || rect.right > bounds.right) {
+      anchor.scrollIntoView({ block: 'center', inline: 'nearest', behavior: reduced.matches ? 'instant' : 'smooth' });
       const started = performance.now();
-      let previous = element.getBoundingClientRect().top, stable = 0;
+      let previous = anchor.getBoundingClientRect().top, stable = 0;
       while (performance.now() - started < 1300) {
         await new Promise((resolve) => requestAnimationFrame(resolve));
-        if (demoCursor !== run || !demoLease(run.signal) || !demoTarget(element)) { releaseDemoCursor(); return false; }
-        const top = element.getBoundingClientRect().top;
+        if (demoCursor !== run || !demoLease(run.signal) || !demoRunTarget(run)) { releaseDemoCursor(); return false; }
+        const top = anchor.getBoundingClientRect().top;
         stable = Math.abs(top - previous) < .5 ? stable + 1 : 0; previous = top;
         if (stable >= 4 && performance.now() - started > 160) break;
       }
     }
-    if (!demoTarget(element) || !visible(element)) { releaseDemoCursor(); return false; }
+    if (!demoRunTarget(run) || !visible(element)) { releaseDemoCursor(); return false; }
     overlay.removeAttribute('hidden');
-    const box = element.getBoundingClientRect();
-    const destination = { x: box.left + Math.min(24, box.width / 2), y: box.top + Math.min(20, box.height / 2) };
     const old = { x, y };
-    const duration = reduced.matches ? 0 : 760;
+    const duration = reduced.matches ? 0 : Math.min(650, Math.max(260, Math.hypot(demoDestination(element, mode).x - x, demoDestination(element, mode).y - y) * .8));
     const completed = await demoDelay(run, duration, (fraction) => {
+      const destination = demoDestination(element, mode);
       const eased = fraction < .5 ? 4 * fraction * fraction * fraction : 1 - Math.pow(-2 * fraction + 2, 3) / 2;
       demoDraw(old.x + (destination.x - old.x) * eased, old.y + (destination.y - old.y) * eased);
     });
@@ -187,25 +280,42 @@
     run.busy = false;
     return true;
   }
+  async function demoMove(element, options = {}) { return demoMoveTo(element, options); }
+  async function demoPoint(element, options = {}) {
+    if (!await demoMoveTo(element, options, 'point')) return false;
+    const run = demoCursor;
+    if (!run || !demoLease(run.signal) || !demoPointTarget(element)) return false;
+    const outline = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    outline.setAttribute('class', 'romeo-explanation-pointer'); outline.setAttribute('rx', '9');
+    run.outline = outline; glyph.append(outline); drawExplanation(run);
+    const hold = Number.isFinite(options.holdMs) ? Math.max(200, Math.min(8000, options.holdMs)) : 1400;
+    run.expiry = setTimeout(() => { if (demoCursor === run) { run.expired = true; outline.remove(); overlay.setAttribute('hidden', ''); } }, hold);
+    return true;
+  }
+  function demoPulse(run) {
+    // Called after an actual activation. A focus-only move has no click ripple.
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('class', 'romeo-click-ripple');
+    circle.setAttribute('cx', '0'); circle.setAttribute('cy', '0'); circle.setAttribute('r', '3');
+    circle.setAttribute('fill', 'none'); circle.setAttribute('stroke', 'var(--link)'); circle.setAttribute('stroke-width', '2');
+    run.ripple = circle; glyph.prepend(circle);
+    return new Promise((resolve) => {
+      const started = performance.now(), duration = reduced.matches ? 50 : 240;
+      function frame(now) {
+        if (demoCursor !== run || !demoLease(run.signal)) { circle.remove(); resolve(false); return; }
+        const fraction = Math.min(1, (now - started) / duration);
+        circle.setAttribute('r', String(3 + 14 * fraction)); circle.setAttribute('opacity', String(1 - fraction));
+        if (fraction < 1) run.frame = requestAnimationFrame(frame);
+        else { circle.remove(); run.ripple = null; resolve(true); }
+      }
+      run.frame = requestAnimationFrame(frame);
+    });
+  }
   async function demoClick(element, options = {}) {
     if (!await demoMove(element, options)) return false;
     const run = demoCursor, kind = demoTarget(element);
-    if (!run || !kind || !demoLease(run.signal)) return false;
+    if (!run || !kind || !demoLease(run.signal) || !visible(element)) return false;
     run.busy = true;
-    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    circle.setAttribute('cx', '2'); circle.setAttribute('cy', '2'); circle.setAttribute('r', '4');
-    circle.setAttribute('fill', 'none'); circle.setAttribute('stroke', 'var(--link)'); circle.setAttribute('stroke-width', '2');
-    run.ripple = circle; glyph.prepend(circle);
-    if (!reduced.matches && typeof glyph.animate === 'function') {
-      run.animation = glyph.animate([{ opacity: 1 }, { opacity: .55 }, { opacity: 1 }], { duration: 260 });
-    }
-    const pulsed = await demoDelay(run, reduced.matches ? 80 : 420, (fraction) => {
-      circle.setAttribute('r', String(4 + 22 * fraction)); circle.setAttribute('opacity', String(1 - fraction));
-    });
-    circle.remove(); run.ripple = null;
-    if (!pulsed || !demoLease(run.signal) || demoTarget(element) !== kind || !visible(element)) {
-      if (demoCursor === run) releaseDemoCursor(); return false;
-    }
     if (kind === 'navigation' && options.activate !== false) {
       const navigation = window.SparkXGicaNavigation;
       if (!navigation?.prepare || !navigation?.resultFor) { releaseDemoCursor(); return false; }
@@ -213,7 +323,7 @@
       element.click();
       const result = navigation.resultFor(element);
       if (!result) { releaseDemoCursor(); return false; }
-      const observed = await result;
+      const [, observed] = await Promise.all([demoPulse(run), result]);
       if (demoCursor !== run || !demoLease(run.signal) || observed?.success !== true) {
         if (demoCursor === run) releaseDemoCursor(); return false;
       }
@@ -223,19 +333,33 @@
     if (options.activate === true && ['control', 'submit'].includes(kind)) {
       if (element.matches(':disabled')) { run.busy = false; return false; }
       element.click();
+      await demoPulse(run);
       run.busy = false;
+      position(true);
       return demoLease(run.signal);
     }
-    // Disabled selects and checkboxes are illustrative: never toggle them.
-    const control = element.matches('input,textarea,select') ? element : element.querySelector('input:not([type="hidden"]),textarea,select');
-    if (control && !control.disabled) control.focus({ preventScroll: true });
+    // Focusing a text field is real but is not an activation. In particular a
+    // select wrapper never pretends to click its hidden native control.
+    const control = demoAnchor(element, 'action');
+    if (control?.matches('input,textarea,select,button') && !control.disabled && visible(control)) control.focus({ preventScroll: true });
     run.busy = false;
+    position(true);
     return true;
   }
-  window.SparkXGicaDemoCursor = Object.freeze({ move: demoMove, click: demoClick, release: releaseDemoCursor });
+  window.SparkXGicaDemoCursor = Object.freeze({ move: demoMove, click: demoClick, point: demoPoint, release: releaseDemoCursor });
   document.addEventListener('sparkx:gica-demo-end', releaseDemoCursor);
+  document.addEventListener('input', (event) => {
+    const run = demoCursor, field = event.target;
+    if (!run || run.mode !== 'action' || !demoLease(run.signal) || !field?.matches?.('input,textarea') ||
+        !(field === run.element || run.element.contains(field)) || !demoTarget(field)) return;
+    // Let the typed text and caret stay completely unobstructed until the
+    // narrator moves to its next control.
+    run.typing = true; overlay.classList.add('is-writing');
+  }, true);
   new MutationObserver(() => { if (demoCursor && !demoLease(demoCursor.signal)) releaseDemoCursor(); })
     .observe(root, { attributes: true, attributeFilter: ['data-gica-demo-active'] });
+  new MutationObserver(() => { if (demoCursor && !demoLease(demoCursor.signal)) releaseDemoCursor(); })
+    .observe(document.body, { attributes: true, attributeFilter: ['data-voice-user', 'data-portal-role'] });
 
   function revealLocal(local, signature) {
     if (local.event_id !== eventID || localLoads.has(local.id)) return;
@@ -284,7 +408,17 @@
   }
   function position(immediate = false) {
     if (demoCursor) {
-      if (!demoLease(demoCursor.signal)) releaseDemoCursor();
+      const run = demoCursor;
+      if (!demoLease(run.signal)) releaseDemoCursor();
+      else if (!run.element.isConnected || !visible(run.element) || (!run.busy && !demoRunTarget(run))) overlay.setAttribute('hidden', '');
+      else if (!run.busy && !run.expired) {
+        overlay.removeAttribute('hidden');
+        if (run.mode === 'point') drawExplanation(run);
+        else {
+          const destination = demoDestination(run.element, run.mode);
+          demoDraw(destination.x, destination.y);
+        }
+      }
       return;
     }
     cancelAnimationFrame(animation);
@@ -364,7 +498,7 @@
       if (payload.state !== 'idle') throw new Error('Invalid idle');
       lastObserved = observed;
       if (root.dataset.state.startsWith('creation_') && document.querySelector('main form[data-gica-guided-draft]') && window.SparkXGicaCreation?.hasDraft()) return;
-      if (!pendingForm && !localCompletedAt) { clearEvent(); mark('idle', 'Listo', 'Preparado para tu orden. Abrir SparkX no inicia una llamada de IA.'); }
+      if (!pendingForm && !localCompletedAt) { clearEvent(); mark('idle', 'Listo', 'Preparado para tu orden. Abrir ArquiGica no inicia una llamada de IA.'); }
       return;
     }
     for (const job of payload.jobs) {
@@ -559,6 +693,8 @@
   });
   window.addEventListener('resize', () => position(true));
   window.addEventListener('scroll', () => position(true), { passive: true, capture: true });
+  window.visualViewport?.addEventListener('resize', () => position(true));
+  window.visualViewport?.addEventListener('scroll', () => position(true));
   reduced.addEventListener('change', () => position(true));
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) { releaseDemoCursor(); clearTimeout(timer); controller?.abort(); cancelAnimationFrame(animation); overlay.setAttribute('hidden', ''); }
@@ -567,6 +703,6 @@
   window.addEventListener('pagehide', () => { disposed = true; releaseDemoCursor(); clearTimeout(timer); controller?.abort(); localController?.abort(); cancelAnimationFrame(animation); });
   window.addEventListener('pageshow', (event) => { if (event.persisted) { disposed = false; position(true); schedule(100); } });
   root.dataset.state = 'idle'; position(true);
-  if (!root.dataset.statusUrl) copy.textContent = 'El cursor está preparado. Reinicia SparkX para cargar el seguimiento en vivo del servidor.';
+  if (!root.dataset.statusUrl) copy.textContent = 'El cursor está preparado. Reinicia ArquiGica para cargar el seguimiento en vivo del servidor.';
   schedule(100);
 })();

@@ -32,7 +32,7 @@ JOURNEY_NOTICE = (
 )
 JOURNEY_BRIEF = f"""{JOURNEY_NOTICE}
 
-ESCENARIO FICTICIO PARA ENSAYAR SPARKX
+ESCENARIO FICTICIO PARA ENSAYAR ARQUIGICA
 Un equipo de ejemplo quiere preparar un taller introductorio de uso responsable
 de IA para 30 participantes ficticios, el 20/11/2026 a las 18:00, America/Lima.
 Se propone una sala de práctica ficticia y una facilitación de ejemplo; no hay
@@ -128,7 +128,7 @@ def journey_baseline_payload():
             "Todos los datos son ficticios y los recursos son supuestos; no hay reservas ni asistentes reales.",
             "El horario base termina a las 19:30; cualquier ampliación requiere revisión y aprobación humana.",
             "La práctica usa información sintética; este escenario no genera respuestas con una API de IA.",
-            "Marcar una tarea en esta demo ensaya el seguimiento y no demuestra trabajo realizado fuera de SparkX.",
+            "Marcar una tarea en esta demo ensaya el seguimiento y no demuestra trabajo realizado fuera de ArquiGica.",
         ],
     }
 
@@ -323,7 +323,7 @@ def get_journey_demo_context(event):
     return {
         "badge": "Demo guiada · datos ficticios",
         "notice": JOURNEY_NOTICE,
-        "source": "Escenario ficticio elaborado manualmente para ensayar el flujo de SparkX.",
+        "source": "Escenario ficticio elaborado manualmente para ensayar el flujo de ArquiGica.",
         "original_spec": original_spec,
         "baseline_candidate_id": baseline_id,
         "change_candidate_id": change_id,

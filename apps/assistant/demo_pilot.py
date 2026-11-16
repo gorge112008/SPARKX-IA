@@ -16,7 +16,7 @@ from apps.events.models import Event
 from .local_commands import human_organizer
 
 
-PILOT_EVENT_ID = UUID("9c1cb0ba-4025-49dc-b9e8-d0f6cf3e84aa")
+PILOT_EVENT_ID = UUID("bcf52dbd-206b-4d22-a294-8c487c770c56")
 
 
 def _response(payload, *, status=200):

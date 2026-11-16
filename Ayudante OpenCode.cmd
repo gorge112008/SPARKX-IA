@@ -2,7 +2,7 @@
 setlocal
 cd /d "%~dp0"
 if not exist ".venv\Scripts\python.exe" (
-  echo No se encontro el entorno Python de SparkX. Revisa README.md.
+  echo No se encontro el entorno Python de ArquiGica. Revisa README.md.
   pause
   exit /b 1
 )

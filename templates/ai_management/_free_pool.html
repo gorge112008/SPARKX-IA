@@ -2,7 +2,7 @@
 {% if pool_save_url and pool_form %}
 <section class="ai-section" aria-labelledby="free-pool-title">
   <div class="ai-section-heading"><h2 id="free-pool-title">Modelos gratuitos de Gica-1</h2><span class="muted">{% if pool_summary.enabled %}Prioridad gratuita habilitada{% else %}Prioridad gratuita deshabilitada{% endif %}</span></div>
-  <p class="muted">Autoriza cada modelo y sus tareas. Los límites de esta tabla son internos de SparkX, por día UTC; no acreditan cuota ni disponibilidad del proveedor. Un trabajo usa un único modelo y no se reintenta tras un error.</p>
+  <p class="muted">Autoriza cada modelo y sus tareas. Los límites de esta tabla son internos de ArquiGica, por día UTC; no acreditan cuota ni disponibilidad del proveedor. Un trabajo usa un único modelo y no se reintenta tras un error.</p>
   {% if pool_summary.gateway_paused %}<div class="notice" role="status">La pasarela gratuita está en pausa hasta {{ pool_summary.cooldown_until|date:'d/m/Y H:i:s' }}. Es una pausa local; no conocemos la hora de restablecimiento del proveedor.</div>{% endif %}
   <div class="ai-table-wrap" tabindex="0" role="region" aria-label="Modelos gratuitos y autorizaciones">
     <table class="ai-table ai-pool-table"><thead><tr><th>Modelo revisado</th><th>Autorización y estado</th><th>Tareas y prioridad</th><th>Límites internos diarios</th><th>Uso y reservas internos</th><th>Configuración</th></tr></thead><tbody>

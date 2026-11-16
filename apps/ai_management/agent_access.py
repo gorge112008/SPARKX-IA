@@ -370,8 +370,10 @@ def ensure_agent_reservation_locked(*, account, snapshot, reserve_usd, usage=Non
     current_job = usage.job if usage is not None else job
     if snapshot["agent_route"].startswith("free_pool") and (current_job is None or current_job.kind != snapshot.get("agent_task_role")):
         _invalid("El modelo no tiene autorización para la función de este trabajo.", code="free_pool_invalid")
-    if current_job is None or not Event.objects.filter(pk=current_job.event_id, is_synthetic=True,
-                                                     owner_id=account.owner_id).exists():
+    from apps.assistant.compact_planning import authorized_compact_job
+    compact = authorized_compact_job(current_job, snapshot)
+    if not compact and (current_job is None or not Event.objects.filter(pk=current_job.event_id, is_synthetic=True,
+                                                     owner_id=account.owner_id).exists()):
         _invalid("El agente sólo admite eventos ficticios controlados de su cuenta.", code="synthetic_required")
 
 

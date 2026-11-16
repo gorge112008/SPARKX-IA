@@ -43,7 +43,7 @@ SessionTimeSet = formset_factory(SessionTimeForm, extra=0, min_num=1, max_num=20
 @require_http_methods(["GET", "POST"])
 def schedule_editor(request, event_id):
     actor = human_organizer(request.user)
-    event = get_object_or_404(Event.objects.select_related("active_plan"), pk=event_id, owner=actor)
+    event = get_object_or_404(Event.objects.select_related("active_plan"), pk=event_id, owner=actor, archived_at__isnull=True)
     if not event.active_plan_id:
         return redirect("events:detail", event_id=event.pk)
     sessions = event.active_plan.payload["sessions"]
@@ -55,7 +55,8 @@ def schedule_editor(request, event_id):
     if request.method == "POST" and formset.is_valid():
         try:
             with transaction.atomic():
-                event = Event.objects.select_for_update().select_related("active_plan").get(pk=event.pk, owner=actor)
+                event = get_object_or_404(Event.objects.select_for_update().select_related("active_plan"),
+                    pk=event.pk, owner=actor, archived_at__isnull=True)
                 if str(event.revision) != request.POST.get("expected_revision") or str(event.active_plan_id) != request.POST.get("expected_plan"):
                     response_status = 409
                     raise ValidationError("La ficha o la agenda cambió. Recarga antes de proponer otro horario.")

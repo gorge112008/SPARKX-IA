@@ -61,7 +61,7 @@ CATALOG = {
         "source_url": "https://developers.openai.com/api/docs/pricing",
         "setup_url": "https://platform.openai.com/api-keys", "key_setting": "OPENAI_API_KEY",
         "description": "Tarifa Standard, con caché desactivada en esta integración. Los créditos se comprueban en la organización API.",
-        "privacy": "La suscripción y los créditos no se leen desde SparkX; los límites del proveedor siguen siendo necesarios.",
+        "privacy": "La suscripción y los créditos no se leen desde ArquiGica; los límites del proveedor siguen siendo necesarios.",
         "privacy_url": "https://developers.openai.com/api/docs/guides/your-data",
     },
     "openai_54_mini": {
@@ -70,7 +70,7 @@ CATALOG = {
         "verified_on": date(2026, 11, 12),
         "source_url": "https://developers.openai.com/api/docs/models/gpt-5.4-mini",
         "setup_url": "https://platform.openai.com/api-keys", "key_setting": "OPENAI_API_KEY",
-        "description": "Tarifa Standard con caché automática. La oferta por compartir datos requiere elegibilidad y activación del proyecto en OpenAI; SparkX no las verifica y el exceso puede consumir saldo.",
+        "description": "Tarifa Standard con caché automática. La oferta por compartir datos requiere elegibilidad y activación del proyecto en OpenAI; ArquiGica no las verifica y el exceso puede consumir saldo.",
         "privacy": "Si activas compartir entradas y respuestas, OpenAI puede usarlas para mejorar modelos. Usa datos ficticios en el proyecto de pruebas y comprueba sus controles de datos.",
         "privacy_url": "https://developers.openai.com/api/docs/guides/your-data",
     },

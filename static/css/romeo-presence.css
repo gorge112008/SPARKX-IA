@@ -116,6 +116,11 @@
 .romeo-cursor-label text { fill:var(--sidebar); stroke:none; font-family:inherit; font-size:11px; font-weight:600; }
 .romeo-cursor.is-docked .romeo-cursor-label { display:none; }
 .romeo-cursor.is-paused .romeo-cursor-arrow { fill:var(--muted); }
+.romeo-cursor.is-pointing .romeo-cursor-arrow,.romeo-cursor.is-pointing .romeo-cursor-label { display:none; }
+.romeo-cursor[data-gica-demo-cursor="true"] { z-index:110; }
+.romeo-cursor[data-gica-demo-cursor="true"] .romeo-cursor-label,.romeo-cursor.is-writing .romeo-cursor-arrow { display:none; }
+.romeo-cursor[data-gica-demo-cursor="true"] .romeo-cursor-arrow { transform:scale(.7); transform-origin:0 0; opacity:.85; }
+.romeo-explanation-pointer { fill:none; stroke:#dc3545; stroke-width:1.2; vector-effect:non-scaling-stroke; }
 @media(max-width:700px) {
   .app-topbar:has(.romeo-presence) { gap:10px; }
   .app-topbar:has(.romeo-presence) .app-location { min-width:0; }

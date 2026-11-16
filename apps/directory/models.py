@@ -17,6 +17,7 @@ class Organization(models.Model):
     alias_keys = models.TextField(blank=True, editable=False)
     is_active = models.BooleanField(default=True)
     is_synthetic = models.BooleanField(default=False)
+    archived_at = models.DateTimeField(null=True, blank=True, editable=False)
     version = models.PositiveIntegerField(default=1, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -24,7 +25,7 @@ class Organization(models.Model):
     class Meta:
         ordering = ("name_key", "id")
         constraints = [
-            models.UniqueConstraint(fields=("owner", "name_key"), name="directory_org_owner_name"),
+            models.UniqueConstraint(fields=("owner", "name_key"), condition=models.Q(archived_at__isnull=True), name="directory_org_owner_name"),
             models.CheckConstraint(condition=models.Q(version__gte=1), name="directory_org_positive_version"),
         ]
 
@@ -61,6 +62,7 @@ class Person(models.Model):
     expertise = models.CharField(max_length=600, blank=True)
     is_active = models.BooleanField(default=True)
     is_synthetic = models.BooleanField(default=False)
+    archived_at = models.DateTimeField(null=True, blank=True, editable=False)
     version = models.PositiveIntegerField(default=1, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -68,7 +70,7 @@ class Person(models.Model):
     class Meta:
         ordering = ("name_key", "id")
         constraints = [
-            models.UniqueConstraint(fields=("owner", "email_key"), condition=~models.Q(email_key=""), name="directory_person_owner_email"),
+            models.UniqueConstraint(fields=("owner", "email_key"), condition=~models.Q(email_key="") & models.Q(archived_at__isnull=True), name="directory_person_owner_email"),
             models.CheckConstraint(condition=models.Q(category__in=["speaker", "participant", "guest"]), name="directory_person_category"),
             models.CheckConstraint(condition=models.Q(version__gte=1), name="directory_person_positive_version"),
         ]
@@ -90,6 +92,8 @@ class Person(models.Model):
             raise ValidationError({"email": "El correo normalizado es demasiado largo."})
         if self.organization_id and self.organization.owner_id != self.owner_id:
             raise ValidationError({"organization": "La institución no pertenece a tu directorio."})
+        if self.organization_id and self.archived_at is None and self.organization.archived_at is not None:
+            raise ValidationError({"organization": "La institución fue retirada del directorio."})
 
     def __str__(self):
         return self.full_name

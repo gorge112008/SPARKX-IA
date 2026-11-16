@@ -11,7 +11,7 @@
   </button>
   <button class="romeo-stop-top" type="button" data-romeo-action-stop hidden>Detener</button>
   <button class="romeo-stop-top" type="button" data-romeo-voice-stop hidden>Apagar mic</button>
-  <button class="romeo-stop-top" type="button" data-gica-demo-stop hidden>Detener piloto</button>
+  <button class="romeo-stop-top" type="button" data-gica-demo-stop hidden>Detener recorrido</button>
   <section id="romeo-presence-details" class="romeo-presence-details" aria-label="Conversar con Gica-1" hidden>
     <div class="romeo-presence-heading"><img class="gica-panel-avatar" src="{% static 'img/gica-avatar.svg' %}" width="34" height="34" alt=""><div><strong>Gica-1</strong><span class="romeo-presence-badge">Tu asistente de eventos</span></div><a class="text-link gica-manage-link" href="{% url 'assistant:profile' %}">Gestión del bot</a></div>
     <p class="romeo-presence-copy" data-romeo-cursor-copy>¿Creamos un evento o hacemos otra tarea?</p>
@@ -54,12 +54,12 @@
     </form>
     <section class="gica-demo" aria-labelledby="gica-demo-title" data-gica-demo>
       <h3 id="gica-demo-title">Mira cómo creamos un evento</h3>
-      <p class="field-help">Sigue el registro de Gicaingenieros, la ficha del seminario y su calendario. Este recorrido guarda el piloto, aprueba su agenda y muestra el cambio de Robert a Jorge Gayoso Ugas y del jueves 19 al 26 de noviembre. Una repetición reutiliza el mismo evento. Sin micrófono ni consumo de modelos.</p>
-      <div class="gica-creation-launch"><button class="button button-secondary" type="button" data-gica-demo-start>Iniciar piloto guiado</button><button class="text-link" type="button" data-gica-demo-stop hidden>Detener piloto</button></div>
-      <p class="field-help" data-gica-demo-status role="status" aria-live="polite">Sólo necesitas observar. Usa Detener demo para interrumpirla.</p>
+      <p class="field-help">Ficha, agenda con IA, preparación y comunicaciones. Revisaremos el calendario y cambiaremos de expositor manteniendo la fecha. El recorrido guarda sus cambios; una repetición reutiliza el evento.</p>
+      <div class="gica-creation-launch"><button class="button button-primary" type="button" data-gica-demo-start data-gica-demo-mode="agenda-openai">Iniciar demo con OpenAI</button><button class="button button-secondary" type="button" data-gica-demo-start data-gica-demo-mode="agenda-live">Demo con IA gratuita</button><button class="button button-secondary" type="button" data-gica-demo-start data-gica-demo-mode="agenda-review">Guardar agenda para comparar</button><button class="button button-secondary" type="button" data-gica-demo-start>Recorrido con revisión</button><button class="text-link" type="button" data-gica-demo-stop hidden>Detener recorrido</button></div>
+      <p class="field-help" data-gica-demo-status role="status" aria-live="polite">Sigue los pasos. Si la IA necesita aclaraciones, podrás elegir una respuesta breve.</p>
       <p class="field-help" data-gica-demo-progress></p>
       <details><summary>Guion de la demostración</summary><div data-gica-demo-script></div></details>
-      <a class="button button-secondary" data-gica-demo-event hidden>Ver evento piloto</a>
+      <a class="button button-secondary" data-gica-demo-event hidden>Ver evento</a>
     </section>
     {% if request.resolver_match.app_name != 'assistant' or request.resolver_match.url_name != 'profile' %}<div hidden data-gica-settings-fallback>{% include 'assistant/_gica_settings.html' %}</div>{% endif %}
   </section>

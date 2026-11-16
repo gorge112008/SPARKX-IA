@@ -93,7 +93,7 @@ def collect_local_checks(owner, at=None):
     """Return safe local hints by catalog key; never alter manual completion."""
     checked_at = at or timezone.now()
     checks = {
-        "creditos_api": _result("info", "Revisión manual en la cuenta del proveedor: vinculación, saldo, vigencia, cuota y recargas. SparkX no consulta ni confirma esos datos desde este módulo.", checked_at),
+        "creditos_api": _result("info", "Revisión manual en la cuenta del proveedor: vinculación, saldo, vigencia, cuota y recargas. ArquiGica no consulta ni confirma esos datos desde este módulo.", checked_at),
         "credencial_privada": _result("pending", "Selecciona un perfil propio en Gestión de IA y configura su credencial de forma privada. No pegues claves en este módulo.", checked_at),
         "presupuesto_ia": _result("pending", "Revisa el perfil y los límites locales en Gestión de IA. Este checklist no cambia presupuestos ni autoriza consumo.", checked_at),
         "prueba_recorrido": _result("pending", "No se encontró un recorrido local enlazado de propuesta, aprobación y consumo informado por el proveedor para tus eventos. Una demo manual no lo acredita.", checked_at),

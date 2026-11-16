@@ -287,7 +287,7 @@ def verify_free_model(model_id=DEFAULT_MODEL, *, synthetic_demo=False,
     request = Request(
         CATALOG_URL,
         headers={
-            "User-Agent": "Mozilla/5.0 SparkX-Free-Catalog/1.0",
+            "User-Agent": "Mozilla/5.0 ArquiGica-Free-Catalog/1.0",
             "Accept": "application/json",
         },
         method="GET",

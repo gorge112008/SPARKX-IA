@@ -5,25 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f5f7fb">
-  <title>{% block title %}Acceso · SparkX{% endblock %}</title>
-  <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
-  <script src="{% static 'js/theme.js' %}?v=20261108-calendar1"></script>
-  <link rel="stylesheet" href="{% static 'css/app.css' %}?v=20261108-motion2">
-  <link rel="stylesheet" href="{% static 'css/accounts.css' %}?v=20261113-accounts1">
+  <title>{% block title %}Acceso · ArquiGica{% endblock %}</title>
+  <link rel="icon" href="{% static 'brand/arquigica-monogram.png' %}?v=20261116-brand3" type="image/png">
+  <script src="{% static 'js/theme.js' %}?v=20261116-brand3"></script>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}?v=20261116-brand3">
+  <link rel="stylesheet" href="{% static 'css/accounts.css' %}?v=20261116-brand3">
   <script src="{% static 'js/accounts.js' %}?v=20261113-accounts1" defer></script>
 </head>
-<body class="access-page">
+<body class="access-page {% block access_page_class %}{% endblock %}">
 <a class="skip-link" href="#main-content">Saltar al contenido</a>
 <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
   <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 2c1.1 6.3 3.7 8.9 10 10-6.3 1.1-8.9 3.7-10 10C10.9 15.7 8.3 13.1 2 12c6.3-1.1 8.9-3.7 10-10Z"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14A8.5 8.5 0 0 1 10 3.5 8.5 8.5 0 1 0 20.5 14Z"/></symbol>
 </defs></svg>
-<header class="access-header">
-  <a class="access-brand" href="{% url 'login' %}" aria-label="SparkX, iniciar sesión"><svg class="icon brand-spark" aria-hidden="true"><use href="#i-spark"/></svg><span>SparkX</span></a>
+<header class="access-header {% block access_header_class %}{% endblock %}">
+  {% block access_brand %}<a class="access-brand" href="{% url 'login' %}" aria-label="ArquiGica, iniciar sesión">{% include "partials/brand_mark.html" with brand_variant="compact" %}</a>{% endblock %}
   <button class="theme-toggle icon-button" type="button" data-theme-toggle aria-label="Cambiar a modo oscuro" aria-pressed="false" hidden><svg class="icon theme-icon-sun" aria-hidden="true"><use href="#i-sun"/></svg><svg class="icon theme-icon-moon" aria-hidden="true"><use href="#i-moon"/></svg></button>
 </header>
 {% block content %}{% endblock %}
-<footer class="access-footer">SparkX · Arquitectura inteligente de eventos</footer>
+{% block access_footer %}<footer class="access-footer">ArquiGica · Arquitectura inteligente de eventos</footer>{% endblock %}
 </body>
 </html>

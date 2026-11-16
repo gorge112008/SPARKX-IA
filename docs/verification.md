@@ -1,6 +1,575 @@
-# Verificación local de SparkX — actualización del 16 de noviembre de 2026
+# Verificación local de ArquiGica — actualización del 16 de noviembre de 2026
 
-## Piloto completo de Gicaingenieros — corte vigente del 16 de noviembre
+## Informe del proyecto para la entrega
+
+El usuario precisó que el entregable es un **Project Report** con descripción del
+problema, objetivos, solución propuesta, metodología, tecnologías utilizadas,
+implementación y resultados. El Word vigente se reorganiza en esos siete
+apartados; el manual y las instrucciones técnicas dejan de dominar el cuerpo.
+Los objetivos específicos se contrastan con resultados locales y pendientes.
+Se conservan las copias técnicas anteriores como antecedente, y los enlaces
+principales del README apuntan a los nuevos informes del proyecto ES/EN.
+Cada versión tiene doce páginas, ocho figuras y el logo. Resultados añade cinco
+figuras vinculadas a los objetivos: directorio, calendario, tramo de agenda,
+cambio pendiente de aprobación y personalización de Gica. Los detalles de
+identidad y preferencias proceden de dos áreas identificadas de la misma
+pantalla; los recortes y sus hashes se registran en `outcome-figures.json`.
+Se renderizaron las versiones finales con el flujo canónico. El cotejo
+independiente comprobó secciones, cifras, alcance y ausencia de secretos.
+
+El PPT mantiene catorce diapositivas por idioma y aclara problema y objetivo,
+colaboración entre Gica y la IA, metodología iterativa y resultados. La etiqueta
+de evidencia indica siete **grupos** UI. No se ejecutaron nuevas pruebas de la
+aplicación ni inferencias para esta corrección documental. Recibos y renders:
+`Temporal/arquigica-project-report/`.
+
+## Preparación específica y cambio de agenda con IA
+
+Las nuevas solicitudes piden entre ocho y diez tareas concretas del seminario de
+mantenimiento, con entregables breves y dependencias entre contenido, materiales,
+acceso, ensayo y moderación. OpenAI recibe un esquema con ese rango y tres
+comunicaciones: invitación, descripción e indicaciones. Se mantienen los límites
+de 12.000 tokens de entrada, 1.800 de salida y USD 1 acumulado. Los contratos
+históricos con menos tareas o mensajes siguen siendo legibles.
+
+El cambio cerrado `more_case_time` proyecta sólo minutos y funciones de sesiones,
+sin exportar nombres, fechas o títulos privados del plan. La respuesta debe dar
+al caso al menos cinco minutos adicionales, conservar 90 minutos en total y diez
+como mínimo para preguntas. El servidor conserva títulos, tareas, fecha y
+expositor; rechaza una ficha aún no sincronizada con su agenda. La propuesta se
+aprueba mediante una confirmación humana, también en el recorrido automático.
+
+La demo explica instrucciones y dependencias, ilustra estados y porcentaje en
+una escena local sin guardar completados ficticios, lee las comunicaciones y
+termina en Conoce a Gica. El perfil reutiliza los controles de voz ya vinculados
+al navegar, sin abrir la conversación ni duplicar sus identificadores.
+
+Validación de servidor: **99 pruebas correctas** en planificación compacta,
+OpenAI, cambio acotado, piloto, compatibilidad y perfil, en 31,433 segundos.
+Comprobación Django y sintaxis de cinco módulos JavaScript correctas. Proveedores
+doblados localmente; ninguna llamada remota ni modificación de la base activa
+durante estas pruebas. El registro está en
+`Temporal/arquigica-final-artifacts/backend-checks.log`.
+
+Comprobación visual con Edge aislado y SQLite descartable: tres grupos
+principales correctos para instrucciones y desplazamiento, simulación de estados
+al 10 % sin cambios persistidos y lectura de tres mensajes. Otros cuatro grupos
+verificaron la aprobación humana del cambio de IA, la narración final de Conoce
+a Gica y ambas vistas en móvil oscuro a 390 × 844 píxeles. Detener retira la
+simulación; la revisión no deja el cursor sobre el cuadro de aprobación. Sin
+errores JavaScript, avisos relevantes, peticiones externas ni POST de negocio.
+La interfaz usa plantillas, CSS y cursor reales; contenido y voz son dobles
+locales. Se repitieron los cuatro grupos de integración de la pausa por clave
+con el narrador actualizado. Capturas y procedencia:
+`Temporal/qa-gica-demo-content/screenshots.json`.
+
+Antecedente técnico conservado: informes ArquiGica de 17 páginas en español y 15 en
+inglés, cada uno con nueve capturas actuales y logo. Las presentaciones tienen
+14 diapositivas por idioma. Se inspeccionaron las 32 páginas renderizadas con
+LibreOffice y las 28 diapositivas renderizadas con Artifact Tool. Los PPTX
+pasaron la comprobación de integridad, disposición y reimportación; no se
+abrieron en PowerPoint nativo. Se conservaron los originales anteriores; este
+material técnico sirve como antecedente del informe del proyecto vigente.
+Recibos y hashes de ese corte en
+`Temporal/arquigica-final-artifacts/`.
+
+## Pausa por clave API ausente — corte vigente
+
+El recorrido y la solicitud manual del piloto conservan su paso cuando OpenAI
+devuelve el rechazo local `ai_not_configured`, sin crear el trabajo ni reservar
+consumo. El aviso **Guía en pausa** permite al administrador abrir **Guardar
+clave API** en otra pestaña y volver a **Reanudar guía**. Guardar una conexión
+no envía la solicitud automáticamente; si sigue faltando, se mantiene la pausa.
+Se conservan las respuestas de aclaración, el proveedor y la clave de idempotencia.
+
+El cliente sólo reintenta esa operación local rechazada mediante un clic real.
+No reenvía trabajos ante errores de cuota, permisos, proveedor o tiempos agotados.
+Detener, salir de la página o cambiar de usuario/rol cancela la continuidad.
+La pestaña oculta sólo se conserva durante esta pausa; recargar o cerrar la guía
+termina el recorrido en memoria. Siguen vigentes las expiraciones de sesión.
+
+Validación: **70 pruebas backend** correctas (49 de planificación compacta y
+OpenAI, 21 de piloto y flujo), **12 grupos de pruebas UI** del cliente y **4 de
+integración** con el narrador real. Se verificaron diez minutos virtuales de
+pausa, reanudación, doble clic, respuestas conservadas, cambio de pestaña y
+cancelación. Edge aislado mediante Playwright por ausencia de Browser; escritorio
+y móvil sin recortes, sin errores de consola ni solicitudes externas.
+Los proveedores, audio y navegación de prueba usan dobles locales, sin inferencia
+ni modificaciones de la base activa. Evidencia en `Temporal/qa-gica-api-pause/`.
+
+## Identidad definitiva azul y blanco — corte vigente
+
+Por confirmación del usuario, el logo utiliza exclusivamente **#00437D y blanco**:
+azul sobre blanco en tema claro y blanco sobre azul en oscuro. La misma geometría
+se mantiene mediante máscara CSS; el icono del navegador también se invierte.
+El turquesa **#087F8C** queda reservado a controles y estados de la interfaz.
+
+Se completó la revisión de identidad visible de ArquiGica en pantallas, narración,
+ayudas, administración Django, consola, prompts y guías vigentes. El nuevo
+empaquetado identifica ArquiGica y sigue reconociendo el manifiesto anterior.
+Se conservan identificadores de compatibilidad, rutas, claves locales, carpeta
+técnica y referencias auténticas al concurso y al proyecto externo de OpenAI.
+
+Validación de esta ampliación: **69 pruebas** de herramientas/lenguaje, **45** de
+empaquetado/catálogo/instalación y **79** de acceso/conocimiento/lenguaje correctas
+(hay once pruebas de lenguaje compartidas entre grupos). `manage.py check` sin
+incidencias; **27 pruebas** adicionales del recorrido manual correctas tras
+actualizar su descripción. Selección de **489 fuentes** válida. **26 comprobaciones UI** correctas
+en Edge aislado, con SQLite sintético: login, marca, inversión de logo y favicon,
+persistencia de tema y móvil a 390 y 360 píxeles sin desbordamientos. Sin errores
+de consola, recursos fallidos ni peticiones externas.
+
+No se modificaron la base activa, las conexiones ni los presupuestos, ni se
+inició/reinició el servicio habitual. Las capturas y resultados vigentes están en
+`Temporal/qa-arquigica-brand/`. Los Word, PPT y ZIP anteriores conservan su
+identidad y alcance históricos hasta regenerarse.
+
+## ArquiGica y acceso dividido — corte vigente
+
+El nombre visible del producto es **ArquiGica**; SparkX 3.0 identifica el
+concurso y `SPARKX3.0` sigue siendo la carpeta técnica existente. La marca AG,
+los títulos, los mensajes y la narración utilizan la nueva identidad. Se
+conservan rutas, cuentas, IDs, claves de almacenamiento y contratos técnicos.
+
+Azul institucional **#00437D**, obtenido del PNG aportado, y turquesa de acciones
+**#087F8C**. Las tintas para texto y controles se adaptan al fondo grafito del
+tema oscuro. El acceso muestra marca a la izquierda y formulario real a la
+derecha; en móvil se apila. El monograma generado con transparencia está en
+`static/brand/`, con procedencia y prompt. Su máscara CSS mantiene colores
+exactos sin rasterizar los campos ni los textos.
+
+Comprobaciones de este cambio:
+
+- **143 casos de acceso, vistas y apagado: 142 correctos, uno omitido** que
+  requiere PostgreSQL; **146 casos** de contexto, contrato, proveedores con
+  dobles y demo correctos; **11 casos** de arranque y empaquetado correctos.
+- **21 comprobaciones UI** en Edge aislado mediante Playwright, al no estar
+  disponible Browser. HTTP real sobre SQLite sintético: login válido e inválido,
+  contraseña visible/oculta, tema persistente, branding del panel y móvil sin
+  desbordamientos. Capturas a 1568×1003, 390×844 y 360×740; sin errores de
+  consola, recursos fallidos o peticiones externas.
+- Contraste de texto de botones claro **4,75:1**, oscuro **7,40:1**; identidad y
+  navegación usan tintas accesibles. Esta comprobación no certifica todos los
+  estados o componentes de la plataforma.
+
+La base activa, sus cuentas, las conexiones privadas y el presupuesto no se
+modificaron. No se inició ni reinició el servicio habitual ni se ejecutó una
+inferencia del prototipo. Se revisó la referencia y el render final, con
+comparación de layout, copia, tipografía, color y activo en
+`Temporal/qa-arquigica-brand/`. Los Word, PPT y ZIP anteriores no se regeneraron
+con esta identidad; conservan su fecha y alcance anteriores.
+
+## Lanzador simplificado — corte vigente
+
+El archivo raíz ahora es **`iniciar.cmd`**. El renombrado conserva su contenido
+byte por byte, comprobado con SHA-256; siguen el mismo arranque, entorno y
+coordinador. En PowerShell se ejecuta con `.\iniciar.cmd` sin comillas ni `&`.
+Se actualizaron README, guías vigentes, arquitectura, plan de construcción,
+mensajes de apagado y selección de archivos del empaquetador. Los registros
+históricos posteriores conservan el nombre anterior como antecedente.
+
+Comprobaciones: **11 pruebas del lanzador y empaquetado** y **41 pruebas de
+apagado local** correctas; selección de **487 archivos de fuentes** correcta,
+con `iniciar.cmd` incluido. No se arrancó ni reinició el servicio, ni se
+ejecutaron llamadas de IA. Los accesos directos externos que apunten al nombre
+anterior deben actualizarse. Los ZIP e informes de entregas anteriores no se
+regeneraron. El guion se actualizó en `entrega/SparkX_Guion_Video_Actualizado.docx`
+porque la versión anterior estaba abierta; conserva dos páginas revisadas.
+
+## Organización formal del código y documentación — corte vigente
+
+Se reorganizaron **90 archivos de pruebas** en `apps/<modulo>/tests/`, para las
+nueve apps. Se ajustaron imports y la ruta del corpus dependiente de `__file__`;
+el fixture compartido `valid_plan` quedó en `planning/tests/fixtures.py` con
+exportación compatible. El descubrimiento conserva exactamente **1.540 casos
+únicos**, sin pérdida ni duplicación después de renombrar módulos.
+
+La portada README y la arquitectura presentan el código vigente, sus
+responsabilidades, diagramas y arranque real. Once documentos se agruparon en
+`docs/guias`, `docs/arquitectura`, `docs/decisiones` y `docs/validacion`.
+Las notas largas anteriores de README y arquitectura se conservan en
+`docs/historial` como antecedentes explícitos. `docs/architecture.md`,
+`docs/construction-plan.md` y este registro mantienen entradas estables.
+
+El workspace portátil `ArquiGica-presentacion.code-workspace` ordena el explorador
+de VS Code y oculta entornos, datos y auxiliares de la vista de presentación.
+No traslada esos archivos ni sustituye permisos o exclusiones de distribución.
+El empaquetador admite el workspace y conserva las ocho excepciones de fixtures
+de seguridad con los mismos hashes, vinculadas a sus nuevas rutas.
+
+Comprobaciones tras la organización:
+
+- Suite completa Django: **1.540 casos, 1.526 correctos y 14 omitidos** por
+  bloqueos/concurrencia que requieren PostgreSQL, sobre el entorno SQLite local.
+- Herramientas: **139 pruebas correctas**, incluidas las del lanzador,
+  ayudante OpenCode y empaquetador. Sus conexiones están controladas en las pruebas.
+- `check` correcto, `makemigrations --check --dry-run` sin cambios y paquete de
+  fuentes aceptado por la selección y comprobación de credenciales.
+- **237 enlaces locales** de documentación revisados, sin destinos ausentes.
+
+No se movieron módulos ejecutables, plantillas, recursos de la aplicación,
+migraciones, entorno o datos activos. No se reinició el servicio habitual;
+al comprobar el puerto 8000 se encontraba detenido. Esta organización no
+ejecutó inferencias reales ni actualizó los
+Word/PPT/ZIP de entregas anteriores; deben regenerarse al preparar otra entrega.
+
+Evidencia privada local: `Temporal/qa-code-structure/` contiene mapas de
+movimientos, comparación de descubrimiento, suites y comprobación de enlaces.
+La guía de inicio está en [Inicio e instalación](guias/inicio.md).
+
+## Directorio antes del evento y confirmación visual — corte vigente
+
+El recorrido actualizado presenta SparkX y a **Gica, bot arquitecto**; crea
+Gicaingenieros, registra a **Jorge Gayoso** y después abre Nuevo evento. Mantiene
+Robert como primer expositor y muestra posteriormente cómo sustituirlo por Jorge.
+La despedida explica el acompañamiento por voz/texto. La inferencia y sus permisos
+no se confunden con la guía: guardar, generar y aprobar manualmente mantienen
+sus controles humanos habituales.
+
+Una respuesta válida muestra **Respuesta recibida** durante 3.000 ms antes de
+cerrarse y continuar. El recorrido integrado midió 3.004,7 y 3.005,9 ms en dos
+respuestas; el reloj virtual comprobó los límites 2.999/3.000 ms, cancelación,
+cambio de identidad, reemplazo de escena y movimiento reducido. Los errores
+no presentan confirmación de éxito.
+
+Verificación nueva, sin inferencias remotas ni consumo adicional:
+
+- **163 casos backend: 161 correctos y dos omitidos de concurrencia PostgreSQL.**
+  Incluyen retiro de fichas, piloto, contrato compacto, creación y límites de
+  archivado. Los 18 de guía vigentes prueban estado, datos pendientes y modales:
+  «gracias» no se convierte en nombre ni abandona la pregunta.
+- **10 grupos del recorrido completo**, con formularios HTTP, cola, ledger,
+  validación y dos aprobaciones humanas reales sobre SQLite desechable. El
+  proveedor y el audio usan dobles declarados: dos respuestas sintéticas,
+  preguntas A/B, dos POST de directorio y ningún error de JS/consola/red externa.
+- **Ocho grupos de directorio/navegación, ocho de confirmación de espera y diez
+  del controlador guiado**. Además, seis grupos integran JS, HTTP, CSRF y SSR
+  reales para estado → calendario → agenda → pregunta de expositor → agradecimiento
+  → continuación → prefill. Ocho tablas operativas quedan idénticas; sólo cambian
+  metadatos privados de la guía.
+- `check`, migraciones pendientes y sintaxis JS limpios. Servicio reiniciado en
+  `127.0.0.1:8000`; cinco grupos de aceptación GET, diez assets actualizados y
+  formularios de escritorio/móvil sin errores ni cambios de negocio.
+
+La limpieza fue ensayada sobre copia y después aplicada. El evento previo y las
+fichas antiguas de Gicaingenieros/Jorge quedan retirados de las vistas, conservando
+sus referencias históricas. Permanecen visibles UNAC y Robert; la nueva demo
+creará las otras fichas mediante formularios. **No se borró ninguna cuenta de
+acceso, plan, Job o consumo**: 42 tablas ajenas al retiro idénticas, integridad y
+claves foráneas correctas. UUID reservado:
+`bcf52dbd-206b-4d22-a294-8c487c770c56`; todavía sin crear en la base activa.
+
+El gasto conservado sigue en cuatro llamadas OpenAI, **4.344 tokens y
+USD 0,006068 brutos estimados**, sin inferencia nueva en esta actualización.
+El servicio confirma conexión efímera OpenAI no disponible después del reinicio:
+para otra generación real se debe guardar de nuevo en Gestión de IA → APIs y
+agentes. No se ha repetido automáticamente la demo pagada.
+
+Límites: audio físico y concurrencia PostgreSQL no acreditados. Después de guardar
+una ficha del directorio con recarga completa, se debe abrir de nuevo el evento
+para retomar su guía; no se conserva contexto personal en localStorage. El
+acompañamiento abre y prepara formularios; no equivale a autonomía para aprobar.
+
+Evidencia local privada: `Temporal/qa-gica-flow-v4/` (`backend-final-checks.txt`,
+`wait-complete-results.json`, `guided-client-results.json`,
+`guided-integrated-results.json`, `reset-rehearse.json`, `reset-apply.json`,
+`runtime-results.json`) y `Temporal/qa-gica-directory-v4/`
+(`compact-journey-results.json`, `directory-results.json`).
+
+## Antecedente: piloto real, prompt visible y archivado seguro
+
+El 16 de noviembre a las 12:00 America/Lima terminó el recorrido real del piloto
+`ebd54e40-752c-4f8a-9376-f2735e2c6a41`, con GPT-5.4 mini y voz Sabina nativa,
+sin dobles de proveedor o contenido:
+
+- **Una llamada nueva:** 1.023 tokens de entrada + 297 de salida = **1.320 tokens**;
+  coste bruto Standard estimado **USD 0,002104**.
+- **Acumulado conservado:** cuatro llamadas OpenAI, **4.344 tokens**, coste bruto
+  estimado **USD 0,006068** y **USD 0,993932** restantes del tope autorizado USD 1.
+  Incluye el intento rechazado anterior. El cobro neto tras créditos no está comprobado.
+- **Cuatro sesiones de 90 minutos en total, tres tareas y tres comunicaciones**;
+  copia local confirmada antes de aplicar. Dos planes aprobados, calendario
+  inicial y actualizado y reemplazo Robert → Jorge sin otra llamada a la IA.
+- **Un evento activo y uno archivado**. Los Jobs, AIUsage y planes del anterior
+  coinciden exactamente con el respaldo; SQLite íntegro. Archivar no borra
+  historial ni reinicia el presupuesto.
+- **Cero rondas reales de preguntas** en esta ejecución. La IA entregó propuesta
+  directamente. Las pruebas de opciones A/B, espera de elección, corrección y
+  envío agrupado son locales con dobles identificados; no se presentan como
+  aclaraciones remotas observadas en este recorrido.
+
+El contexto y las instrucciones incluyen requisitos cerrados para caso aplicado,
+preguntas con minutos propios, ensayo técnico y moderación. La revisión semántica
+independiente considera la agenda **adecuada para el piloto**: marco 25 min,
+caso 35 min, preguntas 20 min y cierre 10 min. Las tareas incluyen acceso/audio/
+pantalla y moderación/material. Se cerraron las brechas principales de la agenda
+anterior; profundidad y dependencias siguen siendo mejorables.
+La valoración cubre un esquema: el nivel intermedio no está confirmado en el
+contexto y los títulos no acreditan corrección técnica del caso o materiales.
+Antes de difundir se deben elegir destinatarios y completar localmente datos
+de acceso confirmados; las instrucciones recibidas están dirigidas al equipo.
+
+Se observaron escritura progresiva del prompt exacto, clic del cursor en
+**Ejecutar solicitud**, cierre del panel al recibir el Job y escena SVG de espera
+durante la inferencia real. La captura `live-waiting-scene.png` acredita esa
+presentación, no razonamiento interno del modelo ni porcentaje de avance.
+La punta del cursor queda centrada verticalmente en el control, sin offset
+vertical añadido; se aparta hacia el margen en botones/selectores para no tapar texto.
+Las pistas originales vigentes son Órbita pop (124 BPM), Brisa groove (119 BPM)
+y Chispa latina (128 BPM), sintetizadas localmente. Sabina informó fin de lectura;
+**la audibilidad física no está acreditada**.
+
+Pruebas focales, sin llamadas remotas de QA:
+
+- **52 casos compactos**, incluidos cinco de requisitos y conservación del piloto,
+  correctos; `check` y revisión de migraciones limpios.
+- **66 casos de archivado y regresión**, incluidos seis nuevos: bloqueo de página
+  y formulario público antiguo, republicación, roster, horarios y herramientas;
+  agendas archivadas dejan de reservar expositores/recursos, conservando sus registros.
+- UI: nueve grupos de recorrido, nueve de cliente, ocho de puntero y nueve de
+  espera; tres comprobaciones de audio offline. Se usan dobles sólo en esa QA.
+
+El reinicio final cargó las guardas de archivado en el servicio local. La clave
+efímera quedó vacía: el plan guardado puede revisarse sin ella; otra generación
+requiere introducirla de nuevo en **Gestión de IA → APIs y agentes**. No se hicieron
+más llamadas después de este cierre.
+
+Evidencia: [completion.json](../Temporal/qa-gica-polish-v3/completion.json),
+[agenda-review.json](../Temporal/qa-gica-polish-v3/agenda-review.json),
+`Temporal/qa-gica-polish-v3/live-result.json`, `live-waiting-scene.png`,
+`compact-journey-results.json`, `polish-results.json`, `pointer-results.json`,
+`wait-results.json` y `waiting-audio-results.json`. Copia original nueva:
+`Temporal/gica-agenda-review/2/bba85265-3c46-420c-b80e-589ed120946e.json`.
+Estos archivos son privados locales. No se acreditan disponibilidad externa de
+expositores o Zoom, ejecución de tareas, envío de comunicaciones, carga o carreras
+PostgreSQL ni capacidad para eventos generales por cerrar este piloto.
+
+## Antecedente: primera aceptación OpenAI y recuperación
+
+El botón principal **Mis eventos → Iniciar demo con OpenAI** selecciona
+`agenda-openai` y el perfil principal configurado `gpt-5.4-mini`, por autorización
+expresa de Jorge. Solicita una propuesta normal, guarda su copia con `saveCopy`
+y sólo tras confirmar el recibo de `archive` continúa a la aprobación del
+piloto fijo. Se mantienen los presupuestos mensual y del agente y el tope global
+acumulado de USD 1, incluyendo reservas y consumos anteriores. La reserva máxima
+12.000/1.800 equivale a USD 0,017100 por llamada a tarifa Standard; no es gasto medido.
+`full` conserva la pausa de aprobación humana; el modo privado sigue siendo
+opcional desde **Conoce a Gica → Guardar agenda para comparar**. La opción
+**Demo con IA gratuita** permanece separada, sin cambio automático de proveedor.
+
+Responses usa `store=false`, razonamiento `none`, servicio Standard y JSON
+Schema estricto con envoltorio `result`. Preview y envío comparten sistema,
+entrada y esquema; el servidor retira el envoltorio y valida el contrato compacto.
+
+### Resultado real conciliado
+
+El 16 de noviembre a las 11:39 America/Lima se completó la continuación visible
+con OpenAI, sin dobles de proveedor, voz ni contenido:
+
+- **Tres llamadas GPT-5.4 mini**, incluida una respuesta rechazada. Uso informado:
+  **2.572 tokens de entrada + 452 de salida = 3.024 tokens**.
+- Coste bruto Standard estimado agregado **USD 0,003964**, bajo el tope acumulado
+  autorizado **USD 1**. El cobro neto después de créditos no se ha comprobado.
+  Los intentos anteriores y su contabilidad se conservan; cero reintentos automáticos.
+- Agenda validada: **cuatro sesiones, 90 minutos, cuatro tareas y tres borradores
+  de comunicación**. El archivo local se confirmó antes de aplicar la propuesta.
+- **Dos planes aprobados**: inicial con Robert y reemplazo por Jorge Gayoso Ugas.
+  Temas, horarios y recursos se conservaron; el reemplazo no necesitó otra llamada
+  a la IA. Calendario inicial y actualizado comprobados.
+- Recorrido `retry-live-result.json` correcto, sin errores de aplicación,
+  solicitudes denegadas ni errores de consola. Sabina nativa informó fin de
+  lectura; esto no acredita audibilidad física. Integridad SQLite correcta.
+
+Evidencia conciliada: `Temporal/qa-gica-openai/completion.json` y
+`Temporal/qa-gica-openai/retry-live-result.json`. Copia de la respuesta validada:
+`Temporal/gica-agenda-review/2/6a816058-9059-416b-b1e5-87607e491b35.json`.
+Son archivos privados locales, no recursos publicados. La revisión semántica
+independiente concluye **`needs_adjustments`**: progresión coherente durante 90
+minutos, pero sin tiempo explícito para caso práctico ni preguntas que pedía la
+ficha. El prompt real sólo exportó `focus=planning`; omitió nivel intermedio y
+formato de caso. Es una limitación del contexto preparado por SparkX; no se
+acredita incumplimiento literal de OpenAI de instrucciones que no recibió. La
+agenda original se conserva para comparar, sin otra inferencia o ajuste silencioso.
+Revisión independiente: [agenda-review.json](../Temporal/qa-gica-openai/agenda-review.json).
+La aceptación operativa no acredita cumplimiento total de la ficha, disponibilidad
+real de expositores/Zoom, ejecución de tareas ni envío de comunicaciones.
+
+### Pruebas locales y recuperación
+
+Validación focal de este corte:
+
+- Backend: **76 casos, 75 correctos y uno omitido** por PostgreSQL. Once casos
+  específicos de OpenAI usan HTTP simulado: payload estricto, prompt exacto,
+  herencia de proveedor, archivo, uso informado, rechazo de salida incompleta,
+  revocación y tope global acumulado en reserva y despacho. `check` y revisión
+  de migraciones correctos; no se necesitan nuevas migraciones para OpenAI.
+- Seis grupos del selector de modos: OpenAI sólo por modo explícito, copia
+  antes de aplicar, ruta gratuita separada, pausa humana conservada y bloqueo
+  si falta el recibo de copia. Las narraciones solicitan la voz femenina.
+- Seis grupos de voz: Sabina local, elección femenina guardada, conservación
+  de preferencias previas, catálogo tardío y fallo sin alternativa masculina o
+  remota. Son dobles de síntesis, sin prueba de audibilidad física.
+- Once grupos del cliente compacto: herencia OpenAI en aclaraciones, rechazo
+  de proveedor distinto, prompt exacto, archivo anterior a aprobación, privacidad,
+  preguntas agrupadas, cuota, cancelación, música/voz y móvil; con dobles identificados.
+- Once grupos de espera: actividad indeterminada, fases y modelo admitido, tres pistas
+  originales, pausa/cambio, consentimiento de voz, cancelación y ajuste visual.
+  No muestra porcentajes inventados y sigue usable sin WebAudio.
+- Formulario: corregidos estiramiento de bloques y alturas de controles;
+  revisión visual en tres tamaños de ventana. La integración del cliente
+  OpenAI se comprueba aparte de estas pruebas focales.
+- Cinco grupos de sólo lectura sobre el runtime: acceso y recursos servidos,
+  disposición de escritorio/móvil, Sabina local disponible y **46 tablas de
+  negocio intactas**. La sesión temporal de comprobación se retiró.
+
+Evidencia: `Temporal/qa-gica-compact/live-mode-results.json` y
+`waiting-v2-results.json`, `Temporal/qa-gica-openai/voice-results.json` y las
+pruebas mantenidas `apps/assistant/tests/test_compact_openai.py`. Estos resultados
+**no acreditan por sí mismos una inferencia OpenAI real**. El usuario guardó la clave en el
+panel privado después del último reinicio; el indicador del runtime confirmó
+disponibilidad sin recuperar ni exponer su valor.
+
+La ejecución real posterior recibió una pregunta válida de enfoque; se eligió
+planificación. La segunda llamada terminó fallida, sin publicar candidato o
+agenda. No se guardó su texto remoto: la causa concreta no está acreditada.
+Ambas llamadas informaron **1.974 tokens** y coste Standard agregado estimado
+**USD 0,001939**; sus recibos están liquidados. No se borraron esos Jobs ni consumos.
+
+Corrección posterior: la ronda con respuestas usa esquema nativo e instrucciones
+de propuesta únicamente. Un fallo de contrato conserva consumo e informa sólo
+`compact_invalid`. El propietario puede recuperar esa aclaración una vez mediante
+`retry`, incluso desde un nuevo recorrido vigente: mismas respuestas, proveedor,
+ficha y plan, antigüedad máxima dos horas y nueva reserva bajo los topes existentes.
+No hay reintento automático ni cadena de recuperaciones. **Continuar agenda con
+OpenAI** usa `agenda-openai-continue`, retoma la ficha y conserva la copia previa
+a aprobar. Las **47 pruebas focales
+compactas** (16 OpenAI y 31 del contrato/flujo) pasaron con dobles; `check` y revisión
+de migraciones correctos. Después del refuerzo de permisos del tag, pasaron 17
+casos OpenAI y de saneamiento del worker; estas ejecuciones no se suman entre sí
+ni sustituyen la evidencia real anterior. La recuperación remota ya terminó
+correctamente; los 1.974 tokens y USD 0,001939 anteriores forman parte del total
+conciliado de las tres llamadas, no son consumo adicional al mismo.
+
+### Antecedente: ejecución gratuita desde Gica sin cuota
+
+Se ejecutó el botón en Edge visible y aislado porque el control del navegador
+personal respondió `The browser access host is unavailable`; se utilizó la
+alternativa de pruebas autorizada. Sin dobles de voz, datos ni proveedor:
+la ficha y sus siete respuestas quedaron guardadas, se mostró el prompt exacto
+y el worker despachó **un trabajo GLM-5.3 Flash Free**. El proveedor devolvió
+**429**. No hubo reintento, cambio de modelo ni llamada OpenAI.
+
+En esa prueba, la base confirmó un evento, un trabajo fallido, cero candidatos,
+cero planes y ningún archivo de agenda. El consumo remoto no trajo contadores: quedó
+`uncertain`, tokens nulos y reserva monetaria cero; no se presenta como cero
+tokens consumidos. Integridad y claves foráneas SQLite correctas. La comparación
+de contenido era **no evaluable** hasta recibir una agenda real. Este antecedente
+se conserva; no describe el estado después de la aceptación OpenAI anterior.
+
+Se enumeraron cinco voces españolas locales y se observó la narración nativa;
+el fin informado por el navegador no acredita audibilidad física. La UI no
+mostró errores de aplicación ni excepciones JavaScript. El recolector tuvo un
+error posterior a la captura final al consultar ORM desde el contexto de
+Playwright; se corrigió con un hilo separado y se conciliaron los datos con
+consultas de sólo lectura, sin repetir la solicitud.
+
+Evidencia: `Temporal/qa-gica-visible-request/real-live-result.json`,
+`real-prompt-prepared.png`, `real-prompt-waiting.png` y `real-final.png`.
+En esa prueba se sirvieron los recursos `20261116-live1` en127.0.0.1:8000.
+
+## Solicitud visible y agenda privada — aceptación anterior
+
+El modo privado, ahora **Guardar agenda para comparar**, completa la ficha y muestra el prompt
+íntegro antes de cada envío, colocado una vez en un campo de sólo lectura.
+El constructor de preview comparte sistema/entrada con el adaptador real.
+La pantalla sigue preparado → enviado → espera; el modelo se identifica después
+de la admisión. El resultado privado no crea candidatos ni aprobaciones y no
+entrega agenda/comunicaciones al navegador, tampoco después de recargar.
+Se guarda JSON validado en `Temporal/gica-agenda-review/<owner>/<job>.json`
+para comparar posteriormente. El recorrido completo permanece separado.
+
+- Suite final congelada: **1.490 casos, 1.476 correctos y 14 omitidos** por
+  PostgreSQL; 107,994 segundos y salida nativa 0. `check` y revisión de migraciones
+  correctos. Migración aditiva `assistant.0010` aplicada con respaldo consistente.
+- Cinco grupos E2E privados, ocho del cliente y tres de guardas correctos en
+  Edge aislado con respuestas explícitamente simuladas. Cero candidatos/planes
+  aprobados, prompt/archivo verificados, dos rondas agrupadas, contenido privado
+  ausente del SSR y ninguna solicitud externa del navegador de QA.
+- Cuatro grupos de aceptación de sólo lectura sobre el servicio real: escritorio,
+  móvil390, recursos actuales y **46 tablas de negocio sin cambios**. Se corrigió
+  el ajuste de los tres botones superiores para evitar desbordamiento en móvil.
+- La instancia anterior se apagó mediante su recibo autenticado sin inferencias
+  activas. La nueva instancia tiene acceso de red para el adaptador autorizado,
+  sigue ligada a127.0.0.1:8000 y devuelve salud200. El catálogo público de OpenCode
+  verificó GLM gratuito sin invocar el modelo. Esto no acredita cuota disponible.
+
+Evidencia actual: `Temporal/qa-gica-visible-request/` y
+`Temporal/qa-gica-compact/{private-journey-results.json,compact-client-results.json,review-guard-results.json}`.
+Las pruebas usan dobles y no son la agenda real esperada por Jorge. No se envió
+un prompt ni se consumieron créditos OpenAI desde las herramientas de Codex.
+En este corte anterior aún no se había despachado inferencia. Audio físico y
+concurrencia PostgreSQL continúan pendientes.
+
+## Generación compacta, guion y cursor — aceptación anterior
+
+El evento anterior fue eliminado por instrucción de Jorge, con respaldo SQLite,
+ensayo en copia y transacción. Se retiraron un evento, seis planes y seis
+candidatos; cuarenta tablas ajenas, personas, instituciones y doce UIActions
+históricas quedaron intactas. La base activa queda sin eventos, trabajos ni
+consumo nuevo, lista para **Mis eventos → Iniciar recorrido**.
+
+La demo completa la ficha con escritura visible de campos cortos, selecciones
+manuales y fecha del jueves 19/11/2026. Solicita agenda, preparación y mensajes
+a un modelo del grupo gratuito. El contrato JSON v1 limita cada petición a
+12.000 tokens de entrada y 1.800 de salida; son máximos de reserva, no tokens
+consumidos. Admite una petición inicial y un lote de respuestas a hasta cuatro
+preguntas cerradas. SparkX calcula horarios y asignaciones y valida la salida.
+El usuario revisa y pulsa **Aprobar y continuar** antes de aplicar cada propuesta.
+
+El caso de inconveniente mantiene la fecha: Robert no puede asistir y se
+selecciona a Jorge. La nueva propuesta conserva contenido y horas sin otra
+consulta a la IA. Los borradores de comunicación se muestran y no se envían.
+La música se sintetiza localmente. Sólo un clic con consentimiento habilita
+temporalmente los comandos de voz «detener» y «continuar» de la música; no abre
+la conversación general. Al terminar o detenerse, cesa la escucha.
+
+La exportación remota contiene exclusivamente el tema público predefinido,
+audiencia genérica, duración, opciones de catálogo y referencias p1/r1. Identidad,
+institución, fecha, contactos, UUID e historial permanecen locales. Sólo se
+autorizaron tres modelos del catálogo con grupo gratuito para planes; no se
+utilizan los perfiles OpenAI del usuario ni una alternativa pagada. Un 429
+pausa la pasarela. Cancelar deja un recibo persistente incluso si el trabajo
+todavía no se había encolado; no revierte inferencias ya despachadas.
+
+Validación actual:
+
+- Suite general: **1.482 casos, 1.468 correctos y 14 omitidos** por PostgreSQL,
+  110,820 segundos. `check`, `pip check` y revisión de migraciones sin incidencias.
+  Migraciones aditivas `assistant.0008` y `0009` aplicadas.
+- Nueve grupos de cursor/burbuja: anclaje dentro del input, punto rojo sin clic,
+  calendario despejado, arrastre/restauración, teclado, escritorio/móvil,
+  movimiento reducido y cancelación.
+- Siete grupos del cliente compacto: preguntas por turnos/lote, música/voz
+  explícita, respuesta ajena, 429, cancelación tardía, móvil y consola limpia.
+- Nueve grupos del recorrido completo con worker y proveedor simulado:
+  creación, dos aclaraciones, respuestas agrupadas, dos aprobaciones humanas,
+  calendario y reemplazo de expositor. Exactamente dos trabajos gratuitos;
+  contenido y horas del plan anterior inmutables, comunicaciones visibles y
+  escritura progresiva con cancelación. Los 1.800 tokens del fixture son
+  sintéticos y no constituyen consumo remoto. Tres grupos adicionales permiten
+  abrir instrucciones/recursos al revisar sin desbloquear formularios o estados.
+- Servicio activo: salud HTTP200, once recursos servidos idénticos a las fuentes,
+  UI del propietario en escritorio/móvil y **46 tablas de negocio sin cambios**
+  durante la comprobación de sólo lectura. Sesión temporal retirada.
+
+Evidencia: `Temporal/qa-gica-compact/`. Las pruebas de IA utilizan respuestas
+simuladas identificadas; **no acreditan una inferencia real ni cuota disponible**.
+No se hicieron llamadas remotas ni se consumieron créditos de OpenAI en esta
+intervención. Audio físico y carreras/carga PostgreSQL siguen pendientes.
+Los paquetes, informes y diapositivas publicados anteriormente describen el
+guion local previo y no acreditan esta ampliación.
+
+## Piloto completo de Gicaingenieros — corte anterior sustituido
 
 El recorrido autorizado crea y guarda un único piloto con datos de identidad
 declarados por Jorge. Registra Gicaingenieros, selecciona a Robert Castillo y
@@ -56,8 +625,8 @@ Evidencia actual: `Temporal/qa-gica-jury/` — `full-suite-final.log`,
 El acceso al navegador personal no estuvo disponible; las capturas usan el
 servicio real con una sesión de prueba temporal y síntesis nativa simulada.
 **Audio físico y concurrencia PostgreSQL siguen pendientes**. La auditoría
-crítica y sus límites están en [audit.md](audit.md); instalación y paquete
-sin datos privados en [release.md](release.md). Servicio local integrado
+crítica y sus límites están en [audit.md](validacion/audit.md); instalación y paquete
+sin datos privados en [release.md](guias/release.md). Servicio local integrado
 reiniciado en el puerto 8000 (sesión42254/PID8764), con salud HTTP200.
 
 ## Cursor visible, ficha por bloques y burbuja arrastrable — corte anterior sustituido
@@ -1737,7 +2306,7 @@ validación estricta como datos finitos. Corpus
 `apps/jobs/data/romeo_intent_examples.es.json`: **108 casos sintéticos**, de los
 cuales 51 deben entenderse, 30 aclararse y 27 rechazarse. No es ajuste de pesos,
 aprendizaje automático de frases privadas ni una medición de todo el español.
-Contrato y proceso de ampliación en [romeo-language.md](romeo-language.md).
+Contrato y proceso de ampliación en [romeo-language.md](arquitectura/romeo-language.md).
 
 | Comprobación | Resultado |
 | --- | --- |
@@ -2247,7 +2816,7 @@ Scripts/bases QA permanecen en Temporal sólo para una regresión concreta poste
 servidor QA detenido. Un problema de codificación stdout del script se corrigió y
 se continuó sin repetir el Job. Los cinco fallos reales anteriores siguen sin
 contadores completos: no se reemplazan por resultados controlados ni consumo cero.
-[Modelos y contrato operativo](ai-management.md#aislamiento-y-modelos-ampliados).
+[Modelos y contrato operativo](guias/ai-management.md#aislamiento-y-modelos-ampliados).
 
 ## Ciclos de dos organizadores ficticios — 15 de noviembre
 
@@ -2361,7 +2930,7 @@ idénticas antes/después. Evidencia: `Temporal/qa-directory/event-runtime.json`
 Jorge pidió optimizar tareas repetitivas, crear datos de expositores/participantes/
 invitados y un repositorio de eventos navegable por calendario, bajo usuarios y
 administración. Se revisó estáticamente el ZIP UNAC 1.3.0 aportado, sin ejecutarlo,
-extraerlo ni cambiar el original. [Hallazgos, adaptación y límites](directory-and-catalog.md).
+extraerlo ni cambiar el original. [Hallazgos, adaptación y límites](arquitectura/directory-and-catalog.md).
 
 | Comprobación | Resultado |
 | --- | --- |
@@ -2414,7 +2983,7 @@ presupuesto USD 0. Sin modificación de la demo ni inferencia integrada de Spark
 La suite de servidor citada arriba no se volvió a ejecutar para este cambio.
 
 Método, tabla por modelo, revisión textual y costes hipotéticos en
-[event-benchmark.md](event-benchmark.md). Evidencia completa en
+[event-benchmark.md](validacion/event-benchmark.md). Evidencia completa en
 `Temporal/opencode/event-benchmark/`, con recibos individuales referenciados por
 `matrix.json`. Un fallo por 2.048 tokens mide este perfil, no la capacidad general
 del modelo. No es una prueba de carga ni una validación de contenido académico.
@@ -2425,7 +2994,7 @@ Se incorporó una herramienta de desarrollo separada de la IA del producto:
 `Ayudante OpenCode.cmd`, broker Python, configuración restringida, instalador con
 versión fija y comprobación del catálogo gratuito. No se editaron los servicios
 de eventos, estados, presupuestos o proveedores de SparkX. Uso y fuentes en
-[opencode.md](opencode.md).
+[opencode.md](guias/opencode.md).
 
 | Comprobación | Resultado |
 | --- | --- |
@@ -2871,7 +3440,7 @@ Evidencia: [34 comprobaciones](../Temporal/qa-openai-mini/results.json),
 [comparador móvil](../Temporal/qa-openai-mini/comparison-mobile.png) y
 [proveedores móvil](../Temporal/qa-openai-mini/providers-mobile.png).
 El script de una sola vez se retiró; solo se retienen resultados y cinco capturas
-en Temporal. [Guía y preparación privada](ai-management.md#preparación-de-gpt-54-mini-del-12-de-noviembre).
+en Temporal. [Guía y preparación privada](guias/ai-management.md#preparación-de-gpt-54-mini-del-12-de-noviembre).
 
 ## Checklist temporal del proyecto — incremento del 9 de noviembre
 
@@ -2924,7 +3493,7 @@ Disponible en [Comparador](http://127.0.0.1:8000/ai/compare/) y
 [Historial de uso](http://127.0.0.1:8000/ai/usage/). Se comparan seis presets con
 un escenario manual o con el historial filtrado por evento, acción y mes. PEN es
 una conversión declarada con tasa/fecha/fuente; los créditos siguen en la calculadora
-individual y la contabilidad permanece en USD. [Guía vigente](ai-management.md).
+individual y la contabilidad permanece en USD. [Guía vigente](guias/ai-management.md).
 
 **Servidor: 359 pruebas, 353 correctas y 6 omitidas por PostgreSQL**, salida 0.
 Incluye 22 pruebas de informes, 33 HTTP nuevos, 32 regresiones de Gestión IA y
@@ -2988,7 +3557,7 @@ su resultado de 94 comprobaciones se conserva como antecedente.
 El módulo está disponible en [Gestión de IA](http://127.0.0.1:8000/ai/) y en la
 navegación principal. Añade perfiles de OpenAI, Groq, Gemini y Ollama local optativo;
 calculadora, límites mensuales USD/tokens, reservas por solicitud e historial con
-conciliación manual atribuida. [Funcionamiento y fuentes](ai-management.md).
+conciliación manual atribuida. [Funcionamiento y fuentes](guias/ai-management.md).
 
 **Servidor: 299 pruebas, 293 correctas y 6 omitidas por PostgreSQL.** Ejecución final
 con código de salida 0; 32 pruebas HTTP del módulo también correctas. Las nuevas
@@ -3027,7 +3596,7 @@ pendientes.
 
 El usuario aportó Proyecto2TesisAI-main y confirmó que era la referencia buscada.
 La copia interior contiene GicaGen con simulador de presupuesto y comparación sobre
-tokens históricos. La [comparación documentada](ai-management.md#referencia-corregida-gicagen-y-su-presupuesto)
+tokens históricos. La [comparación documentada](guias/ai-management.md#referencia-corregida-gicagen-y-su-presupuesto)
 distingue ideas reutilizables y límites del cálculo. Esta revisión no ejecutó GicaGen
 ni sus tests, no accedió a secretos y no modificó código ni interfaz de SparkX.
 Las mejoras del comparador/PEN permanecen propuestas; los resultados de servidor
@@ -3075,7 +3644,7 @@ Los enlaces a Temporal son evidencias locales ignoradas por Git.
 Seguimiento manual de tareas implementado en Preparación: tres estados con color y
 texto, nota, actor/fecha, historial, porcentaje y resumen. Se mantienen calendario, paletas
 sol/luna y escala FIME: Segoe UI, cuerpo 14 px, títulos 26/17/14, sidebar 218 y barra 53.
-Referencia canónica: [sistema visual](design-system.md).
+Referencia canónica: [sistema visual](arquitectura/design-system.md).
 
 Evidencia actual en Temporal/qa-motion-progress/ (porcentaje/movimiento), resultado
 anterior en Temporal/qa-task-progress/, Temporal/qa-plan-scroll/ (agenda) y
@@ -3121,7 +3690,7 @@ La investigación midió [Hyrup About](https://www.hyrup.de/about-us) y
 parámetros en módulos públicos. H1 entero detrás de máscara y roller de CTA/nav:
 400 ms, curva [.4,0,.4,1]. SparkX acorta la espera del H1 y adapta H2 por palabras,
 foco, elevación y presión. [Mediciones](../Temporal/referencias/motion-current/results.json)
-y [decisiones visuales](design-system.md#movimiento-de-títulos-y-controles).
+y [decisiones visuales](arquitectura/design-system.md#movimiento-de-títulos-y-controles).
 
 | Comparación de referencia y resultado | Decisión verificada |
 | --- | --- |
@@ -3260,7 +3829,7 @@ sus carpetas oficiales; entorno y base activa no se tratan como obsoletos.
 ## Movimiento y límites pendientes
 
 Motion 14.10.1 local conserva licencia MIT y SRI según su
-[revisión acotada](motion-dependency-review.md), títulos con máscara, transiciones,
+[revisión acotada](decisiones/motion-dependency-review.md), títulos con máscara, transiciones,
 replay, movimiento reducido y fallback. CSP no se relajó.
 
 El avance es declaración manual del organizador. No hay adjuntos, responsables ni

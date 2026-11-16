@@ -1,9 +1,8 @@
 {% extends 'base.html' %}{% load static %}
-{% block title %}Conoce a Gica · SparkX{% endblock %}
-{% block extra_head %}<link rel="stylesheet" href="{% static 'css/gica-profile.css' %}?v=20261116-profile1">{% endblock %}
+{% block title %}Conoce a Gica · ArquiGica{% endblock %}
 {% block content %}
-<main id="main-content" class="page-content gica-profile-page">
-  <header class="page-heading"><div><p class="gica-profile-eyebrow">Tu guía en SparkX</p><h1>Conoce a Gica</h1><p class="lead">Una conversación, un paso a la vez.</p></div></header>
+<main id="main-content" class="page-content gica-profile-page" data-romeo-destination="profile">
+  <header class="page-heading"><div><p class="gica-profile-eyebrow">Tu guía en ArquiGica</p><h1>Conoce a Gica</h1><p class="lead">Una conversación, un paso a la vez.</p></div></header>
   <div class="gica-profile-layout">
     <section class="gica-profile-identity gica-appearance-{{ gica_profile_settings.appearance }}" aria-labelledby="gica-profile-name">
       <div class="gica-profile-avatar"><img src="{% static 'img/gica-avatar.svg' %}" alt="Avatar de Gica, un bot de mirada amable" width="128" height="128"></div>
@@ -15,9 +14,9 @@
     </section>
     <div class="gica-profile-content">
       <section class="gica-profile-section" aria-labelledby="gica-demo-preview-title">
-        <h2 id="gica-demo-preview-title">Nuestro piloto paso a paso</h2>
-        <p class="field-help">Gica registra Gicaingenieros y prepara nuestro seminario con Robert Castillo para el jueves 19. Después muestra un cambio de expositor a Jorge Gayoso Ugas y de fecha al jueves 26. El recorrido guarda la ficha y las versiones de la agenda en SparkX; puedes detenerlo. El micrófono está apagado.</p>
-        <button class="button button-secondary" type="button" data-gica-demo-start>Iniciar piloto guiado</button>
+        <h2 id="gica-demo-preview-title">Organiza un evento con Gica</h2>
+        <p class="field-help">Registra la organización y el expositor, crea el seminario y revisa la propuesta con IA. El recorrido muestra calendario, reemplazo del expositor, preparación, estados de ejemplo y mensajes. También puedes pedir más tiempo para el caso práctico y revisar la nueva propuesta.</p>
+        <div class="gica-creation-launch"><button class="button button-primary" type="button" data-gica-demo-start data-gica-demo-mode="agenda-openai">Iniciar demo con OpenAI</button><button class="button button-secondary" type="button" data-gica-demo-start data-gica-demo-mode="agenda-live">Demo con IA gratuita</button><button class="button button-secondary" type="button" data-gica-demo-start data-gica-demo-mode="agenda-review">Guardar agenda para comparar</button><button class="button button-secondary" type="button" data-gica-demo-start>Recorrido con revisión</button></div>
       </section>
       <section class="gica-profile-section" aria-labelledby="gica-personalize-title">
         <div class="gica-profile-section-heading"><h2 id="gica-personalize-title">Hazlo tuyo</h2><span>Sólo para tu cuenta</span></div>

@@ -5,6 +5,35 @@ from django.db import models
 from django.conf import settings
 
 
+class CompactPlanRequest(models.Model):
+    """Private, versioned compact exchange; identity mapping never leaves the server."""
+    job = models.OneToOneField("jobs.Job", on_delete=models.CASCADE, related_name="compact_request")
+    parent = models.OneToOneField("self", null=True, blank=True, on_delete=models.PROTECT, related_name="continuation")
+    run_id = models.UUIDField()
+    version = models.PositiveSmallIntegerField(default=1, editable=False)
+    round_number = models.PositiveSmallIntegerField(default=1)
+    review_only = models.BooleanField(default=False)
+    context = models.JSONField()
+    local_mapping = models.JSONField()
+    response = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.CheckConstraint(condition=models.Q(version=1, round_number__in=[1, 2]), name="compact_v1_two_rounds")]
+
+
+class CompactRequestCancellation(models.Model):
+    """A durable Stop receipt also fences a not-yet-committed enqueue."""
+    event = models.ForeignKey("events.Event", on_delete=models.CASCADE)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    run_id = models.UUIDField()
+    request_key = models.UUIDField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["event", "actor", "run_id", "request_key"], name="compact_cancel_once")]
+
+
 class GicaProfile(models.Model):
     """Owner-private presentation preferences, never execution instructions."""
 

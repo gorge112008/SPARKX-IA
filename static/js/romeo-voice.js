@@ -149,13 +149,14 @@
     }
   });
 
+  let waitingListening = false;
   function render() {
     const run = session;
     const demo = root.dataset.gicaDemoActive === 'true';
     root.dataset.voiceTextIdleMs = String(turnIdleMs());
     retryTurn.hidden = !run?.reviewBlocked;
     root.dataset.voiceSessionState = demo ? 'demo' : run?.phase || 'off';
-    root.dataset.voiceAudioActive = String(!!run?.audio && (!outputSpeaking || !!run?.early));
+    root.dataset.voiceAudioActive = String(waitingListening || !!run?.audio && (!outputSpeaking || !!run?.early));
     root.dataset.voiceSpeaking = String(outputSpeaking);
     root.dataset.voiceTurn = !run ? 'off' : run.holding ? 'waiting' : outputSpeaking ? 'gica' : run.audio && run.service ? 'user' : 'paused';
     root.dataset.voiceSessionContinuous = String(!!run?.guided && !run.textOnly);
@@ -167,17 +168,17 @@
     if (transcript) transcript.hidden = !exchanges.length;
     if (reviewPattern) reviewPattern.hidden = !lastPattern;
     topStop.hidden = !run;
-    indicator.hidden = !demo && !run && !outputSpeaking && !window.SparkXGicaCreation?.hasDraft();
-    indicator.textContent = demo ? 'Piloto · mic apagado' : run?.holding ? (run.audio && run.service ? 'En espera' : 'En espera · mic en pausa') : run?.early && run.audio ? 'Puedes responder · Gica termina' : outputSpeaking ? 'Gica habla' : run?.guided && run.audio && run.service ? 'Tu turno · te escucho' : run?.detected ? 'Voz detectada' : run?.audio ?
+    indicator.hidden = !waitingListening && !demo && !run && !outputSpeaking && !window.SparkXGicaCreation?.hasDraft();
+    indicator.textContent = waitingListening ? 'Te escucho · detener o continuar música' : demo ? 'Piloto · mic apagado' : run?.holding ? (run.audio && run.service ? 'En espera' : 'En espera · mic en pausa') : run?.early && run.audio ? 'Puedes responder · Gica termina' : outputSpeaking ? 'Gica habla' : run?.guided && run.audio && run.service ? 'Tu turno · te escucho' : run?.detected ? 'Voz detectada' : run?.audio ?
       (run.phase === 'dictating' ? 'Dictando' : 'Escuchando') : run?.phase === 'starting' ? 'Iniciando mic' :
       run?.phase === 'acting' ? 'Procesando' : run?.phase === 'reconnecting' ? 'Reconectando' :
       ['waiting', 'dictating'].includes(run?.phase) ? 'Esperando audio' : run ? 'Mic en pausa' : window.SparkXGicaCreation?.hasDraft() ? 'Mic apagado · borrador guardado' : 'Mic apagado';
     indicator.title = 'Estado del micrófono' + (root.dataset.voiceLastError ? ` · último código: ${root.dataset.voiceLastError}` : '') +
       (root.dataset.voiceStopCode ? ` · detención: ${root.dataset.voiceStopCode}` : '');
-    companion({ kind: 'voice', active: demo || !!run, micActive: !!run && !run.textOnly,
+    companion({ kind: 'voice', active: waitingListening || demo || !!run, micActive: waitingListening || !!run && !run.textOnly,
       phase: demo ? 'demo' : run?.phase || 'off', speaking: outputSpeaking,
       blocked: demo || !!(run?.holding || run?.reviewBlocked || run?.guideInFlight || run?.awaitingAction || navigation || labOpen),
-      listening: !!run?.audio && !!run?.service && (!outputSpeaking || !!run?.early) });
+      listening: waitingListening || !!run?.audio && !!run?.service && (!outputSpeaking || !!run?.early) });
     document.dispatchEvent(new CustomEvent('sparkx:romeo-action-layout'));
   }
   function companion(detail) {
@@ -234,7 +235,7 @@
   }
   function directoryTurn() {
     const creation = window.SparkXGicaCreation;
-    if (!creation?.hasDraft()) return false;
+    if (!creation?.hasDraft()) return ['organization', 'speaker', 'full_name', 'name'].includes(window.SparkXGicaGuided?.presentation()?.awaiting);
     const current = creation.presentation?.();
     return current?.step_key === 'organization' || !!current?.directory_resolution;
   }
@@ -577,11 +578,25 @@
     guideStatus.textContent = 'Consultando la guía local…';
     showKnowledge(null);
     try {
+      const acceptsOffer = run.creationOffer && !window.SparkXGicaCreation?.hasDraft() &&
+        /^(?:si|claro|de acuerdo|vamos|listo|estoy listo)(?: (?:si|claro|de acuerdo|vamos|listo|estoy listo|por favor|gracias))*$/u.test(normalize(text));
+      if (!creationControl && !acceptsOffer && !window.SparkXGicaCreation?.hasDraft() && window.SparkXGicaGuided) {
+        const guidance = await window.SparkXGicaGuided.request(text, { signal: controller.signal, current });
+        if (!current()) return;
+        if (guidance?.handled) {
+          turn.normalized_text = text.normalize('NFC'); turn.normalizedKnown = true;
+          turn.responseAt = performance.now(); turn.draft = '';
+          run.creationOffer = false; run.followUp = ''; guideContext = ''; run.readyIntent = ''; run.draft = ''; run.readyOrder = null;
+          lastPattern = null; write(''); rememberExchange(turn.normalized_text, guidance.reply);
+          run.guideInFlight = false; clearTimeout(run.guideTimeout); run.guideController = null;
+          await respond(run, guidance.reply, 'dictating', true, turn, !!guidance.awaiting);
+          interactionFinished(run, turn, guidance.reply, 'request', 'info');
+          return;
+        }
+      }
       // The event interview owns its answer slot. Never normalize or interpret
       // a title/description/person/resource as a navigation command or web query.
       if (window.SparkXGicaCreation) {
-        const acceptsOffer = run.creationOffer && !window.SparkXGicaCreation.hasDraft() &&
-          /^(?:si|claro|de acuerdo|vamos|listo|estoy listo)(?: (?:si|claro|de acuerdo|vamos|listo|estoy listo|por favor|gracias))*$/u.test(normalize(text));
         run.creationOffer = false;
         const creation = await window.SparkXGicaCreation.request(acceptsOffer ? 'Quiero crear un evento' : text, {
           context: run.followUp || '', operation: creationControl?.operation || 'turn',
@@ -1086,14 +1101,15 @@
         openPanel(); run.capture = true;
         const name = root.dataset.gicaUserName || '';
         const prefix = name.length >= 1 && name.length <= 60 && !unsafe.test(name) && !/[<>]/u.test(name) ? `Hola, ${name}.` : 'Hola.';
-        run.creationOffer = !window.SparkXGicaCreation?.hasDraft();
+        const manualGuide = !window.SparkXGicaCreation?.hasDraft() && window.SparkXGicaGuided?.presentation()?.active;
+        run.creationOffer = !window.SparkXGicaCreation?.hasDraft() && !manualGuide;
         const greetingCopy = {
           friendly: [' ¿Estás listo para crear un evento o deseas hacer otra cosa?', ' Tu borrador sigue disponible. Puedes continuar respondiendo o usar Continuar mi borrador.'],
           professional: [' Soy Gica. ¿Deseas crear un evento o realizar otra gestión?', ' Tu borrador está disponible. Puedes continuar respondiendo o usar Continuar mi borrador.'],
           direct: [' ¿Creamos un evento o hacemos otra tarea?', ' Tu borrador está listo para continuar. Responde o usa Continuar mi borrador.']
         };
         const personality = Object.hasOwn(greetingCopy, root.dataset.gicaPersonality) ? root.dataset.gicaPersonality : 'friendly';
-        const greeting = prefix + greetingCopy[personality][run.creationOffer ? 0 : 1];
+        const greeting = prefix + (manualGuide ? ' Podemos continuar con tu evento. Dime qué falta, preparar agenda, ver calendario o el paso que quieres revisar.' : greetingCopy[personality][run.creationOffer ? 0 : 1]);
         await respond(run, greeting, 'dictating');
       } else await respond(run, 'Hola. Soy Gica. Di Gica hablemos cuando se active el micrófono.');
     } catch (_) { if (session === run) stop('No se pudo iniciar la conversación. El micrófono está apagado; puedes escribir.'); }
@@ -1182,6 +1198,22 @@
     submitGuide(run, text, turn, { operation: 'turn', field: '' });
   });
   document.addEventListener('sparkx:gica-companion-open', () => { if (!document.hidden) openPanel(); });
+  document.addEventListener('sparkx:gica-guided-answer', (event) => {
+    if (!guidedUI || !guided.checked || document.hidden || labOpen || navigation ||
+        session?.guideInFlight || session?.awaitingAction || session?.holding || session?.reviewBlocked ||
+        !controls.canStartVoice() || root.dataset.gicaDemoActive === 'true') return;
+    const choice = window.SparkXGicaGuided?.validateChoice(event.detail);
+    if (!choice) return;
+    let run = session;
+    if (!run || !valid(run) || !run.guided) {
+      stop('Continuando la guía por texto. Micrófono apagado.'); cancelProbe(); voice.stopDictation();
+      run = newRun(true, true); run.expires = Date.now() + 300000; run.capture = true; run.logAccepted = true; session = run;
+      run.timer = setTimeout(() => { if (session === run) stop('La guía sigue guardada. Puedes reanudarla por texto o voz.'); }, 300000);
+    }
+    run.early = null; clearTurn(run); detach(run); write(choice.value);
+    const turn = captureTurn(run, choice.value); turn.source = 'text';
+    submitGuide(run, choice.value, turn);
+  });
   // An explicit narrated-demo click temporarily owns speech and creation. It
   // cannot borrow a running request or restart the microphone when it ends.
   document.addEventListener('sparkx:gica-demo-prepare', (event) => {
@@ -1198,6 +1230,11 @@
     if (root.dataset.gicaDemoActive !== 'true') return;
     delete root.dataset.gicaDemoActive;
     status.textContent = 'Recorrido terminado. El micrófono sigue apagado.';
+    render();
+  });
+  document.addEventListener('sparkx:gica-wait-listening', (event) => {
+    if (event.detail?.user !== document.body.dataset.voiceUser) return;
+    waitingListening = event.detail.listening === true && window.SparkXGicaWaiting?.getState().active === true;
     render();
   });
   document.addEventListener('sparkx:gica-companion-stop', () => {
@@ -1336,6 +1373,12 @@
     cancelProbe();
     const run = session;
     if (!run) return;
+    if (event.detail?.source === 'guided' && run.guided && run.guideInFlight) {
+      // Only a bounded GET from the current human guide owns this transition.
+      // Keep the request ticket, including text mode, until SSR is verified.
+      clearTimeout(run.retryTimer); detach(run);
+      mark('paused', 'Abriendo el paso solicitado. No se guarda ni aprueba ningún cambio.'); return;
+    }
     if (event.detail?.source === 'creation-complete' && event.detail?.path === '/' && run.guided && !run.guideInFlight && !run.responsePending) {
       clearTimeout(run.retryTimer); detach(run);
       mark('paused', 'Evento creado. Mostrando tus eventos; micrófono en pausa mientras cambia la página.'); return;
@@ -1378,7 +1421,7 @@
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && session && !session.guided) { event.preventDefault(); stop(); } });
   status.textContent = Recognition ? 'Micrófono apagado. Abre Gica con tu clic o pulsa Reanudar conversación. Al contraer el panel seguirá activa; usa Detener para terminar.' : 'Este navegador no ofrece reconocimiento de voz. Puedes conversar por texto y probar la voz de Gica.';
   button.hidden = !Recognition; availability(); render();
-  import('/static/js/romeo-voice-lab.js?v=20261115-gica1').then(({ installVoiceLab }) => {
+  import('/static/js/romeo-voice-lab.js?v=20261116-openai1').then(({ installVoiceLab }) => {
     lab = installVoiceLab({ root, anchor: probe, speech, prepare: prepareLab, preview: previewLab, stop: cancelProbe,
       closed: (message) => { labOpen = false; speechStatus.textContent = message; },
       notify: (message) => { speechStatus.textContent = message; } });

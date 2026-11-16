@@ -72,9 +72,20 @@
     return ['jorge', 'alvaro', 'raul', 'pablo'].indexOf(known[1]);
   }
   function isLocal(voice) { return voice?.localService === true && voiceID(voice) !== null; }
+  function femaleRank(voice) {
+    const name = voice.name.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+    const known = /^microsoft\s+(sabina|laura|helena)(?:\s|$)/u.exec(name);
+    const locales = { sabina: 'es-mx', laura: 'es-es', helena: 'es-es' };
+    if (!known || voice.lang.toLowerCase().replace('_', '-') !== locales[known[1]] || /\bonline\b/u.test(name)) return Infinity;
+    return ['sabina', 'laura', 'helena'].indexOf(known[1]);
+  }
   function pickVoice(list) {
     const candidates = list.filter((voice) => isLocal(voice) && localSpanish.test(voice.lang));
-    return candidates.reduce((best, voice) => !best || maleRank(voice) < maleRank(best) ? voice : best, null);
+    return candidates.reduce((best, voice) => !best || femaleRank(voice) < femaleRank(best) ? voice : best, null);
+  }
+  function pickFemaleVoice(list) {
+    return list.filter((voice)=>isLocal(voice)&&localSpanish.test(voice.lang)&&Number.isFinite(femaleRank(voice)))
+      .sort((a,b)=>femaleRank(a)-femaleRank(b))[0] || null;
   }
   function exactVoice(list, id, spanishOnly = true) {
     return list.find((voice) => isLocal(voice) && (!spanishOnly || localSpanish.test(voice.lang)) && voiceID(voice) === id) || null;
@@ -85,7 +96,7 @@
   }
   function metadata(voice) {
     return Object.freeze({ id: voiceID(voice), name: voice.name, lang: voice.lang,
-      local: voice.localService === true, male: Number.isFinite(maleRank(voice)) });
+      local: voice.localService === true, male: Number.isFinite(maleRank(voice)), female: Number.isFinite(femaleRank(voice)) });
   }
   function listVoices() {
     const entries = new Map();
@@ -216,8 +227,12 @@
       const request = { id: ++sequence, text: text.trim(), resolve, settled: false, scope: preferenceKey(),
         ...selection, utterance: null, submitted: false, voiceListener: null, waitTimer: null, speechTimer: null };
       active = request;
-      const choose = (list) => request.voiceID ? exactVoice(list, request.voiceID, !request.preview) : pickVoice(list);
-      const failure = request.voiceID ? 'voice_unavailable' : 'no_local_voice';
+      const choose = (list) => {
+        const savedVoice = request.voiceID ? exactVoice(list, request.voiceID, !request.preview) : null;
+        if(request.voiceStyle === 'female')return savedVoice&&Number.isFinite(femaleRank(savedVoice))?savedVoice:pickFemaleVoice(list);
+        return request.voiceID?savedVoice:pickVoice(list);
+      };
+      const failure = request.voiceStyle === 'female' ? 'female_voice_unavailable' : request.voiceID ? 'voice_unavailable' : 'no_local_voice';
       const list = voices(), selected = choose(list);
       if (selected) { startSpeech(request, selected); return; }
       if (list.length || request.preview) { settle(request, false, failure); return; }
@@ -238,7 +253,7 @@
   }
   function speak(text, options = {}) {
     const saved = readPreference();
-    return requestSpeech(text, { voiceID: saved.voiceID, rate: saved.rate, preview: false,
+    return requestSpeech(text, { voiceID: saved.voiceID, rate: saved.rate, preview: false, voiceStyle:options.voiceStyle==='female'?'female':null,
       speechTimeout: options.eventQuestion === true ? 20000 : 8000,
       onProgress: options.eventQuestion === true && typeof options.onProgress === 'function' ? options.onProgress : null });
   }

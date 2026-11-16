@@ -1,6 +1,6 @@
 {% extends 'base.html' %}{% load static %}
-{% block title %}Revisores · {{ event.title }} · SparkX{% endblock %}
-{% block extra_head %}<link rel="stylesheet" href="{% static 'css/accounts.css' %}?v=20261113-accounts1">{% endblock %}
+{% block title %}Revisores · {{ event.title }} · ArquiGica{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/accounts.css' %}?v=20261116-brand3">{% endblock %}
 {% block content %}
 <main id="main-content" class="page-content accounts-page">
   <nav class="breadcrumb" aria-label="Ubicación"><a href="{% url 'events:index' %}">Eventos</a><span aria-hidden="true">/</span><a href="{% url 'events:detail' event.pk %}">{{ event.title }}</a><span aria-hidden="true">/</span><span>Revisores</span></nav>

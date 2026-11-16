@@ -92,7 +92,7 @@ def credential_save(request):
         except Exception:
             messages.error(request, "No se guardó la conexión. Revisa los campos e inténtalo de nuevo.")
         else:
-            messages.success(request, "Conexión disponible en memoria por hasta dos horas o hasta cerrar SparkX. No se realizó ninguna llamada de IA.")
+            messages.success(request, "Conexión disponible en memoria por hasta dos horas o hasta cerrar ArquiGica. No se realizó ninguna llamada de IA.")
     return redirect("ai_management:control")
 
 

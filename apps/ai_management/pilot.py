@@ -97,8 +97,12 @@ def _lock_pilot():
                               code="openai_pilot_not_ready") from None
 
 
-def _require_synthetic(job):
+def _require_synthetic(job, snapshot=None):
     from apps.events.models import Event
+    if snapshot is not None:
+        from apps.assistant.compact_planning import authorized_compact_job
+        if authorized_compact_job(job, snapshot):
+            return
     if not Event.objects.filter(pk=job.event_id, is_synthetic=True).exists():
         raise ValidationError("El piloto OpenAI sólo permite eventos de demostración con datos ficticios.",
                               code="openai_pilot_synthetic_required")
@@ -118,7 +122,7 @@ def reserve_openai_pilot_locked(*, job, snapshot, reserve_usd):
     if snapshot.get("provider") != "openai":
         return
     validate_openai_pilot_tariffs(snapshot)
-    _require_synthetic(job)
+    _require_synthetic(job, snapshot)
     _lock_pilot()
     _check_summary(openai_pilot_summary(), reserve_usd)
 
@@ -141,6 +145,6 @@ def ensure_openai_pilot_dispatch_locked(usage):
             or usage.reserved_output_tokens != snapshot["max_output_tokens"]):
         raise ValidationError("La reserva guardada no cubre los límites y tarifas del piloto OpenAI.",
                               code="openai_pilot_under_reserved")
-    _require_synthetic(usage.job)
+    _require_synthetic(usage.job, snapshot)
     _lock_pilot()
     _check_summary(openai_pilot_summary(), _ZERO)

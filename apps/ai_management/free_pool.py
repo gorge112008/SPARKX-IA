@@ -152,7 +152,7 @@ def configure_entry(*, actor, account, expected_grant_version, preset, enabled, 
     return entry
 
 
-def choose_pool_snapshot(*, account, grant, kind, preview=False):
+def choose_pool_snapshot(*, account, grant, kind, preview=False, allowed_models=None):
     """Choose before dispatch, highest priority first, then least used model.
 
     Enqueue holds Account: its eventual reservation commits atomically with the
@@ -167,6 +167,8 @@ def choose_pool_snapshot(*, account, grant, kind, preview=False):
     candidates = []
     from apps.assistant import provider
     for entry in AgentPoolEntry.objects.filter(grant=grant, enabled=True, roles__in=(kind, "both")).select_related("profile"):
+        if allowed_models is not None and entry.profile.model not in allowed_models:
+            continue
         try:
             snapshot = _snapshot(entry, account)
             requests, tokens = _capacity(entry, account)
@@ -195,7 +197,17 @@ def validate_pool_snapshot(*, account, grant, snapshot):
         _invalid("El modelo no tiene autorización para esta función.", "free_pool_invalid")
     current = _snapshot(entry, account)
     if any(current.get(key) != snapshot.get(key) for key in ("profile_id", "profile_version", "provider", "model", "mode",
-            "max_input_tokens", "max_output_tokens", "input_rate", "cached_rate", "output_rate")):
+            "input_rate", "cached_rate", "output_rate")):
+        _invalid("El perfil del modelo cambió.", "free_pool_invalid")
+    if snapshot.get("compact_contract") == 1:
+        from apps.assistant.compact_planning import ALLOWED_MODELS
+        from apps.assistant.compact_contract import MAX_INPUT_TOKENS, MAX_OUTPUT_TOKENS
+        if current["model"] not in ALLOWED_MODELS:
+            _invalid("Este modelo requiere datos ficticios.", "free_pool_invalid")
+        for key, ceiling in (("max_input_tokens", MAX_INPUT_TOKENS), ("max_output_tokens", MAX_OUTPUT_TOKENS)):
+            if type(snapshot.get(key)) is not int or snapshot[key] != min(current[key], ceiling):
+                _invalid("El límite compacto no coincide con el perfil.", "free_pool_invalid")
+    elif any(current.get(key) != snapshot.get(key) for key in ("max_input_tokens", "max_output_tokens")):
         _invalid("El perfil del modelo cambió.", "free_pool_invalid")
     return entry
 

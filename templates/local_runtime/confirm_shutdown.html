@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}Apagar SparkX · SparkX{% endblock %}
+{% block title %}Apagar ArquiGica · ArquiGica{% endblock %}
 {% block content %}
 <main id="main-content" class="page-content local-runtime-page">
-  <nav class="breadcrumb" aria-label="Ubicación"><a href="{% url 'events:index' %}">Eventos</a><span aria-hidden="true">/</span><span>Apagar SparkX</span></nav>
+  <nav class="breadcrumb" aria-label="Ubicación"><a href="{% url 'events:index' %}">Eventos</a><span aria-hidden="true">/</span><span>Apagar ArquiGica</span></nav>
   <section class="local-runtime-card" aria-labelledby="shutdown-title">
     <div class="local-runtime-mark" aria-hidden="true"><svg class="icon"><use href="#i-power"/></svg></div>
     <p class="local-runtime-eyebrow">Servicio local</p>
-    <h1 id="shutdown-title">¿Apagar SparkX?</h1>
+    <h1 id="shutdown-title">¿Apagar ArquiGica?</h1>
     <p class="local-runtime-intro">Se detendrá el servicio web de esta computadora. Todas las personas conectadas perderán el acceso hasta que vuelvas a iniciarlo.</p>
     <div class="notice notice-danger"><p>Guarda primero lo que estés editando. Los cambios sin guardar se perderán; los datos que ya guardaste permanecerán.</p></div>
     {% if error %}<div class="notice notice-error" role="alert">{{ error }}</div>{% endif %}
@@ -14,9 +14,9 @@
       {% csrf_token %}
       <input type="hidden" name="confirmation_token" value="{{ shutdown_token }}">
       <label class="local-runtime-confirm"><input type="checkbox" name="confirm_shutdown" value="yes" required><span>He guardado mis cambios y quiero apagar el servicio local.</span></label>
-      <div class="local-runtime-actions"><a class="button button-secondary" href="{% url 'events:index' %}">Cancelar</a><button class="button local-runtime-stop" type="submit"><svg class="icon" aria-hidden="true"><use href="#i-power"/></svg>Apagar SparkX</button></div>
+      <div class="local-runtime-actions"><a class="button button-secondary" href="{% url 'events:index' %}">Cancelar</a><button class="button local-runtime-stop" type="submit"><svg class="icon" aria-hidden="true"><use href="#i-power"/></svg>Apagar ArquiGica</button></div>
     </form>
-    <p class="local-runtime-help">Para volver a usarlo, abre <strong>Iniciar SparkX.cmd</strong> con doble clic en la carpeta del proyecto. Esta acción solo detiene SparkX; tu computadora seguirá encendida.</p>
+    <p class="local-runtime-help">Para volver a usarlo, abre <strong>iniciar.cmd</strong> con doble clic en la carpeta del proyecto. Esta acción solo detiene ArquiGica; tu computadora seguirá encendida.</p>
   </section>
 </main>
 {% endblock %}

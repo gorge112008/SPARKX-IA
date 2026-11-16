@@ -30,3 +30,25 @@ def event_proposal_history(event):
                      "version": approved.version if approved else None, "summary": candidate.payload.get("summary", ""),
                      "base_revision": candidate.base_revision})
     return rows
+
+
+@register.simple_tag
+def event_communications(event):
+    """Unsent drafts from the last validated compact proposal for this event."""
+    from apps.assistant.models import CompactPlanRequest
+    record = CompactPlanRequest.objects.filter(job__event_id=event.pk, job__actor_id=event.owner_id,
+        job__status="succeeded", response__state="proposal", review_only=False).order_by("-created_at").first()
+    if record is None:
+        return []
+    return record.response.get("communications", [])
+
+
+@register.simple_tag(takes_context=True)
+def event_compact_retry(context, event):
+    """Only an eligible identifier; the API rechecks actor, revision and budgets."""
+    from apps.assistant.compact_planning import retry_source
+    actor = getattr(context.get("request"), "user", None)
+    if actor is None or not actor.is_authenticated or actor.pk != event.owner_id:
+        return ""
+    source = retry_source(event=event, actor=actor)
+    return str(source.job_id) if source else ""

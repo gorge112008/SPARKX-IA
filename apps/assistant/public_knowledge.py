@@ -26,7 +26,7 @@ _TOTAL_TIMEOUT = 8.0
 _MAX_BYTES = 128 * 1024
 _MAX_HITS = 3
 _MAX_ANSWER = 1600
-_USER_AGENT = "SparkX-Gica/0.1 (local educational event-planning prototype; Python urllib)"
+_USER_AGENT = "ArquiGica-Gica/0.1 (local educational event-planning prototype; Python urllib)"
 # A deadline may expire while the OS is resolving DNS. Daemon threads cannot be
 # killed safely; at most two can remain in flight, and neither may retry.
 _WORKER_SLOTS = threading.BoundedSemaphore(2)

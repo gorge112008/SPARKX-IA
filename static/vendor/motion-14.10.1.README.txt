@@ -5,4 +5,4 @@ License: https://cdn.jsdelivr.net/npm/motion@14.10.1/LICENSE.md
 SRI sha384-lnXs/o2QVHbH7aNA9JGkcMdW38AWVgMHWWrPU/fGgHi+eRj2j0a8va/1nlijpjHX
 Bundled file compared to npm tarball; locally served, no runtime CDN.
 Used APIs: animateMini and inView. animateView is not used.
-Review and limits: ../../docs/motion-dependency-review.md
+Review and limits: ../../docs/decisiones/motion-dependency-review.md

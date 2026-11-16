@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Responsables y evidencia · SparkX{% endblock %}
+{% block title %}Responsables y evidencia · ArquiGica{% endblock %}
 {% block content %}
-<main id="main-content" class="page-content">
+<main id="main-content" class="page-content" data-event-id="{{ event.pk }}">
   <header class="page-heading"><div><h1>Responsables y evidencia</h1><p class="lead">{{ event.title }}</p></div><a class="button button-secondary" href="{% url 'events:detail' event.id %}">Volver al evento</a></header>
   <div class="notice"><p>El organizador declara quién prepara cada tarea y qué evidencia revisó. Para marcar «Verificado por el organizador», la ejecución debe figurar como completada. Un cambio posterior en la ejecución o en el responsable exige revisar esa verificación.</p></div>
-  <p class="field-help">Fechas en {{ event.timezone }}. Los enlaces se guardan como referencias; SparkX no abre ni comprueba su contenido. Guardar preparación no modifica la ejecución de la tarea.</p>
+  <p class="field-help">Fechas en {{ event.timezone }}. Los enlaces se guardan como referencias; ArquiGica no abre ni comprueba su contenido. Guardar preparación no modifica la ejecución de la tarea.</p>
   {% if submitted_form %}{{ submitted_form.non_field_errors }}{% endif %}
   {% for row in rows %}
   <section class="demo-context">

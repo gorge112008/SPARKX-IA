@@ -82,7 +82,7 @@ export function installVoiceLab({ root, anchor, speech, prepare, preview, stop, 
     play.disabled = !selected?.local; save.disabled = !selected?.local || !isSpanish(selected);
     detail.textContent = !selected ? 'No hay voces para este filtro. Pulsa Actualizar voces o desmarca Sólo voces en español.' :
       !selected.local ? `${selected.name} · ${selected.lang}. Servicio externo; prueba y uso en Gica deshabilitados.` :
-      `${selected.name} · ${selected.lang}. Local${selected.male ? ', masculina identificada' : ''}. ${isSpanish(selected) ? 'Puedes usarla en Gica.' : 'Puedes probarla; Gica admite voces en español.'}`;
+      `${selected.name} · ${selected.lang}. Local${selected.female ? ', femenina identificada' : selected.male ? ', masculina identificada' : ''}. ${isSpanish(selected) ? 'Puedes usarla en Gica.' : 'Puedes probarla; Gica admite voces en español.'}`;
     showRate(); currentChoice();
   }
   function haltPreview(message) {
@@ -110,7 +110,7 @@ export function installVoiceLab({ root, anchor, speech, prepare, preview, stop, 
     const visible = catalogue.filter((voice) => !filter.checked || isSpanish(voice));
     select.replaceChildren();
     for (const voice of visible) {
-      const option = element('option', `${voice.name} · ${voice.lang} · ${voice.local ? 'Local' : 'Externa'}${voice.male ? ' · Masculina' : ''}`);
+      const option = element('option', `${voice.name} · ${voice.lang} · ${voice.local ? 'Local' : 'Externa'}${voice.female ? ' · Femenina' : voice.male ? ' · Masculina' : ''}`);
       option.value = voice.id; select.append(option);
     }
     if (!visible.length) { const option = element('option', 'Sin voces disponibles'); option.value = ''; select.append(option); }

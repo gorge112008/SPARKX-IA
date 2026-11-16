@@ -39,12 +39,13 @@ def visible_events(user):
         return Event.objects.none()
     if get_role(user) == PortalAccount.Role.REVIEWER:
         return Event.objects.filter(
+            archived_at__isnull=True,
             review_assignments__reviewer_id=user.pk,
             review_assignments__reviewer__is_active=True,
             review_assignments__reviewer__portal_account__role=PortalAccount.Role.REVIEWER,
             review_assignments__reviewer_version=F("review_assignments__reviewer__portal_account__access_version"),
         )
-    return Event.objects.filter(owner_id=user.pk)
+    return Event.objects.filter(owner_id=user.pk, archived_at__isnull=True)
 
 
 def can_view_event(user, event):

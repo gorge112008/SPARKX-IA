@@ -6,6 +6,10 @@ from django.views.generic import RedirectView
 from apps.accounts.views import PortalLoginView, PortalPasswordChangeView
 from .local_views import shutdown
 
+admin.site.site_header = "Administración de ArquiGica"
+admin.site.site_title = "ArquiGica"
+admin.site.index_title = "Administración"
+
 
 def health(request):
     return JsonResponse({"service": "sparkx", "status": "ok"})

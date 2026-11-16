@@ -14,6 +14,7 @@ from django.utils import timezone
 from apps.accounts.access import can_organize, get_role
 from apps.accounts.models import PortalAccount
 from apps.events.models import Event
+from apps.events.services import require_event_owner
 from .models import Registration, RegistrationPage, RegistrationSubmission
 from .normalization import registration_values
 
@@ -59,8 +60,7 @@ def set_registration_state(*, event_id, actor, action, expected_version,
                            expected_revision, expected_plan, confirmed):
     event = Event.objects.select_for_update().get(pk=event_id)
     current = _current_actor(actor)
-    if event.owner_id != current.pk:
-        raise PermissionDenied("No tienes acceso a este evento.")
+    require_event_owner(event, current)
     if action not in {RegistrationPage.State.OPEN, RegistrationPage.State.CLOSED} or confirmed is not True:
         raise ValidationError("Confirma explícitamente la apertura o el cierre de inscripciones.")
     page = RegistrationPage.objects.select_for_update().filter(event=event).first()
@@ -125,6 +125,10 @@ def submit_registration(*, token, full_name, email, form_token, actor=None):
     event = Event.objects.select_for_update().get(pk=page_ref.event_id)
     _current_actor(actor, public=True)
     page = RegistrationPage.objects.select_for_update().get(pk=page_ref.pk)
+    if event.archived_at is not None:
+        # A valid form loaded before retirement must never consume a seat or
+        # create another submission record after the Event lock is acquired.
+        return RECEIPT_MESSAGE
     if RegistrationSubmission.objects.filter(page=page, request_key=request_key).exists():
         return RECEIPT_MESSAGE
     # Commit the consumed key together with any seat. Reusing a key with other

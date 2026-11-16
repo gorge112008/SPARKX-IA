@@ -67,7 +67,7 @@ def build_comparison(result: dict) -> dict:
     return {
         "task": result.get("task"), "measured_model": model["id"],
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "scope": "Ayudante de desarrollo; no corresponde al agente de eventos de SparkX",
+        "scope": "Ayudante de desarrollo; no corresponde al agente de eventos de ArquiGica",
         "source_result_status": result.get("status"), "usage": usage,
         "step_counters_match": counters_match,
         "reported_cost": cost,

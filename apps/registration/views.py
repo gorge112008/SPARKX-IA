@@ -25,7 +25,7 @@ def _owned_event(request, event_id):
     current = get_user_model().objects.filter(pk=request.user.pk, is_active=True).first()
     if not current or not can_organize(current):
         raise PermissionDenied("No tienes permiso para gestionar inscripciones.")
-    return get_object_or_404(Event.objects.select_related("active_plan"), pk=event_id, owner=current)
+    return get_object_or_404(Event.objects.select_related("active_plan"), pk=event_id, owner=current, archived_at__isnull=True)
 
 
 def _public_actor(request):
@@ -94,7 +94,8 @@ def _public_response(request, template, context, *, status=200):
 @require_http_methods(["GET", "POST"])
 def public_registration(request, token):
     _public_actor(request)
-    page = get_object_or_404(RegistrationPage.objects.select_related("event", "published_plan"), public_token=token)
+    page = get_object_or_404(RegistrationPage.objects.select_related("event", "published_plan"),
+        public_token=token, event__archived_at__isnull=True)
     form = RegistrationForm(request.POST if request.method == "POST" else None,
                             initial={"form_token": submission_token(page)})
     if request.method == "POST" and form.is_valid():
@@ -122,5 +123,5 @@ def public_registration(request, token):
 @require_GET
 def received(request, token):
     _public_actor(request)
-    get_object_or_404(RegistrationPage.objects.only("pk"), public_token=token)
+    get_object_or_404(RegistrationPage.objects.only("pk"), public_token=token, event__archived_at__isnull=True)
     return _public_response(request, "event_registration/received.html", {"receipt_message": RECEIPT_MESSAGE})

@@ -20,13 +20,13 @@ def directory_actor(actor):
 
 
 def organizations_for(actor):
-    return Organization.objects.filter(owner=directory_actor(actor))
+    return Organization.objects.filter(owner=directory_actor(actor), archived_at__isnull=True)
 
 
 def people_for(actor):
     # A historically corrupt foreign affiliation must not expose its name.
-    return Person.objects.filter(owner=directory_actor(actor)).filter(
-        Q(organization__isnull=True) | Q(organization__owner_id=F("owner_id"))
+    return Person.objects.filter(owner=directory_actor(actor), archived_at__isnull=True).filter(
+        Q(organization__isnull=True) | Q(organization__owner_id=F("owner_id"), organization__archived_at__isnull=True)
     ).select_related("organization")
 
 
@@ -93,7 +93,7 @@ def search_people(actor, query="", category="", organization_id="", include_inac
 
 def event_people(actor, event_id):
     actor = directory_actor(actor)
-    event = Event.objects.filter(owner=actor, pk=event_id).first()
+    event = Event.objects.filter(owner=actor, pk=event_id, archived_at__isnull=True).first()
     if event is None:
         raise Event.DoesNotExist
     return EventPerson.objects.filter(event=event, person__owner=actor).filter(

@@ -144,7 +144,7 @@ def download_verified_archive() -> Path:
         archive_path.unlink()
     request = urllib.request.Request(
         DOWNLOAD_URL,
-        headers={"User-Agent": "SparkX-OpenCode-Installer/1.0", "Accept": "application/octet-stream"},
+        headers={"User-Agent": "ArquiGica-OpenCode-Installer/1.0", "Accept": "application/octet-stream"},
     )
     opener = urllib.request.build_opener(OfficialRedirectHandler())
     started = time.monotonic()

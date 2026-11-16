@@ -105,7 +105,7 @@ class LocalServer(ThreadedWSGIServer):
 
 
 class Command(BaseCommand):
-    help = "Inicia SparkX sólo en este PC, con apagado web para el superusuario local."
+    help = "Inicia ArquiGica sólo en este PC, con apagado web para el superusuario local."
     runtime_description = "Servidor local de desarrollo, sin recarga automática. No inicia workers ni llamadas de IA."
 
     def on_server_started(self):
@@ -135,7 +135,7 @@ class Command(BaseCommand):
             if exc.errno in {errno.EADDRINUSE, 10048}:
                 raise CommandError(
                     f"El puerto {port} ya está en uso. La instancia abierta puede ejecutar una versión anterior. "
-                    "Si pertenece a SparkX, guarda tus cambios, detenla desde su terminal o con Apagar SparkX "
+                    "Si pertenece a ArquiGica, guarda tus cambios, detenla desde su terminal o con Apagar ArquiGica "
                     "y vuelve a iniciar para cargar el código actualizado. También puedes elegir otro puerto "
                     "con --port y usar la dirección que indique ese nuevo arranque. No se detuvo ningún proceso."
                 ) from exc
@@ -145,8 +145,8 @@ class Command(BaseCommand):
             server.set_app(StaticFilesHandler(get_internal_wsgi_application()))
             server.timeout = 0.25
             local_runtime._runtime = runtime
-            self.stdout.write(self.style.SUCCESS(f"SparkX disponible en http://127.0.0.1:{server.server_port}/"))
-            self.stdout.write("Mantén esta ventana abierta. Para detener: Ctrl+C o Apagar SparkX desde tu cuenta técnica administradora.")
+            self.stdout.write(self.style.SUCCESS(f"ArquiGica disponible en http://127.0.0.1:{server.server_port}/"))
+            self.stdout.write("Mantén esta ventana abierta. Para detener: Ctrl+C o Apagar ArquiGica desde tu cuenta técnica administradora.")
             self.stdout.write(self.runtime_description)
             self.on_server_started()
             while not runtime.stop_requested.is_set():
@@ -168,4 +168,4 @@ class Command(BaseCommand):
                     server.server_close()
                 finally:
                     connections.close_all()
-        self.stdout.write(self.style.SUCCESS("SparkX detenido. Los datos guardados se conservan."))
+        self.stdout.write(self.style.SUCCESS("ArquiGica detenido. Los datos guardados se conservan."))

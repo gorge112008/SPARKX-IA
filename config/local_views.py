@@ -67,7 +67,7 @@ def shutdown(request):
         if payload != {"run_id": runtime.run_id, "user_id": request.user.pk} or request.POST.get("confirm_shutdown") != "yes":
             return render(request, "local_runtime/confirm_shutdown.html", {
                 "shutdown_token": _token(runtime, request.user),
-                "error": "Confirma de nuevo el apagado. La confirmación caduca a los dos minutos y al reiniciar SparkX.",
+                "error": "Confirma de nuevo el apagado. La confirmación caduca a los dos minutos y al reiniciar ArquiGica.",
             }, status=400)
         # Send the page first, then a completion receipt in the same connection.
         # No new asset/status request is needed after the listener has closed.

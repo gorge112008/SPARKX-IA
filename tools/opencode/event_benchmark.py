@@ -1,4 +1,4 @@
-"""Synthetic six-event scheduling benchmark; never writes to SparkX's database.
+"""Synthetic six-event scheduling benchmark; never writes to ArquiGica's database.
 
 The reference enumerates a deliberately small finite search space. A feasible
 reference is not an AI result. Each remote task stays within the existing broker.

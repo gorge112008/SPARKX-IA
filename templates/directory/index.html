@@ -1,5 +1,5 @@
 {% extends 'base.html' %}{% load static %}
-{% block title %}Directorio · SparkX{% endblock %}
+{% block title %}Directorio · ArquiGica{% endblock %}
 {% block extra_head %}{% if not portal_can_organize %}<link rel="stylesheet" href="{% static 'css/directory.css' %}?v=20261115-directory2">{% endif %}{% endblock %}
 {% block content %}
 <main id="main-content" class="page-content directory-page" data-romeo-destination="directory" data-romeo-query="{{ filter_form.q.value|default:'' }}" data-romeo-result-count="{{ records_page.paginator.count }}">

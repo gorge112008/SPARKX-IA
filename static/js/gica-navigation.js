@@ -6,12 +6,20 @@
   const role = document.body.dataset.portalRole;
   const root = document.querySelector('[data-romeo-presence]');
   if (!root || !/^[1-9][0-9]{0,18}$/.test(owner || '') || !['admin', 'organizer'].includes(role) || !crypto.randomUUID) return;
-  const routes = Object.freeze({ '/': 'events', '/calendar/': 'calendar', '/directory/': 'directory', '/events/new/': 'create', '/directory/organizations/new/': 'organization-create' });
+  const routes = Object.freeze({ '/': 'events', '/calendar/': 'calendar', '/directory/': 'directory', '/events/new/': 'create', '/directory/organizations/new/': 'organization-create', '/directory/people/new/': 'person-create', '/assistant/profile/': 'profile' });
   const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  const AUTHORIZED_PILOT = '9c1cb0ba-4025-49dc-b9e8-d0f6cf3e84aa';
-  let pilotID = null, candidatePath = '';
+  const AUTHORIZED_PILOT = 'bcf52dbd-206b-4d22-a294-8c487c770c56';
+  let pilotID = null,candidatePath='',directoryBinding=null,guidedID=null;
+  const initialEvent=location.pathname.match(/^\/events\/([0-9a-f-]{36})\/(?:edit\/|schedule\/|preparation\/)?$/i);
+  if(initialEvent&&uuid.test(initialEvent[1]))guidedID=initialEvent[1];
   function route(path) {
     if (Object.hasOwn(routes, path)) return routes[path];
+    if(root.dataset.gicaDemoActive!=='true'&&guidedID){
+      if(path===`/events/${guidedID}/`)return 'event';
+      if(path===`/events/${guidedID}/edit/`)return 'edit';
+      if(path===`/events/${guidedID}/schedule/`)return 'schedule';
+      if(path===`/events/${guidedID}/preparation/`)return 'preparation';
+    }
     if (!pilotID || root.dataset.gicaDemoActive !== 'true') return null;
     if (path === `/events/${pilotID}/`) return 'event';
     if (path === `/events/${pilotID}/edit/`) return 'edit';
@@ -22,12 +30,12 @@
   // Other management pages leave through full navigation. The Gica profile can
   // start its own conversation; preserve its bound settings on the first swap.
   const pilotEntry = ['', 'edit/', 'schedule/'].some((suffix) => location.pathname === `/events/${AUTHORIZED_PILOT}/${suffix}`);
-  if (!Object.hasOwn(routes, location.pathname) && location.pathname !== '/assistant/profile/' && !pilotEntry) return;
+  if (!Object.hasOwn(routes, location.pathname) && location.pathname !== '/assistant/profile/' && !pilotEntry && !guidedID) return;
   const keys = Object.freeze({
     '/': new Set(['q', 'organization', 'from', 'to', 'plan', 'page']),
     '/calendar/': new Set(['q', 'organization', 'from', 'to', 'plan', 'month', 'day']),
     '/directory/': new Set(['q', 'organization', 'category', 'include_inactive', 'tab', 'page']),
-    '/events/new/': new Set(), '/directory/organizations/new/': new Set()
+    '/events/new/': new Set(), '/directory/organizations/new/': new Set(), '/directory/people/new/': new Set(['organization']), '/assistant/profile/': new Set()
   });
   const clicks = new WeakMap();
   const preparations = new WeakMap();
@@ -66,9 +74,25 @@
         doc.querySelectorAll('[data-romeo-presence]').length !== 1 || mains.length !== 1) throw new Error('Cambió la cuenta, el rol o el formato de la página. Recarga para verificar tu sesión.');
     const main = mains[0];
     const destination = route(url.pathname);
-    const inferred = destination === 'event' && main.matches('[data-workspace]') || destination === 'edit' && main.querySelector('form[data-event-block-form]') || destination === 'schedule' && main.querySelector('form[data-pilot-schedule]') || destination === 'organization-create' && main.querySelector('form.directory-form [name="name"]');
+    // Reuse the already-bound voice controls when returning to Gica's profile.
+    // Importing another copy would duplicate IDs and lose browser preferences.
+    if (destination === 'profile') {
+      const bound = oldMain.querySelector('[data-gica-settings]') || root.querySelector('[data-gica-settings-fallback] [data-gica-settings]');
+      const incoming = main.querySelector('[data-gica-settings]');
+      if (bound && incoming) { const mount = doc.createElement('div'); mount.dataset.gicaSettingsMount = ''; incoming.replaceWith(mount); }
+    }
+    const scopedEvent=root.dataset.gicaDemoActive==='true'?pilotID:guidedID;
+    const inferred = destination === 'event' && main.matches('[data-workspace]') || destination === 'edit' && main.querySelector('form[data-event-block-form]') || destination === 'schedule' && main.querySelector('form[data-pilot-schedule]') || destination==='preparation'&&main.dataset.eventId===scopedEvent || destination === 'organization-create' && main.querySelector('form.directory-form [name="name"]') || destination === 'person-create' && main.querySelector('form.directory-form [name="full_name"]');
     if ((!inferred && main.dataset.romeoDestination !== destination) || main.dataset.romeoDestinationError === 'true' ||
         (url.pathname === '/directory/' && main.dataset.romeoQuery !== (url.searchParams.get('q') || ''))) throw new Error('El servidor no confirmó el destino solicitado.');
+    if(destination==='event'&&(!scopedEvent||main.dataset.eventId!==scopedEvent))throw new Error('La ficha no corresponde al evento solicitado.');
+    if(root.dataset.gicaDemoActive!=='true'&&['edit','schedule','preparation'].includes(destination)&&main.dataset.eventId!==scopedEvent)throw new Error('El formulario no corresponde al evento solicitado.');
+    if(['organization-create','person-create'].includes(destination)){
+      const forms=main.querySelectorAll('form.directory-form'),form=forms[0];
+      const names=destination==='organization-create'?['csrfmiddlewaretoken','name','aliases','is_active','is_synthetic']:['csrfmiddlewaretoken','full_name','aliases','category','email','expertise','organization','is_active','is_synthetic'];
+      const fields=form?[...form.querySelectorAll('[name]')].map((node)=>node.getAttribute('name')):[];
+      if(forms.length!==1||form.method.toLowerCase()!=='post'||names.some((name)=>!fields.includes(name))||fields.some((name)=>!names.includes(name))||new Set(fields).size!==fields.length)throw new Error('No pude comprobar los campos del directorio.');
+    }
     if (url.pathname === '/events/new/' && main.querySelectorAll('form[data-gica-event-form="create"]').length !== 1) throw new Error('El servidor no confirmó el formulario de creación.');
     // Never import head/scripts, inline handlers, CSS, frames or ambiguous IDs.
     if (main.querySelector('script,style,link,meta,base,iframe,object,embed,template')) throw new Error('El destino contiene elementos no admitidos para esta navegación.');
@@ -82,7 +106,7 @@
         if (/^(hx-|data-hx-)/i.test(attribute.name) && !/^(?:data-)?hx-(?:get|post|target|swap|disabled-elt|trigger|swap-oob)$/i.test(attribute.name)) throw new Error('El destino contiene una expresión HTMX no admitida.');
         if (/^(?:data-)?hx-(?:get|post)$/i.test(attribute.name)) {
           const request = new URL(attribute.value, location.origin);
-          const suffix = pilotID === AUTHORIZED_PILOT && request.pathname.startsWith(`/events/${pilotID}/`) ? request.pathname.slice(`/events/${pilotID}/`.length) : '';
+          const suffix=scopedEvent&&request.pathname.startsWith(`/events/${scopedEvent}/`)?request.pathname.slice(`/events/${scopedEvent}/`.length):'';
           const identifier = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
           const allowed = /post$/i.test(attribute.name) ? ['generate/', 'chat/', 'tasks/status/'].includes(suffix) || new RegExp('^jobs/' + identifier + '/cancel/$', 'i').test(suffix) : new RegExp('^jobs/' + identifier + '/$', 'i').test(suffix);
           if (destination !== 'event' || request.origin !== location.origin || request.username || request.password || request.search || request.hash || !allowed) throw new Error('La solicitud HTMX no pertenece al piloto.');
@@ -131,6 +155,7 @@
           pilotID = match[1]; root.dataset.gicaPilotEvent = pilotID;
         } else if (['edit', 'approve', 'schedule'].includes(submission.kind) && (returned.pathname !== `/events/${pilotID}/` || returned.search)) throw new Error('No se confirmó el cambio del piloto.');
         else if (submission.kind === 'organization' && (returned.pathname !== '/directory/' || returned.search !== '?tab=organizations')) throw new Error('No se confirmó la organización guardada.');
+        else if (submission.kind === 'person' && (returned.pathname !== '/directory/' || returned.search)) throw new Error('No se confirmó el expositor guardado.');
         url = localURL(returned.href);
         if (!url) throw new Error('El formulario devolvió un destino no permitido.');
         operation.url = url;
@@ -145,12 +170,15 @@
       if (!heading || !oldMain.isConnected || !root.isConnected) throw new Error('La página cambió durante la navegación. Recarga para verificarla.');
       // htmx.remove releases timers/listeners owned by the outgoing subtree.
       // The header, cursor, microphone and reviewed-memory controller stay intact.
-      const preferences = oldMain.querySelector('[data-gica-settings]');
-      if (preferences) {
+      const preferences = oldMain.querySelector('[data-gica-settings]') || root.querySelector('[data-gica-settings-fallback] [data-gica-settings]');
+      const mount = main.querySelector('[data-gica-settings-mount]');
+      if (preferences && mount) mount.replaceWith(preferences);
+      else if (preferences && oldMain.contains(preferences)) {
         const fallback = document.createElement('div'); fallback.hidden = true;
         fallback.dataset.gicaSettingsFallback = ''; root.append(fallback);
         fallback.append(preferences);
       }
+      root.querySelectorAll('[data-gica-settings-fallback]').forEach((node)=>{if(!node.children.length)node.remove();});
       oldMain.before(main);
       committed = true;
       window.htmx ? window.htmx.remove(oldMain) : oldMain.remove();
@@ -158,9 +186,9 @@
       document.querySelector('.flash-messages')?.remove();
       document.title = page.title;
       const destination = route(url.pathname);
-      heading.textContent = { events: 'Eventos', calendar: 'Calendario', directory: 'Directorio', create: 'Nuevo evento', 'organization-create': 'Nueva institución', event: 'Mi evento', edit: 'Editar ficha', schedule:'Ajustar horarios' }[destination];
+      heading.textContent = { events: 'Eventos', calendar: 'Calendario', directory: 'Directorio', create: 'Nuevo evento', 'organization-create': 'Nueva institución', 'person-create':'Nuevo expositor', event: 'Mi evento', edit: 'Editar ficha', schedule:'Ajustar horarios',preparation:'Responsables y evidencia', profile:'Conoce a Gica' }[destination];
       document.querySelectorAll('.main-nav a').forEach((link) => {
-        const selected = link.dataset.romeoNav === (['create', 'event', 'edit', 'schedule'].includes(destination) ? 'events' : destination === 'organization-create' ? 'directory' : destination);
+        const selected = link.dataset.romeoNav === (['create', 'event', 'edit', 'schedule','preparation'].includes(destination) ? 'events' : ['organization-create','person-create'].includes(destination) ? 'directory' : destination);
         link.classList.toggle('is-current', selected);
         if (selected) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
       });
@@ -229,6 +257,46 @@
   });
   document.addEventListener('visibilitychange', () => { if (document.hidden) active?.controller.abort(); });
   window.addEventListener('pagehide', () => active?.controller.abort());
+  function openGuided({url:value,eventID,action,signal}={}) {
+    if(active||root.dataset.gicaDemoActive==='true'||!root.isConnected||document.hidden||document.body.dataset.voiceUser!==owner||document.body.dataset.portalRole!==role||
+        signal?.aborted||(signal&&!(signal instanceof AbortSignal))||typeof value!=='string'||value.length>2048)return Promise.resolve({success:false});
+    let url;try{url=new URL(value,location.origin);}catch(_){return Promise.resolve({success:false});}
+    if(url.origin!==location.origin||url.username||url.password)return Promise.resolve({success:false});
+    const directories={open_organization_create:'/directory/organizations/new/',open_speaker_create:'/directory/people/new/'};
+    const detail={open_event:['','#plan'],open_agenda:['#plan','#agenda'],open_preparation:['#preparation'],open_generate:['#proposal-form','#proposals'],open_approval:['#candidate']};
+    const validEvent=uuid.test(eventID||'');
+    if(Object.hasOwn(directories,action)){
+      if(url.pathname!==directories[action]||url.hash||(eventID!=null&&eventID!==''&&!validEvent)||
+          [...url.searchParams].some(([key,id])=>action!=='open_speaker_create'||key!=='organization'||!uuid.test(id))||new Set(url.searchParams.keys()).size!==[...url.searchParams.keys()].length)return Promise.resolve({success:false});
+    }else if(action==='open_calendar'){
+      if(url.pathname!=='/calendar/'||url.hash||!validEvent||[...url.searchParams].some(([key,date])=>key==='month'?!/^20\d{2}-(?:0[1-9]|1[0-2])$/.test(date):key==='day'?!/^20\d{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])$/.test(date):true))return Promise.resolve({success:false});
+    }else if(action==='open_preparation'&&validEvent&&url.pathname===`/events/${eventID}/preparation/`&&!url.search&&!url.hash){
+      // Responsible people and evidence live on a separate GET view.
+    }else if(action==='open_event'&&validEvent&&url.pathname===`/events/${eventID}/edit/`&&!url.search&&!url.hash){
+      // The server may ask the user to complete an existing event's form.
+    }else if(Object.hasOwn(detail,action)){
+      if(!validEvent||url.pathname!==`/events/${eventID}/`||url.search||!detail[action].includes(url.hash))return Promise.resolve({success:false});
+    }else if(['open_edit_speaker','open_schedule'].includes(action)){
+      if(!validEvent||url.pathname!==`/events/${eventID}/${action==='open_schedule'?'schedule':'edit'}/`||url.search||url.hash)return Promise.resolve({success:false});
+    }else return Promise.resolve({success:false});
+    const previous=guidedID;if(validEvent)guidedID=eventID;
+    const target=localURL(url.href);if(!target){guidedID=previous;return Promise.resolve({success:false});}
+    if(target.pathname+target.search===location.pathname+location.search){
+      const main=document.querySelector('main#main-content');
+      if(!main||(target.pathname.startsWith('/events/')&&main.dataset.eventId!==eventID)){guidedID=previous;return Promise.resolve({success:false});}
+      const panels={'#plan':'plan','#agenda':'plan','#preparation':'preparation','#proposal-form':'proposals','#proposals':'proposals','#candidate':'proposals'};
+      const link=panels[target.hash]&&main.querySelector(`[data-panel-link="${panels[target.hash]}"]`);
+      if(link)link.click();
+      if(target.hash){
+        history.replaceState({gicaShell:true},'',target.pathname+target.search+target.hash);currentURL=location.href;
+        document.getElementById(target.hash.slice(1))?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+      }
+      return Promise.resolve({success:true,path:target.pathname+target.search,already:true});
+    }
+    // A server-authorized guide opens a bounded GET view only. It never gains
+    // the narrated pilot's submission/approval capability or its fixed ID.
+    return navigate(target,'push','guided',signal);
+  }
   window.SparkXGicaNavigation = Object.freeze({
     prepare: (anchor, options = {}) => {
       clicks.delete(anchor); preparations.delete(anchor);
@@ -241,6 +309,13 @@
     bindPilot: (id) => {
       if (root.dataset.gicaDemoActive !== 'true' || id !== AUTHORIZED_PILOT || document.body.dataset.voiceUser !== owner || document.body.dataset.portalRole !== role) return false;
       pilotID = id; root.dataset.gicaPilotEvent = id; return true;
+    },
+    bindDirectory: (value) => {
+      const registration=value?.speaker_registration;
+      if(root.dataset.gicaDemoActive!=='true'||!root.isConnected||document.hidden||document.body.dataset.voiceUser!==owner||document.body.dataset.portalRole!==role||
+          !uuid.test(value?.run_id||'')||!uuid.test(value?.organization_id||'')||!registration||registration.full_name!=='Jorge Gayoso'||registration.category!=='speaker'||registration.email!==''||
+          registration.expertise!=='Planificación y gestión del mantenimiento.'||registration.is_synthetic!==false||!Array.isArray(registration.aliases)||registration.aliases.length!==0)return false;
+      directoryBinding=Object.freeze({runID:value.run_id,organizationID:value.organization_id,registration:structuredClone(registration)});return true;
     },
     bindCandidate: (value) => {
       if (root.dataset.gicaDemoActive !== 'true' || !root.isConnected || document.hidden || document.body.dataset.voiceUser !== owner ||
@@ -258,6 +333,7 @@
     // Only the explicit pilot presentation submits these CSRF-bound forms and
     // the specific proposal approval shown for this pilot. No administrator UI.
     submitPilotForm,
+    openGuided,
     // Refresh the same pilot after a deterministic, server-validated proposal.
     refreshPilot: (options = {}) => {
       const url = pilotID && localURL(`/events/${pilotID}/`);
@@ -287,12 +363,18 @@
           !form.matches('[data-event-block-form],.directory-form,.candidate-actions form,[data-pilot-schedule]') || form.dataset.gicaGuidedDraft ||
           (options.signal && !(options.signal instanceof AbortSignal))) return { success: false };
       const url = localURL(form.action), csrf = form.elements.namedItem('csrfmiddlewaretoken');
-      const kind = url?.pathname === '/events/new/' ? 'create' : url?.pathname === `/events/${pilotID}/edit/` ? 'edit' : url?.pathname === `/events/${pilotID}/schedule/` ? 'schedule' : url?.pathname === '/directory/organizations/new/' ? 'organization' : candidatePath && url?.pathname === candidatePath ? 'approve' : null;
+      const kind = url?.pathname === '/events/new/' ? 'create' : url?.pathname === `/events/${pilotID}/edit/` ? 'edit' : url?.pathname === `/events/${pilotID}/schedule/` ? 'schedule' : url?.pathname === '/directory/organizations/new/' ? 'organization' : url?.pathname === '/directory/people/new/' ? 'person' : candidatePath && url?.pathname === candidatePath ? 'approve' : null;
       if (!url || !kind || !/^[A-Za-z0-9]{64}$/.test(csrf?.value || '') || form.querySelector('[name="expected_revision"]')?.value === '') return { success: false };
       const body = new FormData(form);
       if (Array.from(body.values()).some((value) => typeof value !== 'string')) return { success: false };
-      if (kind === 'organization' && (body.get('name') !== 'Gicaingenieros' || body.has('is_synthetic') || !body.has('is_active') ||
-          body.get('aliases') !== 'GICA Ingenieros')) return { success: false };
+      if(kind==='organization'&&(body.get('name')!=='Gicaingenieros'||body.has('is_synthetic')||!body.has('is_active')||body.get('aliases')!=='GICA Ingenieros'||
+          new Set(body.keys()).size!==Array.from(body.keys()).length||Array.from(body.keys()).some((key)=>!['csrfmiddlewaretoken','name','aliases','is_active','is_synthetic'].includes(key))))return {success:false};
+      if(kind==='person'){
+        const registration=directoryBinding?.registration;
+        if(!registration||options.run_id!==directoryBinding.runID||body.get('full_name')!==registration.full_name||body.get('aliases')!==''||body.get('category')!==registration.category||
+            body.get('email')!==''||body.get('expertise')!==registration.expertise||body.get('organization')!==directoryBinding.organizationID||!body.has('is_active')||body.has('is_synthetic')||
+            new Set(body.keys()).size!==Array.from(body.keys()).length||Array.from(body.keys()).some((key)=>!['csrfmiddlewaretoken','full_name','aliases','category','email','expertise','organization','is_active','is_synthetic'].includes(key)))return {success:false};
+      }
       if (kind === 'approve') {
         const candidate = candidatePath.split('/')[4];
         const version = document.querySelector('main[data-gica-pilot="true"]')?.dataset.eventRevision;

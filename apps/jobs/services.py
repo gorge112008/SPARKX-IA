@@ -252,7 +252,9 @@ def _prepare(job_id, token):
         from apps.ai_management.model_policy import validate_job_consent
         validate_job_consent(usage.snapshot, event=event, actor=job.actor,
             kind=job.kind, request_key=job.idempotency_key)
-        if usage.snapshot.get("provider") == "opencode" and not event.is_synthetic:
+        from apps.assistant.compact_planning import authorized_compact_job, freeze_compact
+        compact = authorized_compact_job(job, usage.snapshot)
+        if usage.snapshot.get("provider") == "opencode" and not event.is_synthetic and not compact:
             raise ValidationError("La demostración gratuita requiere un evento ficticio.")
         ensure_account_within_limits(account, usage.month, snapshot=usage.snapshot)
         from apps.assistant import provider
@@ -264,19 +266,22 @@ def _prepare(job_id, token):
         # so budget preflight and the remote request use the same observation.
         conversation = (provider.chat_context(event)
             if job.kind == Job.Kind.CHAT and usage.snapshot.get("provider") != "openai" else None)
-        if usage.snapshot.get("provider") == "openai":
+        if usage.snapshot.get("provider") == "openai" and not compact:
             event._openai_context_snapshot = provider.freeze_openai_context(
                 event=event, prompt=job.prompt, action=job.kind, snapshot=usage.snapshot,
             )
-        if usage.snapshot.get("provider") == "opencode":
+        if compact:
+            event._compact_context_snapshot = freeze_compact(event, job, usage.snapshot)
+        elif usage.snapshot.get("provider") == "opencode":
             event._free_context_snapshot = provider.freeze_free_context(
                 event=event, prompt=job.prompt, action=job.kind, conversation=conversation,
                 snapshot=usage.snapshot,
             )
-        provider.ensure_input_fits(
-            event=event, kind=job.kind, prompt=job.prompt, snapshot=usage.snapshot,
-            conversation=conversation,
-        )
+        if not compact:
+            provider.ensure_input_fits(
+                event=event, kind=job.kind, prompt=job.prompt, snapshot=usage.snapshot,
+                conversation=conversation,
+            )
     except Exception:
         release_undispatched(usage, "La comprobación previa falló; no se llamó al proveedor.")
         _clear_claim(job, status=Job.Status.FAILED, error="No se pudo preparar la solicitud. Revisa el perfil y sus límites.")
@@ -287,7 +292,7 @@ def _prepare(job_id, token):
             return None
     except ValidationError:
         release_undispatched(usage, "El control del piloto impidió el despacho; no se llamó al proveedor.")
-        _clear_claim(job, status=Job.Status.FAILED, error="El piloto no permite esta solicitud. Revisa el presupuesto y que el evento sea ficticio.")
+        _clear_claim(job, status=Job.Status.FAILED, error="El piloto no permite esta solicitud. Revisa el presupuesto y el alcance autorizado del evento.")
         return None
     return event, job, usage.snapshot, conversation
 
@@ -312,11 +317,34 @@ def _publish(job_id, token, output, usage):
         from apps.planning.services import create_candidate
         if not isinstance(output, dict):
             raise ValidationError("La respuesta de planificación no tiene el formato esperado.")
+        from apps.assistant.models import CompactPlanRequest
+        compact = CompactPlanRequest.objects.filter(job=job).first()
+        if compact:
+            from apps.assistant.compact_contract import validate_response
+            from apps.assistant.compact_planning import expand_proposal
+            validated = validate_response(output, round_number=compact.round_number)
+            compact.response = validated
+            compact.save(update_fields=["response"])
+            output = expand_proposal(event, compact, validated)
+            if output is None:
+                append_stage(job, "completed")
+                _clear_claim(job, status=Job.Status.SUCCEEDED, result={"compact_state": "questions", "usage": usage or {}})
+                return job
+            if compact.review_only:
+                from apps.planning.event_rules import validate_event_plan
+                if validate_event_plan(event, output):
+                    raise ValidationError("La agenda privada requiere corregir sus restricciones.")
+                append_stage(job, "completed")
+                _clear_claim(job, status=Job.Status.SUCCEEDED, result={"compact_state": "private_ready", "usage": usage or {}})
+                return job
         candidate = create_candidate(
             event=event, actor=job.actor, payload=output,
             base_revision=job.base_revision, base_plan_id=job.base_plan_id,
         )
         result = {"candidate_id": str(candidate.pk)}
+        if compact:
+            result["compact_state"] = "proposal"
+            result["communications"] = compact.response["communications"]
         append_stage(job, "needs_changes" if candidate.validation else "review_ready")
     elif job.kind == Job.Kind.CHAT:
         from apps.assistant.models import Message
@@ -348,7 +376,11 @@ def _fail(job_id, token, usage=None, *, code=None):
         message = ("El proveedor gratuito alcanzó un límite de cuota o solicitudes (429). "
                    "El plan se conserva. No hubo reintento ni cambio automático de proveedor. "
                    "Si no llegaron contadores, el consumo queda por conciliar.") if code == "free_quota" else FAILED_MESSAGE
-        _clear_claim(job, status=Job.Status.FAILED, error=message, result={"usage": usage} if usage else {})
+        result = {"usage": usage} if usage else {}
+        if code == "compact_invalid":
+            message = "La respuesta no cumple el contrato compacto. La agenda no se guardó. No hubo reintento automático."
+            result["diagnostic"] = {"phase": "contract", "code": "compact_invalid"}
+        _clear_claim(job, status=Job.Status.FAILED, error=message, result=result)
     return job
 
 
@@ -422,7 +454,7 @@ def prepare_claim(claim, *, for_parallel=False):
         # connection. Frozen payloads are the entire remote thread's context.
         attrs = {"pk": event.pk, "id": event.pk, "revision": event.revision,
                  "active_plan_id": event.active_plan_id, "is_synthetic": event.is_synthetic}
-        for name in ("_openai_context_snapshot", "_free_context_snapshot"):
+        for name in ("_openai_context_snapshot", "_free_context_snapshot", "_compact_context_snapshot"):
             if hasattr(event, name):
                 attrs[name] = deepcopy(getattr(event, name))
         event = SimpleNamespace(**attrs)
@@ -452,7 +484,9 @@ def perform_inference(prepared, *, observer):
             # Recheck cancellation/lease through the coordinator before starting
             # an admitted call. Repeated context_ready is deliberately idempotent.
             observer("context_ready")
-            if prepared.kind == Job.Kind.PLAN:
+            if hasattr(prepared.event, "_compact_context_snapshot"):
+                output = provider.generate_compact(event=prepared.event)
+            elif prepared.kind == Job.Kind.PLAN:
                 output = provider.generate_plan(event=prepared.event, prompt=prepared.prompt)
             elif prepared.kind == Job.Kind.CHAT:
                 output = provider.answer_question(
@@ -470,7 +504,8 @@ def perform_inference(prepared, *, observer):
                 usage = _pop_usage(provider)
             except Exception:
                 usage = {}
-        code = "free_quota" if isinstance(error, getattr(provider, "FreeQuotaUnavailable", ())) else None
+        code = ("free_quota" if isinstance(error, getattr(provider, "FreeQuotaUnavailable", ())) else
+                "compact_invalid" if isinstance(error, getattr(provider, "CompactContractError", ())) else None)
         return InferenceResult(prepared.job_id, prepared.token, usage=usage, failed=True, code=code)
 
 

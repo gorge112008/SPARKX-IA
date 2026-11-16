@@ -41,7 +41,7 @@
     "quoted": "Veo una frase entre comillas. Dime directamente qué te gustaría hacer, por ejemplo: abre calendario.",
     "reported": "Entiendo que me cuentas una indicación. Para actuar, dime directamente qué te gustaría hacer.",
     "restricted": "Por ahora, esa función no está disponible en Gica. Puedo abrir tus eventos, el calendario o el directorio, buscar personas y cambiar el tema.",
-    "unsafe": "Por seguridad, uso sólo las funciones de SparkX. ¿Quieres abrir eventos, calendario o directorio, buscar a alguien o cambiar el tema?",
+    "unsafe": "Por seguridad, uso sólo las funciones de ArquiGica. ¿Quieres abrir eventos, calendario o directorio, buscar a alguien o cambiar el tema?",
     "invalid_text": "La petición parece demasiado larga o tiene caracteres que no puedo leer. ¿Puedes decirla de forma más breve?"
   }
 }

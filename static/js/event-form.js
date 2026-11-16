@@ -16,6 +16,20 @@
     button.setAttribute('aria-expanded', 'false');
     if (restoreFocus) button.focus({ preventScroll: true });
   }
+  function openSelect(wrapper) {
+    const button = wrapper.querySelector('[data-event-select-toggle]');
+    const list = wrapper.querySelector('[data-event-select-options]');
+    list.hidden = false; button.setAttribute('aria-expanded', 'true');
+    const rect = button.getBoundingClientRect();
+    const bar = document.querySelector('.app-topbar')?.getBoundingClientRect();
+    const above = rect.top - Math.max(0, bar?.bottom || 0) - 12;
+    const below = innerHeight - rect.bottom - 12;
+    wrapper.dataset.eventSelectDirection = below < list.getBoundingClientRect().height && above > below ? 'up' : 'down';
+    const selected = list.querySelector('[aria-selected="true"]');
+    // Scroll only the list, keeping its selected option visible in either
+    // direction without moving the form or its label behind the workspace bar.
+    if (selected) list.scrollTop += selected.getBoundingClientRect().top - list.getBoundingClientRect().top - Math.max(0, (list.clientHeight - selected.offsetHeight) / 2);
+  }
   function enhanceSelect(form, name) {
     const control = form.elements.namedItem(name);
     if (!(control instanceof HTMLSelectElement) || control.dataset.eventSelectEnhanced) return;
@@ -101,8 +115,7 @@
     if (button.disabled) return;
     if (button.hasAttribute('data-event-select-toggle')) {
       const wrapper = button.closest('.event-select'), list = wrapper.querySelector('[data-event-select-options]');
-      list.hidden = !list.hidden; button.setAttribute('aria-expanded', String(!list.hidden));
-      if (!list.hidden) { const selected = list.querySelector('[aria-selected="true"]'); if (selected) list.scrollTop = selected.offsetTop - list.offsetTop; }
+      if (list.hidden) openSelect(wrapper); else closeSelect(wrapper);
     } else if (button.hasAttribute('data-event-select-option')) {
       const name = button.dataset.eventSelectOption, control = form.elements.namedItem(name);
       if (!selectNames.includes(name) || !(control instanceof HTMLSelectElement) || locked(form, control)) return;
@@ -146,7 +159,7 @@
     if (event.key === 'Escape' && !list.hidden) { event.preventDefault(); closeSelect(wrapper, true); }
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       if (toggle.disabled) return;
-      event.preventDefault(); list.hidden = false; toggle.setAttribute('aria-expanded', 'true');
+      event.preventDefault(); if (list.hidden) openSelect(wrapper);
       const items = Array.from(list.querySelectorAll('button:not(:disabled)'));
       const index = items.indexOf(document.activeElement), next = index < 0 ? items.findIndex((item) => item.getAttribute('aria-selected') === 'true') : index + (event.key === 'ArrowDown' ? 1 : -1);
       items[Math.max(0, Math.min(items.length - 1, next))]?.focus({ preventScroll: false });

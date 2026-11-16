@@ -1,0 +1,13 @@
+{
+  "asset": "arquigica-monogram.png",
+  "brand": "ArquiGica",
+  "created": "2026-11-16",
+  "method": "Built-in image generation with transparent background",
+  "reference": "Approved ArquiGica AG monogram concept from this design session",
+  "palette_reference": "User supplied logo_gicacertification.png; dominant opaque blue RGB 0 67 125",
+  "logo_colors": {"institutional_blue": "#00437D", "white": "#FFFFFF"},
+  "interface_accent_not_in_logo": "#087F8C",
+  "variants": {"light": "Blue on white", "dark": "White on institutional blue"},
+  "rendering": "A single clean generated alpha mask preserves identical geometry in both CSS theme variants. Native interface code also inverts the browser icon. Text stays native HTML.",
+  "prompt": "Precise logo color edit of the attached ArquiGica AG monogram. Preserve the exact existing AG silhouette, exact letter geometry and proportions and transparent canvas. Change the entire mark, INCLUDING the small separate bar in the G, to ONE perfectly flat solid institutional navy blue #00437D (RGB 0,67,125). No teal, no green, no other accent, no gradients, no glow, no shadow, no texture. All negative spaces and outer background genuinely transparent. No text or wordmark. This blue-only version is for white backgrounds. Preserve the canvas aspect ratio and placement. Return only the edited high-quality transparent logo asset."
+}

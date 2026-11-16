@@ -187,7 +187,7 @@ def person_edit(request, person_id):
 @_organizer
 @require_http_methods(["GET", "POST"])
 def roster(request, event_id):
-    event = get_object_or_404(Event.objects.filter(owner=request.user), pk=event_id)
+    event = get_object_or_404(Event.objects.filter(owner=request.user, archived_at__isnull=True), pk=event_id)
     assignments = event_people(request.user, event_id)
     # Reuse this request's scoped selector. Services recheck writes separately;
     # constructing a form for each row must not repeat authorization queries.

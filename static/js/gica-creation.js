@@ -350,6 +350,7 @@
         preview = '';
         responseStatus = data.status;
         draft = { ...data, status: data.status === 'expired' ? 'expired' : data.draft_status || data.status };
+        if (data.status === 'created' && localEventURL(data.event_url)) window.SparkXGicaGuided?.setEvent(data.event_url.split('/')[2]);
         render();
         if (active() && !document.querySelector('main form[data-gica-event-form="create"]')) {
           liveEvent('opening');

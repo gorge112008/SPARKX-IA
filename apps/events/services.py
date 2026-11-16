@@ -15,8 +15,24 @@ class InterviewConflict(ValidationError):
 
 
 def require_event_owner(event, actor):
-    if not can_organize(actor) or actor.pk != event.owner_id:
+    if not can_organize(actor) or actor.pk != event.owner_id or event.archived_at is not None:
         raise PermissionDenied("No tienes permiso para modificar este evento.")
+
+
+@transaction.atomic
+def archive_event(*, actor, event_id, expected_revision):
+    """Retire an event without erasing protected model usage or approved history."""
+    event = Event.objects.select_for_update().get(pk=event_id)
+    require_event_owner(event, actor)
+    if type(expected_revision) is not int or event.revision != expected_revision:
+        raise ValidationError("La ficha cambió. Recarga antes de retirar el evento.")
+    if event.jobs.filter(status__in=["queued", "running"]).exists():
+        raise ValidationError("Espera a que termine la solicitud del evento antes de retirarlo.")
+    event.archived_at = django_timezone.now()
+    event.revision += 1
+    event.review_access_version += 1
+    event.save(update_fields=["archived_at", "revision", "review_access_version", "updated_at"])
+    return event
 
 
 def _check_event_values(event):

@@ -4,7 +4,7 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E">
-  <title>Apagando SparkX…</title>
+  <title>Apagando ArquiGica…</title>
   <style nonce="{{ shutdown_style_nonce }}">
     :root { color-scheme:light dark; --canvas:#f5f7fb; --surface:#fff; --ink:#172437; --muted:#637185; --line:#e4e9f0; --accent:#087f8c; --accent-soft:#e4f4f5; }
     * { box-sizing:border-box; }
@@ -40,14 +40,14 @@
 <main id="main-content">
   <section aria-labelledby="shutdown-requested-title" aria-live="polite" data-shutdown-state="stopping">
     <div class="mark" aria-hidden="true"><svg class="spinner" viewBox="0 0 24 24"><path d="M12 2v10m-6.4-7.1a9 9 0 1 0 12.8 0"/></svg></div>
-    <p class="eyebrow">SparkX · Servicio local</p>
-    <h1 id="shutdown-requested-title">Apagando SparkX…</h1>
+    <p class="eyebrow">ArquiGica · Servicio local</p>
+    <h1 id="shutdown-requested-title">Apagando ArquiGica…</h1>
     <p class="intro" id="shutdown-detail">Esperando a que Gica-1 y las solicitudes en curso terminen. Esta página confirmará el resultado.</p>
     <div class="notice"><p id="shutdown-notice">Los datos guardados se conservan. No necesitas pulsar otra vez el botón de apagado.</p></div>
-    <div class="restart"><h2>Cuando quieras volver</h2><p>Abre <strong>Iniciar SparkX.cmd</strong> con doble clic en la carpeta del proyecto y entra de nuevo a <strong>http://127.0.0.1:8000/</strong>.</p></div>
+    <div class="restart"><h2>Cuando quieras volver</h2><p>Abre <strong>iniciar.cmd</strong> con doble clic en la carpeta del proyecto y entra de nuevo a <strong>http://127.0.0.1:8000/</strong>.</p></div>
     <div class="actions"><button type="button" id="close-tab" hidden>Cerrar pestaña</button></div>
     <p class="help" id="close-help">Al terminar se intentará cerrar esta pestaña. Si el navegador lo impide, podrás cerrarla manualmente. Tu computadora seguirá encendida.</p>
-    <noscript><p class="help">JavaScript está desactivado. Comprueba en la ventana de inicio que aparezca «SparkX detenido» y cierra esta pestaña manualmente.</p></noscript>
+    <noscript><p class="help">JavaScript está desactivado. Comprueba en la ventana de inicio que aparezca «ArquiGica detenido» y cierra esta pestaña manualmente.</p></noscript>
   </section>
 </main>
 <script nonce="{{ shutdown_script_nonce }}">
@@ -79,17 +79,17 @@
     closeButton.hidden = false;
     if (succeeded === true) {
       card.dataset.shutdownState = 'stopped';
-      document.title = 'SparkX apagado';
-      title.textContent = 'SparkX apagado';
+      document.title = 'ArquiGica apagado';
+      title.textContent = 'ArquiGica apagado';
       detail.textContent = 'Gica-1 terminó, las solicitudes finalizaron y el puerto local quedó cerrado.';
       notice.textContent = 'Apagado completado. Los datos guardados se conservan.';
       help.textContent = 'Esta pestaña intentará cerrarse automáticamente. Si permanece abierta, puedes cerrarla manualmente.';
       window.setTimeout(closeTab, 1800);
     } else {
       card.dataset.shutdownState = 'unconfirmed';
-      document.title = 'Apagado sin confirmar · SparkX';
+      document.title = 'Apagado sin confirmar · ArquiGica';
       title.textContent = 'No se pudo confirmar el apagado';
-      detail.textContent = 'Revisa la ventana de inicio de SparkX antes de volver a iniciarlo.';
+      detail.textContent = 'Revisa la ventana de inicio de ArquiGica antes de volver a iniciarlo.';
       notice.textContent = 'La solicitud fue recibida, pero no hay confirmación de que el proceso haya terminado.';
       help.textContent = 'Puedes cerrar esta pestaña manualmente; esto no fuerza el cierre del servicio.';
     }

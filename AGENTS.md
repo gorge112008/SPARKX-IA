@@ -1,7 +1,7 @@
-# SparkX 3.0
+# ArquiGica
 
 Proyecto Django modular de arquitectura inteligente de eventos. Trabajar en español.
-Leer README.md, docs/architecture.md, docs/construction-plan.md y docs/release.md.
+Leer README.md, docs/architecture.md, docs/construction-plan.md y docs/guias/release.md.
 La IA propone; el servidor controla permisos, validación, estados y aprobaciones.
 No incluir secretos ni datos privados en código, registros, documentos o commits.
 Material auxiliar exclusivamente en Temporal/, ignorado por Git.

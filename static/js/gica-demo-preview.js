@@ -69,13 +69,15 @@
     input.dispatchEvent(new Event('input', { bubbles:true })); input.dispatchEvent(new Event('change', { bubbles:true }));
     return true;
   }
-  function typeTitle({ signal } = {}) {
+  function type(key, { signal, value: supplied, delay = 36 } = {}) {
     const run = active;
-    if (!run || run.typed || !lease() || signal?.aborted || !mark('title')) return Promise.resolve(false);
-    run.typed = true;
-    const input = run.form.elements.namedItem('title'), letters = Array.from(run.fields.title);
+    if (!run || !lease() || signal?.aborted || !mark(key) || run.typingCleanup) return Promise.resolve(false);
+    const input = run.form.elements.namedItem(names[key]), value = supplied === undefined ? run.fields[key] : supplied;
+    if (!(input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) || !['text','number','search','textarea',''].includes(input.type) ||
+        !['string','number'].includes(typeof value) || unsafe.test(String(value)) || String(value).length > 12000 || (input.maxLength > 0 && String(value).length > input.maxLength)) return Promise.resolve(false);
+    const letters = Array.from(String(value));
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    input.value = '';
+    input.focus({ preventScroll:true }); input.value = ''; input.dispatchEvent(new Event('input', { bubbles:true }));
     return new Promise((resolve) => {
       let timer, index = 0, settled = false;
       const finish = (success = false) => {
@@ -90,7 +92,7 @@
         input.value = letters.slice(0, index).join(''); input.scrollLeft = input.scrollWidth;
         input.dispatchEvent(new Event('input', { bubbles:true }));
         if (index === letters.length) { input.dispatchEvent(new Event('change', { bubbles:true })); finish(true); }
-        else timer = setTimeout(next, 42);
+        else timer = setTimeout(next, Math.max(20, Math.min(70, delay)));
       };
       signal?.addEventListener('abort', finish, { once:true }); next();
     });
@@ -99,5 +101,6 @@
   window.addEventListener('pagehide', end);
   new MutationObserver(() => { if (active && !lease()) end(); }).observe(document.body, { attributes:true, attributeFilter:['data-voice-user'] });
   new MutationObserver(() => { if (active && !lease()) end(); }).observe(root, { attributes:true, attributeFilter:['data-gica-demo-active'] });
-  window.SparkXGicaDemoPreview = Object.freeze({ begin, fill, mark, typeTitle, end });
+  function typeTitle(options) { return type('title', options); }
+  window.SparkXGicaDemoPreview = Object.freeze({ begin, fill, mark, type, typeTitle, end });
 })();

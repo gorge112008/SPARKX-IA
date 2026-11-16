@@ -37,7 +37,7 @@ DEFAULT_PLAN_PROMPT = "Prepara una propuesta inicial con el contexto de este eve
 
 
 def _event(request, event_id, *, lock=False):
-    queryset = Event.objects.filter(owner=request.user)
+    queryset = Event.objects.filter(owner=request.user, archived_at__isnull=True)
     if lock:
         queryset = queryset.select_for_update()
     else:

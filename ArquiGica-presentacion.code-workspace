@@ -1,0 +1,28 @@
+{
+  "folders": [
+    { "name": "ArquiGica", "path": "." }
+  ],
+  "settings": {
+    "explorer.sortOrder": "type",
+    "explorer.compactFolders": false,
+    "files.exclude": {
+      ".git": true,
+      ".agents": true,
+      ".codex": true,
+      ".aws": true,
+      ".opencode": true,
+      ".venv": true,
+      "Temporal": true,
+      "var": true,
+      "entrega": true,
+      "**/__pycache__": true,
+      "**/*.pyc": true,
+      "**/.pytest_cache": true,
+      "**/.ruff_cache": true,
+      ".coverage": true,
+      "htmlcov": true,
+      ".env": true,
+      ".env.local": true
+    }
+  }
+}

@@ -37,8 +37,14 @@ class _Observation:
 
 
 def next_controlled_job(owner_id, *, excluded_jobs=(), excluded_events=(), excluded_models=(), parallel_only=False):
-    candidates = Job.objects.filter(
-        actor_id=owner_id, event__owner_id=owner_id, event__is_synthetic=True,
+    from apps.assistant.demo_pilot import PILOT_EVENT_ID
+    candidates = Job.objects.filter(actor_id=owner_id, event__owner_id=owner_id).filter(
+        Q(event__is_synthetic=True) | Q(event_id=PILOT_EVENT_ID, compact_request__version=1,
+            ai_usage__snapshot__compact_contract=1, ai_usage__snapshot__provider="opencode",
+            ai_usage__snapshot__mode="free", ai_usage__snapshot__agent_route="free_pool")
+        | Q(event_id=PILOT_EVENT_ID, compact_request__version=1, ai_usage__snapshot__compact_contract=1,
+            ai_usage__snapshot__provider="openai", ai_usage__snapshot__mode="paid",
+            ai_usage__snapshot__model="gpt-5.4-mini", ai_usage__snapshot__agent_route="primary")
     ).filter(
         Q(ai_usage__snapshot__provider="openai", ai_usage__snapshot__model__in=["gpt-5.4-mini", "gpt-6-luna"])
         | Q(ai_usage__snapshot__provider__in=["openai", "opencode", "groq", "gemini", "ollama"],
@@ -53,8 +59,8 @@ def next_controlled_job(owner_id, *, excluded_jobs=(), excluded_events=(), exclu
 
 
 class Command(LocalCommand):
-    help = "Inicia Gica-1 local: web y un worker para solicitudes ficticias explícitas de adminjorge."
-    runtime_description = "SparkX incluye Gica-1: un coordinador local y hasta dos inferencias independientes con contexto congelado. Configura APIs y agentes. Solo eventos ficticios; tope global USD 1."
+    help = "Inicia Gica-1 local: web y worker para solicitudes controladas y el piloto compacto minimizado de adminjorge."
+    runtime_description = "ArquiGica incluye Gica-1: un coordinador y hasta dos inferencias independientes. Las rutas habituales sólo admiten eventos ficticios; el piloto compacto exporta únicamente un tema público y opciones cerradas por la ruta elegida explícitamente. OpenAI conserva el tope global acumulado de USD 1 y los presupuestos por cuenta y agente; no hay cambio automático de proveedor."
 
     def add_arguments(self, parser):
         super().add_arguments(parser)

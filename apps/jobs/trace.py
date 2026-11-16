@@ -59,6 +59,8 @@ def trace_rows(job):
         except (KeyError, TypeError, ValueError):
             continue
         label, detail = STAGES[entry["stage"]]
+        if entry["stage"] == "completed" and job.result.get("compact_state") == "private_ready":
+            label, detail = "Agenda reservada", "El resultado está reservado para revisión privada; no se publicó ni aprobó una propuesta."
         rows.append({"stage": entry["stage"], "label": label, "detail": detail, "at": when})
     if rows:
         rows[-1]["current"] = job.status in {Job.Status.QUEUED, Job.Status.RUNNING}

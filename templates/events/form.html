@@ -1,7 +1,7 @@
 {% extends 'base.html' %}{% load tz %}
-{% block title %}{% if editing %}Editar ficha{% else %}Nuevo evento{% endif %} · SparkX{% endblock %}
+{% block title %}{% if editing %}Editar ficha{% else %}Nuevo evento{% endif %} · ArquiGica{% endblock %}
 {% block content %}
-<main id="main-content" class="page-content create-page event-create-workspace"{% if not editing %} data-romeo-destination="create"{% endif %}>
+<main id="main-content" class="page-content create-page event-create-workspace"{% if not editing %} data-romeo-destination="create"{% endif %}{% if event %} data-event-id="{{ event.pk }}"{% endif %}>
   <nav class="breadcrumb" aria-label="Ruta"><a href="{% url 'events:index' %}">Eventos</a><span aria-hidden="true">/</span>{% if editing %}<a href="{% url 'events:detail' event.id %}">{{ event.title }}</a><span aria-hidden="true">/</span><span>Editar ficha</span>{% else %}<span>Nuevo evento</span>{% endif %}</nav>
   <header class="form-heading"><h1 data-reveal="title">{% if editing %}Edita la ficha de tu evento{% else %}Crea tu evento{% endif %}</h1><p class="lead">{% if editing %}Actualiza sus datos y revisa el plan cuando estés listo.{% else %}Cinco bloques sencillos. Completa lo que sabes y deja lo demás pendiente.{% endif %}</p></header>
   <form method="post" class="event-form event-block-form" data-event-block-form{% if not editing %} data-gica-event-form="create"{% endif %} novalidate>

@@ -4,6 +4,7 @@ No provider, browser, arbitrary command, bulk deletion or admin access is expose
 The rehearsal uses real organizer-declared identities; availability remains pending.
 """
 from datetime import datetime, timedelta
+from copy import deepcopy
 import json
 import uuid
 from zoneinfo import ZoneInfo
@@ -33,7 +34,7 @@ INITIAL_DATE = "2026-11-19"
 NEXT_DATE = "2026-11-26"
 ORGANIZATION_NAME = "Gicaingenieros"
 ROBERT_NAME = "Dr. Robert Castillo Alva"
-JORGE_NAME = "Jorge Gayoso Ugas"
+JORGE_NAME = "Jorge Gayoso"
 SESSION_KEY = "gica_pilot_journey_v1"
 ANSWER_KEYS = ("objective", "audience", "modality", "duration_minutes", "location", "resources", "constraints")
 
@@ -54,7 +55,7 @@ def pilot_fields(speaker_id):
 
 
 def _person(actor, canonical, alternatives):
-    people = list(Person.objects.filter(owner=actor, name_key__in=[search_key(name) for name in [canonical, *alternatives]]))
+    people = list(Person.objects.filter(owner=actor, archived_at__isnull=True, name_key__in=[search_key(name) for name in [canonical, *alternatives]]))
     if len(people) > 1:
         raise ValidationError("Hay expositores homónimos. Revisa el directorio antes de continuar.")
     if people:
@@ -113,6 +114,20 @@ def build_pilot_plan(event):
             "risks": ["Confirmar disponibilidad del expositor y moderación.", "Confirmar enlace y licencia de Zoom.", "Ensayar conexión, sonido y material de respaldo."]}
 
 
+def reassign_pilot_plan(event):
+    """Mechanical replacement: keep AI-authored content and hours unchanged."""
+    if not event.active_plan_id:
+        raise ValidationError("Prepara y aprueba primero la agenda con IA.")
+    links = list(event.directory_people.select_related("person").filter(role="speaker", status__in=["planned", "confirmed"])[:2])
+    if (len(links) != 1 or links[0].person.owner_id != event.owner_id or not links[0].person.is_active
+            or links[0].person.category != Person.Category.SPEAKER):
+        raise ValidationError("Selecciona un expositor activo de tu directorio.")
+    payload = deepcopy(event.active_plan.payload)
+    for session in payload["sessions"]:
+        session["speaker"] = links[0].person.full_name
+    return payload
+
+
 def _reply(data, status=200):
     response = JsonResponse(data, status=status)
     response["X-Content-Type-Options"] = "nosniff"
@@ -159,14 +174,21 @@ def pilot_control(request):
             if Event.objects.filter(pk=PILOT_EVENT_ID).exclude(owner=actor).exists():
                 raise PermissionDenied("Este recorrido no está disponible para esta cuenta.")
             robert = _person(actor, ROBERT_NAME, ["Robert Castillo Alva", "Robert Castillo"])
-            jorge = _person(actor, JORGE_NAME, [])
-            org = Organization.objects.filter(owner=actor, name_key=search_key(ORGANIZATION_NAME), is_active=True, is_synthetic=False).first()
+            org = Organization.objects.filter(owner=actor, archived_at__isnull=True, name_key=search_key(ORGANIZATION_NAME), is_active=True, is_synthetic=False).first()
+            candidates = list(Person.objects.filter(owner=actor, archived_at__isnull=True, name_key=search_key(JORGE_NAME),
+                category=Person.Category.SPEAKER, is_active=True, is_synthetic=False, organization=org)[:2]) if org else []
+            if len(candidates) > 1:
+                raise ValidationError("Hay expositores homónimos. Revisa el directorio antes de continuar.")
+            jorge = candidates[0] if candidates else None
             event = _pilot(actor)
             return _reply({"run_id": run["id"], "event_id": str(event.pk) if event else None,
                            "event_url": reverse("events:detail", args=[event.pk]) if event else None,
                            "event_revision": event.revision if event else None, "narration_mode": "resume" if event else "create",
                            "organization": {"id": str(org.pk) if org else None, "name": ORGANIZATION_NAME, "aliases": ["GICA Ingenieros"]},
-                           "speakers": {"robert": str(robert.pk), "jorge": str(jorge.pk)}, "fields": pilot_fields(robert.pk), "next_date": NEXT_DATE})
+                           "speakers": {"robert": str(robert.pk), "jorge": str(jorge.pk) if jorge else None},
+                           "speaker_registration": {"full_name": JORGE_NAME, "aliases": [], "category": "speaker", "email": "",
+                               "expertise": "Planificación y gestión del mantenimiento.", "is_synthetic": False},
+                           "fields": pilot_fields(robert.pk), "next_date": NEXT_DATE})
         if not isinstance(run, dict) or run.get("owner") != actor.pk or run.get("expires", 0) < now or data.get("run_id") != run.get("id"):
             return _reply({"error": "Inicia de nuevo el recorrido del piloto."}, 409)
         if operation == "create":
@@ -187,8 +209,8 @@ def pilot_control(request):
             org = fields.get("organization_id")
             speaker = fields.get("speaker_id")
             expected = datetime.fromisoformat(INITIAL_DATE + "T19:30:00-05:00")
-            person = Person.objects.filter(pk=speaker, owner=actor).first()
-            organization = Organization.objects.filter(pk=org, owner=actor, name_key=search_key(ORGANIZATION_NAME)).first()
+            person = Person.objects.filter(pk=speaker, owner=actor, archived_at__isnull=True, is_active=True).first()
+            organization = Organization.objects.filter(pk=org, owner=actor, archived_at__isnull=True, is_active=True, name_key=search_key(ORGANIZATION_NAME)).first()
             if (fields["title"] != PILOT_TITLE or fields["starts_at"] != expected or fields["capacity"] != 100 or fields["is_synthetic"]
                     or fields["timezone"] != "America/Lima" or fields["scheduled_dates"] != [INITIAL_DATE]
                     or set(preparation) != set(ANSWER_KEYS)
@@ -204,7 +226,9 @@ def pilot_control(request):
             return _reply({"error": "El piloto no está disponible."}, 404)
         if type(data.get("expected_revision")) is not int or data["expected_revision"] != event.revision:
             return _reply({"error": "La ficha cambió. Recarga y revisa antes de continuar."}, 409)
-        payload = build_pilot_plan(event)
+        if operation == "plan":
+            return _reply({"error": "La agenda se prepara ahora con IA. Inicia la solicitud compacta.", "code": "compact_required"}, 410)
+        payload = reassign_pilot_plan(event)
         candidate = PlanCandidate.objects.filter(event=event, base_revision=event.revision, base_plan_id=event.active_plan_id,
                                                 status="pending", payload=payload).first()
         created = candidate is None

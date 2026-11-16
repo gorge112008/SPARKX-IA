@@ -6,6 +6,7 @@ from . import event_creation_views
 from . import profile_views
 from . import demo_pilot
 from . import pilot_workflow
+from . import compact_views
 
 app_name = "assistant"
 urlpatterns = [
@@ -13,6 +14,7 @@ urlpatterns = [
     path("event-creation/", event_creation_views.turn, name="event_creation"),
     path("demo-pilot/", demo_pilot.demo_pilot, name="demo_pilot"),
     path("pilot-control/", pilot_workflow.pilot_control, name="pilot_control"),
+    path("pilot-ai/", compact_views.pilot_ai, name="pilot_ai"),
     path("knowledge/", knowledge_views.knowledge, name="knowledge"),
     path("knowledge/query/", knowledge_views.query, name="knowledge_query"),
     path("knowledge/<uuid:pk>/change/", knowledge_views.knowledge_change, name="knowledge_change"),

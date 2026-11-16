@@ -2,14 +2,14 @@
 <html lang="es">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
+  <link rel="icon" href="{% static 'brand/arquigica-monogram.png' %}?v=20261116-brand3" type="image/png">
   {# CSS owns presentation; HTMX must not snapshot/restore inline style attributes under our CSP. #}
-  <meta name="color-scheme" content="light dark"><meta name="theme-color" content="#f5f7fb"><meta name="htmx-config" content='{"allowEval":false,"allowScriptTags":false,"historyCacheSize":0,"includeIndicatorStyles":false,"attributesToSettle":["class","width","height"],"selfRequestsOnly":true}'><title>{% block title %}SparkX · Planifica con claridad{% endblock %}</title>
-  <script src="{% static 'js/theme.js' %}?v=20261108-calendar1"></script>
-  <link rel="stylesheet" href="{% static 'css/app.css' %}?v=20261116-account-menu1">
+  <meta name="color-scheme" content="light dark"><meta name="theme-color" content="#f5f7fb"><meta name="htmx-config" content='{"allowEval":false,"allowScriptTags":false,"historyCacheSize":0,"includeIndicatorStyles":false,"attributesToSettle":["class","width","height"],"selfRequestsOnly":true}'><title>{% block title %}ArquiGica · Planifica con claridad{% endblock %}</title>
+  <script src="{% static 'js/theme.js' %}?v=20261116-brand3"></script>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}?v=20261116-brand3">
   <link rel="stylesheet" href="{% static 'css/plan-reading.css' %}?v=20261114-taskflow1">
   <link rel="stylesheet" href="{% static 'css/romeo.css' %}?v=20261115-romeo1">
-  <link rel="stylesheet" href="{% static 'css/pilot-workflow.css' %}?v=20261116-jury1">
+  <link rel="stylesheet" href="{% static 'css/pilot-workflow.css' %}?v=20261116-content1">
   {% if local_shutdown_visible or request.resolver_match.url_name == 'local_shutdown' %}<link rel="stylesheet" href="{% static 'css/local-runtime.css' %}?v=20261116-account-menu1">{% endif %}
   {% block extra_head %}{% endblock %}
   <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
@@ -18,27 +18,32 @@
   <script src="{% static 'js/workspace.js' %}?v=20261116-jury1" defer></script>
   <script src="{% static 'js/task-progress.js' %}?v=20261116-jury1" defer></script>
   <script src="{% static 'js/romeo.js' %}?v=20261116-jury1" defer></script>
-  <script src="{% static 'js/pilot-controls.js' %}?v=20261116-jury1" defer></script>
+  <link rel="stylesheet" href="{% static 'css/gica-waiting.css' %}?v=20261116-api-pause1">
+  <script src="{% static 'js/gica-waiting.js' %}?v=20261116-arquigica1" defer></script>
+  <script src="{% static 'js/gica-pilot-ai.js' %}?v=20261116-content1" defer></script>
+  <script src="{% static 'js/pilot-controls.js' %}?v=20261116-content1" defer></script>
   <script src="{% static 'js/motion.js' %}?v=20261108-motion3" defer></script>
   {% if portal_can_organize %}
+  <link rel="stylesheet" href="{% static 'css/gica-profile.css' %}?v=20261116-profile1">
   <link rel="stylesheet" href="{% static 'css/calendar.css' %}?v=20261108-calendar2">
   <link rel="stylesheet" href="{% static 'css/directory.css' %}?v=20261115-directory2">
   <link rel="stylesheet" href="{% static 'css/journey-demo.css' %}?v=20261114-journey1">
   <script src="{% static 'js/calendar.js' %}?v=20261115-fluency1" defer></script>
-  <script src="{% static 'js/gica-navigation.js' %}?v=20261116-jury1" defer></script>
-  <link rel="stylesheet" href="{% static 'css/romeo-presence.css' %}?v=20261116-clean1">
+  <script src="{% static 'js/gica-navigation.js' %}?v=20261116-content1" defer></script>
+  <link rel="stylesheet" href="{% static 'css/romeo-presence.css' %}?v=20261116-polish3">
   <link rel="stylesheet" href="{% static 'css/gica-conversation.css' %}?v=20261115-knowledge1">
-  <link rel="stylesheet" href="{% static 'css/gica-creation.css' %}?v=20261116-jury1">
-  <script src="{% static 'js/event-form.js' %}?v=20261116-jury1" defer></script>
-  <script src="{% static 'js/romeo-presence.js' %}?v=20261116-jury1" defer></script>
+  <link rel="stylesheet" href="{% static 'css/gica-creation.css' %}?v=20261116-openai1">
+  <script src="{% static 'js/event-form.js' %}?v=20261116-openai1" defer></script>
+  <script src="{% static 'js/romeo-presence.js' %}?v=20261116-content1" defer></script>
   <script src="{% static 'js/romeo-actions.js' %}?v=20261115-general1" defer></script>
-  <script src="{% static 'js/romeo-speech.js' %}?v=20261115-creation-live1" defer></script>
-  <script src="{% static 'js/gica-creation.js' %}?v=20261116-demo1" defer></script>
-  <script src="{% static 'js/romeo-voice.js' %}?v=20261116-jury1" defer></script>
-  <link rel="stylesheet" href="{% static 'css/gica-companion.css' %}?v=20261116-jury1">
-  <script src="{% static 'js/gica-companion.js' %}?v=20261116-jury1" defer></script>
-  <script src="{% static 'js/gica-demo-preview.js' %}?v=20261116-jury1" defer></script>
-  <script src="{% static 'js/gica-demo.js' %}?v=20261116-jury1" defer></script>
+  <script src="{% static 'js/romeo-speech.js' %}?v=20261116-openai1" defer></script>
+  <script src="{% static 'js/gica-creation.js' %}?v=20261116-flow4" defer></script>
+  <script src="{% static 'js/gica-guided.js' %}?v=20261116-flow4" defer></script>
+  <script src="{% static 'js/romeo-voice.js' %}?v=20261116-flow4" defer></script>
+  <link rel="stylesheet" href="{% static 'css/gica-companion.css' %}?v=20261116-compact1">
+  <script src="{% static 'js/gica-companion.js' %}?v=20261116-compact1" defer></script>
+  <script src="{% static 'js/gica-demo-preview.js' %}?v=20261116-compact1" defer></script>
+  <script src="{% static 'js/gica-demo.js' %}?v=20261116-content1" defer></script>
   <script src="{% static 'js/gica-patterns.js' %}?v=20261115-fluency1" defer></script>
   {% endif %}
 </head>
@@ -68,13 +73,13 @@
 </defs></svg>
 <div class="app-shell">
   <aside class="sidebar" aria-label="Navegación principal">
-    <a class="brand" href="{% url 'events:index' %}" aria-label="SparkX, mis eventos"><svg class="icon brand-spark" aria-hidden="true"><use href="#i-spark"/></svg><span>SparkX</span></a>
+    <a class="brand" href="{% url 'events:index' %}" aria-label="ArquiGica, mis eventos">{% include "partials/brand_mark.html" with brand_variant="compact" %}</a>
     <p class="nav-caption">Espacio de trabajo</p>
     <nav class="main-nav" aria-label="Herramientas comunes">
       <a data-romeo-nav="events" class="nav-link{% if request.resolver_match.app_name == 'events' and request.resolver_match.url_name != 'calendar' %} is-current{% endif %}" href="{% url 'events:index' %}"{% if request.resolver_match.app_name == 'events' and request.resolver_match.url_name != 'calendar' %} aria-current="location"{% endif %}><svg class="icon" aria-hidden="true"><use href="#i-events"/></svg>{% if portal_is_reviewer %}Eventos asignados{% else %}Eventos{% endif %}</a>
       <a data-romeo-nav="calendar" class="nav-link{% if request.resolver_match.url_name == 'calendar' %} is-current{% endif %}" href="{% url 'events:calendar' %}"{% if request.resolver_match.url_name == 'calendar' %} aria-current="location"{% endif %}><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>Calendario</a>
       {% if portal_can_organize %}<a data-romeo-nav="directory" class="nav-link{% if request.resolver_match.app_name == 'directory' %} is-current{% endif %}" href="{% url 'directory:index' %}"{% if request.resolver_match.app_name == 'directory' %} aria-current="location"{% endif %}><svg class="icon" aria-hidden="true"><use href="#i-people"/></svg>Directorio</a>{% endif %}
-      {% if portal_can_organize %}<a class="nav-link{% if request.resolver_match.app_name == 'assistant' and request.resolver_match.url_name == 'profile' %} is-current{% endif %}" href="{% url 'assistant:profile' %}"{% if request.resolver_match.app_name == 'assistant' and request.resolver_match.url_name == 'profile' %} aria-current="location"{% endif %}><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg>Conoce a Gica</a>{% endif %}
+      {% if portal_can_organize %}<a data-romeo-nav="profile" class="nav-link{% if request.resolver_match.app_name == 'assistant' and request.resolver_match.url_name == 'profile' %} is-current{% endif %}" href="{% url 'assistant:profile' %}"{% if request.resolver_match.app_name == 'assistant' and request.resolver_match.url_name == 'profile' %} aria-current="location"{% endif %}><svg class="icon" aria-hidden="true"><use href="#i-spark"/></svg>Conoce a Gica</a>{% endif %}
     </nav>
     <div class="sidebar-bottom{% if local_shutdown_visible %} sidebar-bottom--local-control{% endif %}">
       {% if user.is_authenticated %}
@@ -95,7 +100,7 @@
             <a class="nav-link{% if request.resolver_match.url_name == 'password_change' or request.resolver_match.url_name == 'password_change_done' %} is-current{% endif %}" href="{% url 'password_change' %}"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg>Cambiar contraseña</a>
             <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="nav-link logout" type="submit"><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg>Cerrar sesión</button></form>
           </div>
-          {% if local_shutdown_visible %}<div class="account-power"><a class="nav-link local-power-link" href="{% url 'local_shutdown' %}"><svg class="icon" aria-hidden="true"><use href="#i-power"/></svg>Apagar SparkX</a></div>{% endif %}
+          {% if local_shutdown_visible %}<div class="account-power"><a class="nav-link local-power-link" href="{% url 'local_shutdown' %}"><svg class="icon" aria-hidden="true"><use href="#i-power"/></svg>Apagar ArquiGica</a></div>{% endif %}
         </nav>
       </details>
       {% else %}<span class="muted">Espacio del organizador</span>{% endif %}

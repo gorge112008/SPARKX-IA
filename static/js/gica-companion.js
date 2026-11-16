@@ -119,6 +119,16 @@
   function padded(rect, amount = 10) {
     return { left: rect.left - amount, right: rect.right + amount, top: rect.top - amount, bottom: rect.bottom + amount };
   }
+  function presentationRegions() {
+    const regions = [];
+    if (state.demo && visible(demoTargetNode)) regions.push(padded(demoTargetNode.getBoundingClientRect(), 20));
+    // The calendar link is only a small part of the result being explained.
+    // Protect its complete description and session list, not just the link.
+    for (const node of document.querySelectorAll('main[data-romeo-destination="calendar"] .calendar-event-detail')) {
+      if (visible(node)) regions.push(padded(node.getBoundingClientRect(), 16));
+    }
+    return regions;
+  }
   function viewportBounds(workspace = false) {
     const viewport = window.visualViewport;
     const bounds = { left: (viewport?.offsetLeft || 0) + 12, top: (viewport?.offsetTop || 0) + 12,
@@ -158,11 +168,13 @@
     // A short visual viewport normally means the on-screen keyboard is open.
     shell.classList.toggle('is-short', bounds.bottom - bounds.top < 480);
     const rect = shell.getBoundingClientRect(), width = rect.width, height = rect.height;
-    const targetRect = state.demo && visible(demoTargetNode) ? padded(demoTargetNode.getBoundingClientRect(), 20) : null;
+    const protectedRegions = presentationRegions();
     const manualBox = manualPosition ? { left: manualPosition.x, top: manualPosition.y, right: manualPosition.x + width, bottom: manualPosition.y + height } : null;
     // A manual position belongs to the user. During the presentation we only
-    // borrow a different place while that position covers the current control.
-    if (manualPosition && (!targetRect || overlap(manualBox, targetRect) === 0)) {
+    // borrow another place while it covers the active control or calendar text.
+    const displaced = state.demo && manualBox && protectedRegions.some((region) => overlap(manualBox, region) > 0);
+    shell.dataset.displaced = String(!!displaced);
+    if (manualPosition && !displaced) {
       manualPosition = clamped(manualPosition, width, height);
       if (!located || Math.abs(manualPosition.x - lastPosition.x) >= 1 || Math.abs(manualPosition.y - lastPosition.y) >= 1) place(manualPosition);
       return;
@@ -171,7 +183,7 @@
     const top = bounds.top, bottom = Math.max(top, bounds.bottom - height);
     const middleX = Math.max(left, (left + right) / 2), middleY = Math.max(top, (top + bottom) / 2);
     const obstacles = [];
-    if (targetRect) obstacles.push({ rect: targetRect, weight: 200 });
+    for (const region of protectedRegions) obstacles.push({ rect: region, weight: 200 });
     for (const node of document.querySelectorAll('[data-account-menu][open] .account-options, #romeo-presence-details, [open] dialog, dialog[open], [aria-modal="true"]')) {
       if (visible(node) && !shell.contains(node)) obstacles.push({ rect: padded(node.getBoundingClientRect()), weight: 16 });
     }
@@ -180,18 +192,23 @@
     for (const node of document.querySelectorAll('main .gica-field-current, main .gica-field-preview, main [data-gica-live-question], main [data-event-select-options]:not([hidden]), main [data-event-date-panel]:not([hidden])')) {
       if (visible(node)) obstacles.push({ rect: padded(node.getBoundingClientRect(), 14), weight: 14 });
     }
+    for (const node of document.querySelectorAll('main[data-romeo-destination="calendar"] .calendar-toolbar, main[data-romeo-destination="calendar"] .calendar-agenda-heading')) {
+      if (visible(node)) obstacles.push({ rect: padded(node.getBoundingClientRect(), 12), weight: 80 });
+    }
     // Stable candidate order keeps Gica near the content, never wandering at random.
-    const candidates = [{ x: right, y: bottom }, { x: right, y: top }, { x: left, y: bottom }, { x: left, y: top },
-      { x: right, y: middleY }, { x: left, y: middleY }, { x: middleX, y: bottom }, { x: middleX, y: top }];
+    const corners = document.querySelector('main[data-romeo-destination="calendar"]') ?
+      [{ x: right, y: top }, { x: left, y: top }, { x: right, y: bottom }, { x: left, y: bottom }] :
+      [{ x: right, y: bottom }, { x: right, y: top }, { x: left, y: bottom }, { x: left, y: top }];
+    const candidates = [...corners, { x: right, y: middleY }, { x: left, y: middleY }, { x: middleX, y: bottom }, { x: middleX, y: top }];
     let destination;
     if (shell.contains(focus) && located && !state.demo) destination = { x: Math.max(left, Math.min(right, lastPosition.x)), y: Math.max(top, Math.min(bottom, lastPosition.y)) };
     else destination = candidates.map((candidate, index) => {
       const box = { left: candidate.x, top: candidate.y, right: candidate.x + width, bottom: candidate.y + height };
       return { ...candidate, score: obstacles.reduce((sum, obstacle) => sum + overlap(box, obstacle.rect) * obstacle.weight, 0) + index * 5 };
     }).sort((a, b) => a.score - b.score)[0];
-    if (state.demo && targetRect && destination && !demoCompact && !minimized) {
+    if (state.demo && protectedRegions.length && destination && !demoCompact && !minimized) {
       const box = { left: destination.x, top: destination.y, right: destination.x + width, bottom: destination.y + height };
-      if (overlap(box, targetRect) > 0) { demoCompact = true; render(); return; }
+      if (protectedRegions.some((region) => overlap(box, region) > 0)) { demoCompact = true; render(); return; }
     }
     if (!destination || (located && Math.abs(destination.x - lastPosition.x) < 1 && Math.abs(destination.y - lastPosition.y) < 1)) return;
     place(destination, true);
@@ -349,7 +366,7 @@
   }
   function clear() {
     cancelDrag(); manualPosition = null; draggedCompactUntil = 0; shell.dataset.placement = 'automatic';
-    state.active = state.exchanged = false; state.assistantText = state.userText = ''; state.creation = null; demoTargetNode = null; demoCompact = false; completionCompact = false;
+    state.active = state.exchanged = false; state.assistantText = state.userText = ''; state.creation = null; demoTargetNode = null; demoCompact = false; completionCompact = false; delete shell.dataset.displaced;
     state.micActive = state.listening = state.speaking = state.blocked = state.demo = false;
     question.textContent = answer.textContent = ''; otherInput.value = ''; options.replaceChildren(); choiceSignature = ''; submitted = false; minimized = false; customChoice = null;
     routeOptions(false, false); inlineHost.hidden = true;

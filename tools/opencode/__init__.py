@@ -1,1 +1,1 @@
-"""Development assistance, deliberately separate from SparkX's runtime agents."""
+"""Development assistance, deliberately separate from ArquiGica's runtime agents."""

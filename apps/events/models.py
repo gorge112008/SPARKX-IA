@@ -31,6 +31,7 @@ class Event(models.Model):
     capacity = models.PositiveIntegerField(default=100)
     organization = models.ForeignKey("directory.Organization", on_delete=models.PROTECT, null=True, blank=True, related_name="events")
     is_synthetic = models.BooleanField(default=False)
+    archived_at = models.DateTimeField(null=True, blank=True, editable=False)
     revision = models.PositiveIntegerField(default=1, editable=False)
     review_access_version = models.PositiveIntegerField(default=1, editable=False)
     active_plan = models.ForeignKey("planning.PlanRevision", on_delete=models.PROTECT, null=True, blank=True, related_name="active_for_events", editable=False)

@@ -1,6 +1,6 @@
 """Prepare small tasks for a credential-free, restricted OpenCode process.
 
-No command imports generated files into SparkX or executes their contents.
+No command imports generated files into ArquiGica or executes their contents.
 Inputs must be explicitly selected, non-secret text. Permissions are harness
 controls, not an OS sandbox or a guarantee about a remote model's privacy.
 """
@@ -153,7 +153,7 @@ def run_bounded(arguments: list[str], *, cwd: Path, env: dict, seconds=MAX_SECON
 def selected_text(relative: str) -> tuple[str, bytes]:
     candidate = Path(relative)
     if not candidate.parts or candidate.is_absolute() or ".." in candidate.parts:
-        raise TaskError("Selecciona una ruta relativa dentro de SparkX.")
+        raise TaskError("Selecciona una ruta relativa dentro de ArquiGica.")
     if candidate.parts[0] not in SAFE_ROOTS and candidate.as_posix() != "README.md":
         raise TaskError("Solo se admiten archivos de código o documentación revisados.")
     if candidate.suffix.lower() not in SAFE_SUFFIXES or any(
@@ -367,7 +367,7 @@ def _run_claimed_task(task_id: str) -> dict:
               "Devuelve como máximo 1200 palabras. Los borradores van solo en outputs/.")
     command = [str(EXECUTABLE_PATH), "run", "--standalone", "--model", "opencode/" + task["model"],
                "--agent", "sparkx-" + task["mode"], "--format", "json", "--archived",
-               "--title", "SparkX: " + task_id, prompt]
+               "--title", "ArquiGica: " + task_id, prompt]
     try:
         result = run_bounded(command, cwd=directory, env=env, stop_on_model_error=True)
         events = result.pop("stdout")
@@ -441,7 +441,7 @@ def parse_response(events: str) -> dict:
 
 def wizard() -> int:
     """A small, explicit handoff instead of opening the full private repository."""
-    print("Ayudante OpenCode para desarrollar SparkX")
+    print("Ayudante OpenCode para desarrollar ArquiGica")
     print("Solo modelos gratuitos comprobados. Los archivos elegidos se envían a un proveedor remoto.")
     print("No incluyas claves, datos personales o información confidencial. Los borradores requieren revisión.")
     if not installation_is_verified():

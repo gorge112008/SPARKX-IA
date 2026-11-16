@@ -32,7 +32,7 @@ class PackageReleaseTests(unittest.TestCase):
         for name in denied:
             with self.subTest(name=name):
                 self.assertFalse(is_allowed(name))
-        for name in [".env.example", "apps/__init__.py", "static/vendor/htmx.LICENSE", "docs/release.md"]:
+        for name in [".env.example", "apps/__init__.py", "static/vendor/htmx.LICENSE", "docs/guias/release.md"]:
             self.assertTrue(is_allowed(name))
 
     def test_traversal_absolute_and_windows_paths_fail(self):
@@ -75,6 +75,33 @@ class PackageReleaseTests(unittest.TestCase):
         with self.assertRaises(ReleaseError):
             build_release(self.root, self.root / "archive.zip")
         self.assertFalse((self.root / "archive.zip").exists())
+
+    def test_new_root_uses_product_name_and_legacy_archives_remain_readable(self):
+        path = self.root / "entrega" / "current.zip"
+        build_release(self.root, path)
+        with zipfile.ZipFile(path) as archive:
+            payload = [(info, archive.read(info)) for info in archive.infolist()]
+        self.assertEqual(PACKAGE_ROOT, "ArquiGica")
+        self.assertTrue(all(info.filename.startswith("ArquiGica/") for info, _ in payload))
+        legacy = self.root / "entrega" / "legacy.zip"
+        with zipfile.ZipFile(legacy, "w") as archive:
+            for info, data in payload:
+                info.filename = "SPARKX3.0/" + info.filename.split("/", 1)[1]
+                archive.writestr(info, data)
+        self.assertTrue(verify_release(legacy)["verified"])
+
+    def test_mixed_current_and_legacy_roots_are_rejected(self):
+        path = self.root / "entrega" / "mixed.zip"
+        build_release(self.root, path)
+        with zipfile.ZipFile(path) as archive:
+            payload = [(info, archive.read(info)) for info in archive.infolist()]
+        with zipfile.ZipFile(path, "w") as archive:
+            for index, (info, data) in enumerate(payload):
+                if index == 0:
+                    info.filename = "SPARKX3.0/" + info.filename.split("/", 1)[1]
+                archive.writestr(info, data)
+        with self.assertRaises(ReleaseError):
+            verify_release(path)
 
     def test_tampered_content_is_rejected(self):
         path = self.root / "entrega" / "one.zip"

@@ -47,7 +47,8 @@ def context_constraints(event):
     resources = {_name(item["name"]): item for item in result["resources"]}
     window_start = datetime.fromisoformat(result["window"]["start"])
     window_end = datetime.fromisoformat(result["window"]["end"])
-    other_events = Event.objects.filter(owner_id=event.owner_id, active_plan__isnull=False).exclude(pk=event.pk).select_related("active_plan")
+    other_events = Event.objects.filter(owner_id=event.owner_id, archived_at__isnull=True,
+        active_plan__isnull=False).exclude(pk=event.pk).select_related("active_plan")
     if other_events.count() > 100:
         raise ValueError("La comprobación de esta demo admite hasta cien eventos con agenda. Revisa la disponibilidad manualmente.")
     for other in other_events:

@@ -53,7 +53,7 @@ GROUPS = (
             ChecklistLink("Condiciones oficiales del beneficio API", "https://developers.openai.com/api/docs/guides/chatgpt-api-credits"),
             ChecklistLink("Abrir plataforma API", "https://platform.openai.com/"),
         )),
-        ChecklistItem("credencial_privada", "Configurar la credencial en privado", "Crear una clave exclusiva de SparkX e introducirla mediante la configuración privada del servidor. Nunca pegarla en el chat, Git ni este módulo.", steps=(
+        ChecklistItem("credencial_privada", "Configurar la credencial en privado", "Crear una clave exclusiva de ArquiGica e introducirla mediante la configuración privada del servidor. Nunca pegarla en el chat, Git ni este módulo.", steps=(
             "En la cuenta del proveedor crea una credencial dedicada al proyecto, con los permisos mínimos que admita. Conserva el secreto en un gestor privado; este checklist no tiene un campo para introducirlo.",
             "Configura la variable privada requerida por el perfil elegido en los procesos web y worker. Pide acompañamiento para hacerlo por un canal seguro si lo necesitas; no edites el ejemplo público con una clave real.",
             "Abre Gestión de IA y comprueba el indicador local de configuración. Que la variable exista no acredita conexión, saldo ni inferencia real; esas comprobaciones pertenecen al recorrido real.",
@@ -62,14 +62,14 @@ GROUPS = (
             ChecklistConfirmation("credencial_privada_procesos", "Configuré el acceso privado para web y worker, sin incluirlo en archivos versionados."),
             ChecklistConfirmation("credencial_privada_indicador", "Revisé el indicador local y entiendo que no prueba conexión ni saldo."),
         )),
-        ChecklistItem("presupuesto_ia", "Definir el presupuesto del prototipo", "Decidir qué parte del saldo disponible se destinará a SparkX. El gasto adicional se mantiene en cero hasta autorización expresa. Marcar este punto no cambia ni autoriza el presupuesto de Gestión de IA.", steps=(
+        ChecklistItem("presupuesto_ia", "Definir el presupuesto del prototipo", "Decidir qué parte del saldo disponible se destinará a ArquiGica. El gasto adicional se mantiene en cero hasta autorización expresa. Marcar este punto no cambia ni autoriza el presupuesto de Gestión de IA.", steps=(
             "Con el saldo y la vigencia comprobados, decide un presupuesto bruto acotado para el piloto y un límite de tokens. Los créditos de un proveedor no se transfieren a otro y un nivel gratuito tiene sus propias condiciones.",
             "Revisa en Gestión de IA → Presupuesto el perfil seleccionado y los límites. Si no hay un presupuesto concreto acordado o saldo confirmado, mantén la generación de pago deshabilitada.",
-            "Contrasta la configuración con las recargas y los fondos de la cuenta externa. El límite de SparkX solo controla sus solicitudes; no controla otros programas que utilicen la misma organización.",
+            "Contrasta la configuración con las recargas y los fondos de la cuenta externa. El límite de ArquiGica solo controla sus solicitudes; no controla otros programas que utilicen la misma organización.",
         ), confirmations=(
             ChecklistConfirmation("presupuesto_ia_cifra", "Definí un límite concreto de dinero y tokens compatible con el saldo comprobado."),
             ChecklistConfirmation("presupuesto_ia_sin_extras", "No autoricé recargas, compras ni gastos adicionales al completar este punto."),
-            ChecklistConfirmation("presupuesto_ia_limites", "Revisé por separado los límites de SparkX y de la cuenta del proveedor."),
+            ChecklistConfirmation("presupuesto_ia_limites", "Revisé por separado los límites de ArquiGica y de la cuenta del proveedor."),
         )),
         ChecklistItem("prueba_recorrido", "Probar el recorrido con IA real", "Crear una propuesta, revisarla, aprobarla y consultar su consumo con un proveedor operativo. Las respuestas controladas de pruebas no acreditan inferencia real.", steps=(
             "Realiza la prueba solo cuando credencial, cuota y presupuesto estén preparados. Usa un evento de demostración y confirma que web y worker están funcionando con el perfil seleccionado.",
@@ -103,7 +103,7 @@ GROUPS = (
             ChecklistConfirmation("revision_usuario_estados", "Revisé que propuestas, aprobaciones y ejecución de tareas no se confundan."),
         )),
         ChecklistItem("demo_voz", "Comprobar voz por turnos", "Probar físicamente micrófono, texto revisable y lectura opcional. La disponibilidad depende del navegador, sus permisos y las voces instaladas.", "Sólo si se decide usar dictado por voz en la demostración.", steps=(
-            "Abre SparkX en el navegador que usarás para el ensayo, revisa el aviso de micrófono y concede el permiso solo si aceptas el tratamiento indicado. El reconocimiento puede utilizar un servicio remoto del navegador.",
+            "Abre ArquiGica en el navegador que usarás para el ensayo, revisa el aviso de micrófono y concede el permiso solo si aceptas el tratamiento indicado. El reconocimiento puede utilizar un servicio remoto del navegador.",
             "Pulsa Dictar, habla una petición breve y comprueba que puedes corregir la transcripción antes de enviarla. Verifica la alternativa escrita si no hay soporte, se deniega el permiso o se entiende mal una palabra.",
             "Envía el texto únicamente con el perfil y presupuesto preparados para IA real. Revisa la respuesta escrita y prueba Leer y Detener si existe una voz compatible; una voz local evita ese servicio remoto de síntesis, pero no el coste de generar la respuesta.",
             "Comprueba que el micrófono y la lectura se detienen al terminar. Este ensayo es por turnos: no acredita conversación continua ni sesiones de voz ilimitadas.",
@@ -114,10 +114,10 @@ GROUPS = (
         )),
     )),
     ChecklistGroup("despliegue", "Preparar un eventual acceso público", "Estos puntos se pueden declarar No aplica si la demostración correspondiente permanece local.", (
-        ChecklistItem("servicios_vps", "Identificar servicios existentes en OVH", "Indicar qué servicios funcionan actualmente en el VPS y cuáles deben preservarse antes de preparar un despliegue.", "Antes de usar el VPS para publicar SparkX.", steps=(
+        ChecklistItem("servicios_vps", "Identificar servicios existentes en OVH", "Indicar qué servicios funcionan actualmente en el VPS y cuáles deben preservarse antes de preparar un despliegue.", "Antes de usar el VPS para publicar ArquiGica.", steps=(
             "Si el ensayo permanecerá local, usa No aplica y explica esa decisión sin secretos. Si se considera OVH, confirma primero que ese despliegue forma parte de la entrega acordada.",
             "Revisa el inventario de servicios, puertos, dominios, datos y copias de seguridad existentes. Identifica qué debe preservarse; no detengas ni sustituyas servicios para completar este punto.",
-            "Comprueba recursos disponibles y quién administra el VPS. La captura de 4 vCPU y 8 GB describe el plan contratado, no capacidad libre ni una prueba de concurrencia de SparkX.",
+            "Comprueba recursos disponibles y quién administra el VPS. La captura de 4 vCPU y 8 GB describe el plan contratado, no capacidad libre ni una prueba de concurrencia de ArquiGica.",
         ), confirmations=(
             ChecklistConfirmation("servicios_vps_modalidad", "Confirmé que el uso del VPS se acordó; si la demo es local, corresponde No aplica."),
             ChecklistConfirmation("servicios_vps_inventario", "Identifiqué servicios y datos que deben preservarse, sin interrumpirlos."),
@@ -132,7 +132,7 @@ GROUPS = (
             ChecklistConfirmation("acceso_ssh_privado", "Preparé el acceso mediante un canal privado, sin revelar claves ni contraseñas."),
             ChecklistConfirmation("acceso_ssh_destino", "Identifiqué dominio y control de DNS; publicar sigue siendo una acción separada."),
         )),
-        ChecklistItem("password_publico", "Cambiar la contraseña inicial del administrador", "Elegir una contraseña robusta mediante el mecanismo privado de la aplicación antes de exponerla a internet. Este checklist nunca almacena contraseñas.", "Antes de habilitar acceso público a SparkX.", steps=(
+        ChecklistItem("password_publico", "Cambiar la contraseña inicial del administrador", "Elegir una contraseña robusta mediante el mecanismo privado de la aplicación antes de exponerla a internet. Este checklist nunca almacena contraseñas.", "Antes de habilitar acceso público a ArquiGica.", steps=(
             "Antes de exponer la aplicación, prepara en un gestor privado una contraseña larga y exclusiva para adminjorge. No reutilices la contraseña inicial ni la pegues aquí.",
             "Realiza el cambio mediante un mecanismo privado autorizado de Django. Si necesitas asistencia, solicita el procedimiento sin enviar el valor de la contraseña.",
             "Comprueba un inicio de sesión nuevo y revisa las sesiones que deban cerrarse. Registra solo que hiciste la comprobación; no almacenes secretos ni capturas del formulario rellenado.",

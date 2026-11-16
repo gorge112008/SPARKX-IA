@@ -16,7 +16,7 @@ class ProfileForm(forms.Form):
     free_tier_confirmed = forms.BooleanField(
         label="Confirmo el uso de esta oferta gratuita y he revisado sus condiciones y límites.",
         required=False,
-        help_text="Groq y Gemini requieren una cuenta en su nivel gratuito, sin facturación activada. OpenCode de demostración no requiere clave y su oferta es temporal. SparkX no comprueba tu facturación.",
+        help_text="Groq y Gemini requieren una cuenta en su nivel gratuito, sin facturación activada. OpenCode de demostración no requiere clave y su oferta es temporal. ArquiGica no comprueba tu facturación.",
     )
     expected_version = forms.IntegerField(min_value=0, widget=forms.HiddenInput, initial=0)
 
@@ -157,7 +157,7 @@ class ComparisonForm(UsageFilterForm):
     pen_date = forms.DateField(label="Fecha del tipo de cambio", required=False,
                                widget=forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"))
     pen_source = forms.CharField(label="Fuente del tipo de cambio", required=False, max_length=120,
-                                 help_text="Nombre o referencia de tu consulta. SparkX no visita esta dirección ni verifica la tasa.")
+                                 help_text="Nombre o referencia de tu consulta. ArquiGica no visita esta dirección ni verifica la tasa.")
 
     def clean(self):
         from django.utils import timezone

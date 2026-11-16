@@ -1,11 +1,21 @@
 {% extends 'registration/public_base.html' %}
-{% block title %}Iniciar sesión · SparkX{% endblock %}
+{% block title %}Iniciar sesión · ArquiGica{% endblock %}
+{% block access_page_class %}login-page{% endblock %}
+{% block access_header_class %}login-header{% endblock %}
+{% block access_brand %}{% endblock %}
+{% block access_footer %}{% endblock %}
 {% block content %}
-<main id="main-content" class="access-main">
-  <section class="access-card" aria-labelledby="access-title">
-    <div class="access-mark" aria-hidden="true"><svg class="icon"><use href="#i-spark"/></svg></div>
-    <h1 id="access-title">Iniciar sesión</h1>
-    <p class="access-intro">Continúa en tu espacio de eventos.</p>
+<main id="main-content" class="login-layout">
+  <section class="login-identity" aria-label="ArquiGica, planificación inteligente de eventos">
+    <div class="login-identity-content">
+      {% include "partials/brand_mark.html" with brand_variant="hero" %}
+      <p class="login-tagline">Planificación inteligente de eventos</p>
+    </div>
+  </section>
+  <section class="login-panel" aria-labelledby="access-title">
+  <div class="login-form-content">
+    <h1 id="access-title">Bienvenido</h1>
+    <p class="access-intro">Ingresa a tu espacio de trabajo.</p>
     {% if messages %}{% for message in messages %}<div class="notice{% if message.tags %} notice-{{ message.tags }}{% endif %}" role="status">{{ message }}</div>{% endfor %}{% endif %}
     <form method="post" class="access-form" data-private-form>
       {% csrf_token %}
@@ -13,9 +23,9 @@
       <div class="field"><label for="{{ form.username.id_for_label }}">Correo o usuario</label>{{ form.username }}{{ form.username.errors }}</div>
       <div class="field"><label for="{{ form.password.id_for_label }}">Contraseña</label><div class="password-control">{{ form.password }}<button class="password-toggle" type="button" data-password-toggle="{{ form.password.id_for_label }}" aria-label="Mostrar contraseña" aria-pressed="false" hidden><svg class="icon password-eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg><svg class="icon password-eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 3 18 18M9.5 5.3A12 12 0 0 1 12 5c6.5 0 10 7 10 7a16 16 0 0 1-3.1 4M6.3 6.3A20 20 0 0 0 2 12s3.5 7 10 7a13 13 0 0 0 5.7-1.5M10 10a3 3 0 0 0 4 4"/></svg></button></div>{{ form.password.errors }}</div>
       {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
-      <button class="button button-primary access-submit" type="submit">Iniciar sesión<svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button>
+      <button class="button button-primary access-submit" type="submit">Iniciar sesión</button>
     </form>
-    <p class="access-help">Si necesitas una cuenta o recuperar el acceso, contacta con el administrador.</p>
+  </div>
   </section>
 </main>
 {% endblock %}

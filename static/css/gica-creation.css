@@ -41,6 +41,10 @@ form[data-gica-guided-draft] input[readonly], form[data-gica-guided-draft] texta
 .event-block-form { max-width:none; }
 .event-form-blocks { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; align-items:start; }
 .event-form-block { min-width:0; padding:20px; border:1px solid var(--line); border-radius:10px; background:var(--sidebar); transition:border-color .18s,box-shadow .18s; }
+/* Leave the block heading below the workspace bar when the narrated cursor
+ * centres a tall form block. Keep ordinary page scrolling and every field. */
+.event-create-workspace .event-form-block { scroll-margin-block:64px 12px; }
+.event-create-workspace .field,.event-create-workspace .event-form-footer { scroll-margin-top:24px; }
 .event-form-block-heading { display:flex; align-items:flex-start; gap:11px; margin-bottom:20px; }
 .event-block-number { display:grid; flex:0 0 29px; place-items:center; width:29px; height:29px; border-radius:8px; background:var(--accent-soft); color:var(--link); font-size:11px; font-weight:650; }
 .event-form-block-heading h2 { margin:0 0 3px; font-size:13px; line-height:1.5; }
@@ -93,7 +97,8 @@ form[data-gica-guided-draft] input[readonly], form[data-gica-guided-draft] texta
 .event-select-toggle { display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; min-height:37px; padding:8px 10px; text-align:left; border:1px solid var(--control-border); border-radius:6px; background:var(--canvas); color:var(--ink); font-size:12px; line-height:1.5; }
 .event-select-toggle::after { content:'⌄'; flex:none; color:var(--muted); }
 .event-select-toggle[aria-expanded="true"] { border-color:var(--link); }
-.event-select-options { position:absolute; z-index:30; top:calc(100% + 5px); left:0; right:0; max-height:220px; overflow:auto; overscroll-behavior:contain; padding:5px; border:1px solid var(--control-border); border-radius:8px; background:var(--sidebar); box-shadow:0 10px 30px rgba(0,0,0,.13); scrollbar-width:thin; }
+.event-select-options { position:absolute; z-index:30; top:calc(100% + 5px); left:0; right:0; max-height:min(220px,calc(100dvh - 116px)); overflow:auto; overscroll-behavior:contain; padding:5px; border:1px solid var(--control-border); border-radius:8px; background:var(--sidebar); box-shadow:0 10px 30px rgba(0,0,0,.13); scrollbar-width:thin; }
+.event-select[data-event-select-direction="up"] .event-select-options { top:auto; bottom:calc(100% + 5px); }
 .event-select-options button { display:block; width:100%; min-height:36px; padding:8px; border:0; border-radius:4px; background:transparent; color:var(--ink); text-align:left; font-size:12px; overflow-wrap:anywhere; }
 .event-select-options button:hover,.event-select-options button:focus-visible { background:var(--quiet); }
 .event-select-options button[aria-selected="true"] { background:var(--accent-soft); color:var(--link); }

@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.db.models import Q
+from django.utils import timezone
 
 from apps.accounts.access import can_organize
 from apps.events.models import Event
@@ -23,6 +24,8 @@ def _record(model, actor, object_id, expected_version):
     record = model.objects.select_for_update().filter(pk=object_id).first() if object_id else None
     if record and record.owner_id != actor.pk:
         raise PermissionDenied("No tienes acceso a este registro.")
+    if record and record.archived_at is not None:
+        raise PermissionDenied("Este registro fue retirado del directorio.")
     if record:
         if type(expected_version) is not int or expected_version != record.version:
             raise ValidationError("El registro cambió. Recarga y compara antes de guardar.", code="stale_directory")
@@ -53,6 +56,39 @@ def _save(record, actor, values, *, new):
 
 
 @transaction.atomic
+def retire_person(*, actor, person_id, expected_version):
+    """Remove a directory entry from use while retaining historical references."""
+    actor = _actor(actor)
+    person = _record(Person, actor, person_id, expected_version)
+    if person is None:
+        raise Person.DoesNotExist
+    if person.event_links.filter(event__archived_at__isnull=True).exclude(status="cancelled").exists():
+        raise ValidationError("Retira primero su asignación en los eventos activos.")
+    person.archived_at = timezone.now()
+    person.is_active = False
+    person.version += 1
+    person.save(update_fields=["archived_at", "is_active", "version", "updated_at"])
+    _audit(actor, person, "retire", ["archived_at", "is_active"])
+    return person
+
+
+@transaction.atomic
+def retire_organization(*, actor, organization_id, expected_version):
+    actor = _actor(actor)
+    organization = _record(Organization, actor, organization_id, expected_version)
+    if organization is None:
+        raise Organization.DoesNotExist
+    if organization.people.filter(archived_at__isnull=True).exists() or organization.events.filter(archived_at__isnull=True).exists():
+        raise ValidationError("Retira primero sus vínculos vigentes con personas y eventos.")
+    organization.archived_at = timezone.now()
+    organization.is_active = False
+    organization.version += 1
+    organization.save(update_fields=["archived_at", "is_active", "version", "updated_at"])
+    _audit(actor, organization, "retire", ["archived_at", "is_active"])
+    return organization
+
+
+@transaction.atomic
 def upsert_organization(*, actor, name, aliases=None, is_active=True, is_synthetic=False, object_id=None, expected_version=None):
     if not isinstance(name, str):
         raise ValidationError("El nombre debe ser texto.")
@@ -61,7 +97,7 @@ def upsert_organization(*, actor, name, aliases=None, is_active=True, is_synthet
     new = record is None
     if new:
         key = search_key(name)
-        if Organization.objects.filter(owner=actor).filter(Q(name_key=key) | Q(alias_keys__contains="\n" + key + "\n")).exists():
+        if Organization.objects.filter(owner=actor, archived_at__isnull=True).filter(Q(name_key=key) | Q(alias_keys__contains="\n" + key + "\n")).exists():
             raise ValidationError({"name": "Ese nombre o sigla ya identifica una organización de tu directorio. Edita la ficha existente."})
         record = Organization(owner=actor, **({"id": object_id} if object_id else {}))
     return _save(record, actor, {"name": " ".join(name.split()), "aliases": record.aliases if aliases is None else aliases,
@@ -77,7 +113,7 @@ def upsert_person(*, actor, full_name, category, email="", expertise="", organiz
     record = _record(Person, actor, object_id, expected_version)
     new = record is None
     if organization_id:
-        organization = Organization.objects.filter(pk=organization_id, owner=actor).first()
+        organization = Organization.objects.filter(pk=organization_id, owner=actor, archived_at__isnull=True).first()
         if organization is None:
             raise ValidationError({"organization": "Selecciona una institución de tu directorio."})
     else:
@@ -93,9 +129,9 @@ def upsert_person(*, actor, full_name, category, email="", expertise="", organiz
 @transaction.atomic
 def assign_person(*, actor, event_id, person_id, role, status="planned", expected_version=0):
     # Event -> User matches Jobs and local chat; never invert these locks.
-    event = Event.objects.select_for_update().filter(pk=event_id, owner_id=getattr(actor, "pk", None)).first()
+    event = Event.objects.select_for_update().filter(pk=event_id, owner_id=getattr(actor, "pk", None), archived_at__isnull=True).first()
     actor = _actor(actor)
-    person = Person.objects.filter(pk=person_id, owner=actor).first()
+    person = Person.objects.filter(pk=person_id, owner=actor, archived_at__isnull=True).first()
     if event is None or person is None:
         raise PermissionDenied("Selecciona un evento y una persona de tu espacio.")
     if not person.is_active and status != EventPerson.Status.CANCELLED:

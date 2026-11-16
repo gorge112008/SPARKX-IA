@@ -1,5 +1,5 @@
 {% extends 'base.html' %}{% load static %}
-{% block title %}Calendario · SparkX{% endblock %}
+{% block title %}Calendario · ArquiGica{% endblock %}
 {% block extra_head %}{% if not portal_can_organize %}<link rel="stylesheet" href="{% static 'css/calendar.css' %}?v=20261108-calendar2"><script src="{% static 'js/calendar.js' %}?v=20261115-fluency1" defer></script>{% endif %}{% endblock %}
 {% block content %}
 <main id="main-content" class="page-content calendar-page" data-romeo-destination="calendar"{% if calendar_error %} data-romeo-destination-error="true"{% endif %}>

@@ -1,4 +1,4 @@
-"""One SparkX entry point; private connections are managed inside the platform."""
+"""One ArquiGica entry point; private connections are managed inside the platform."""
 import os
 from pathlib import Path
 import socket
@@ -11,18 +11,18 @@ def main():
     sys.path.insert(0, str(root))
     try:
         with socket.create_connection(("127.0.0.1", 8000), timeout=1):
-            print("SparkX ya esta abierto. Usa Apagar SparkX y vuelve a ejecutar este lanzador.")
+            print("ArquiGica ya esta abierto. Usa Apagar ArquiGica y vuelve a ejecutar este lanzador.")
             return 1
     except OSError:
         pass
     try:
-        print("Iniciando SparkX con Gica-1. Administra las claves desde Gestion de IA > APIs y agentes.")
+        print("Iniciando ArquiGica con Gica-1. Administra las claves desde Gestion de IA > APIs y agentes.")
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
         from django.core.management import execute_from_command_line
         execute_from_command_line(["manage.py", "runromeo"])
         return 0
     except (KeyboardInterrupt, EOFError):
-        print("\nSparkX detenido.")
+        print("\nArquiGica detenido.")
         return 0
     finally:
         os.environ.pop("OPENAI_API_KEY", None)

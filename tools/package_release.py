@@ -1,4 +1,4 @@
-"""Build a deterministic, source-only SparkX release. No database or network I/O.
+"""Build a deterministic, source-only ArquiGica release. No database or network I/O.
 
 This allowlist is independent from Git's current tracked/ignored state. A small
 credential-pattern check complements exclusions; it is not a complete DLP audit.
@@ -21,7 +21,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SOURCE_DIRS = {"apps", "config", "docs", "static", "templates", "tools"}
 ROOT_FILES = {
     ".env.example", ".gitignore", "README.md", "manage.py", "pyproject.toml",
-    "requirements.txt", "requirements-dev.txt", "Iniciar SparkX.cmd", "Ayudante OpenCode.cmd",
+    "requirements.txt", "requirements-dev.txt", "iniciar.cmd", "Ayudante OpenCode.cmd",
+    "ArquiGica-presentacion.code-workspace",
 }
 IGNORED_PARTS = {
     "__pycache__", ".pytest_cache", ".ruff_cache", "node_modules", ".git",
@@ -30,14 +31,15 @@ IGNORED_PARTS = {
 SOURCE_SUFFIXES = {".py", ".html", ".css", ".js", ".json", ".md", ".txt", ".svg", ".jpg", ".png", ".wav", ".license"}
 DENIED_SUFFIXES = {".sqlite3", ".db", ".pem", ".key", ".p12", ".pfx", ".log", ".pyc", ".zip"}
 MANIFEST_NAME = "release-manifest.json"
-PACKAGE_ROOT = "SPARKX3.0"
+PACKAGE_ROOT = "ArquiGica"
+READABLE_PACKAGE_ROOTS = {PACKAGE_ROOT, "SPARKX3.0"}
 MAX_FILE_BYTES = 8 * 1024 * 1024
 MAX_TOTAL_BYTES = 64 * 1024 * 1024
 FIXED_TIME = (1980, 1, 1, 0, 0, 0)
-PORTABLE_AGENTS = """# SparkX 3.0
+PORTABLE_AGENTS = """# ArquiGica
 
 Proyecto Django modular de arquitectura inteligente de eventos. Trabajar en español.
-Leer README.md, docs/architecture.md, docs/construction-plan.md y docs/release.md.
+Leer README.md, docs/architecture.md, docs/construction-plan.md y docs/guias/release.md.
 La IA propone; el servidor controla permisos, validación, estados y aprobaciones.
 No incluir secretos ni datos privados en código, registros, documentos o commits.
 Material auxiliar exclusivamente en Temporal/, ignorado por Git.
@@ -53,14 +55,14 @@ DATABASE_PASSWORD_PATTERN = re.compile(rb"postgres(?:ql)?://[^\s:/]+:([^@\s/]+)@
 # Exact token SHA-256 + exact test path, reviewed as synthetic negative fixtures.
 # Unknown token-shaped strings, including new test fixtures, stop packaging.
 SYNTHETIC_FIXTURES: set[tuple[str, str]] = {
-    ("apps/assistant/test_interaction_memory.py", "4ffa47895db33000f04517ba4e1dc6a3e47e8408d373268f2e07810a7238183f"),
-    ("apps/assistant/test_interaction_memory.py", "ad40fb40a6e9a0a2dcc5d8928dddb22c8b98628e96c007714df2ab91ce4a0368"),
-    ("apps/assistant/test_interaction_memory.py", "400d4428b6d2abf1577273bfad7840ed5450553a1b65eda4bcea13e46054a160"),
-    ("apps/assistant/test_knowledge_memory.py", "977b7ec104fb56cc781bf9316d207e203520660807d7a5c10e4894455c43c0e1"),
-    ("apps/assistant/test_knowledge_memory.py", "3a8ce4e2c53f248d7508023a849a3c5c2c8f2868d57cd5ee382738dea1a95fc5"),
-    ("apps/assistant/test_knowledge_memory.py", "00adffc7f3b5f5d38f951061d28b8a5016f3ace06c5b818f599a449a5cc97bfc"),
-    ("apps/assistant/test_knowledge_memory.py", "3193831645bd691450f50c575c8f3019bcd83b9be8448321f223ef36671e03c5"),
-    ("apps/assistant/test_knowledge_service.py", "38750363110a3edaf7e547ab2954aab33106d7bf42feb277ba50514cebfd394d"),
+    ("apps/assistant/tests/test_interaction_memory.py", "4ffa47895db33000f04517ba4e1dc6a3e47e8408d373268f2e07810a7238183f"),
+    ("apps/assistant/tests/test_interaction_memory.py", "ad40fb40a6e9a0a2dcc5d8928dddb22c8b98628e96c007714df2ab91ce4a0368"),
+    ("apps/assistant/tests/test_interaction_memory.py", "400d4428b6d2abf1577273bfad7840ed5450553a1b65eda4bcea13e46054a160"),
+    ("apps/assistant/tests/test_knowledge_memory.py", "977b7ec104fb56cc781bf9316d207e203520660807d7a5c10e4894455c43c0e1"),
+    ("apps/assistant/tests/test_knowledge_memory.py", "3a8ce4e2c53f248d7508023a849a3c5c2c8f2868d57cd5ee382738dea1a95fc5"),
+    ("apps/assistant/tests/test_knowledge_memory.py", "00adffc7f3b5f5d38f951061d28b8a5016f3ace06c5b818f599a449a5cc97bfc"),
+    ("apps/assistant/tests/test_knowledge_memory.py", "3193831645bd691450f50c575c8f3019bcd83b9be8448321f223ef36671e03c5"),
+    ("apps/assistant/tests/test_knowledge_service.py", "38750363110a3edaf7e547ab2954aab33106d7bf42feb277ba50514cebfd394d"),
 }
 
 
@@ -153,8 +155,8 @@ def source_version(root: Path) -> str:
     return version
 
 
-def manifest(files: dict[str, bytes], version: str) -> dict:
-    return {"schema": 1, "project": "SparkX 3.0", "version": version,
+def manifest(files: dict[str, bytes], version: str, *, project: str = "ArquiGica") -> dict:
+    return {"schema": 1, "project": project, "version": version,
             "type": "source-only", "data_included": False,
             "files": [{"path": name, "bytes": len(data), "sha256": sha256(data)} for name, data in sorted(files.items())]}
 
@@ -197,10 +199,15 @@ def verify_release(path: Path) -> dict:
             raise ReleaseError("El ZIP tiene demasiados archivos o nombres repetidos.")
         payload = {}
         total_size = 0
+        archive_root = None
         for info in archive.infolist():
             parts = safe_relative(info.filename).parts
-            if len(parts) < 2 or parts[0] != PACKAGE_ROOT or info.is_dir():
+            if len(parts) < 2 or parts[0] not in READABLE_PACKAGE_ROOTS or info.is_dir():
                 raise ReleaseError("Raíz del paquete no válida.")
+            if archive_root is None:
+                archive_root = parts[0]
+            elif archive_root != parts[0]:
+                raise ReleaseError("El ZIP contiene más de una raíz de proyecto.")
             name = PurePosixPath(*parts[1:]).as_posix()
             if name != MANIFEST_NAME and not is_allowed(name):
                 raise ReleaseError("El ZIP contiene material fuera de la lista permitida.")
@@ -216,7 +223,10 @@ def verify_release(path: Path) -> dict:
             expected = json.loads(payload.pop(MANIFEST_NAME))
         except (KeyError, ValueError, UnicodeError) as error:
             raise ReleaseError("Falta el manifiesto JSON válido.") from error
-        if not isinstance(expected, dict) or expected != manifest(payload, expected.get("version", "")):
+        # The legacy label is a release format identifier, not a visible brand.
+        if (not isinstance(expected, dict)
+                or expected.get("project") not in {"ArquiGica", "SparkX 3.0"}
+                or expected != manifest(payload, expected.get("version", ""), project=expected.get("project"))):
             raise ReleaseError("El contenido no coincide con el manifiesto.")
         findings = [item for name, data in payload.items() for item in secret_findings(name, data)]
         if findings:
@@ -237,7 +247,7 @@ def main() -> int:
             files = collect_sources(PROJECT_ROOT)
             result = {"checked": True, "source_files": len(files), "bytes": sum(map(len, files.values()))}
         else:
-            output = args.output or PROJECT_ROOT / "entrega" / f"SparkX3.0-codigo-v{source_version(PROJECT_ROOT)}.zip"
+            output = args.output or PROJECT_ROOT / "entrega" / f"ArquiGica-codigo-v{source_version(PROJECT_ROOT)}.zip"
             result = build_release(PROJECT_ROOT, output)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True))
         return 0

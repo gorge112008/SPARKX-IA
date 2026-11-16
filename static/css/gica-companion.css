@@ -3,6 +3,7 @@
 .gica-companion[data-appearance="slate"]{--gica-companion-color:#384455}
 .gica-companion[data-appearance="forest"]{--gica-companion-color:#176d5e}
 .gica-companion[hidden]{display:none!important}
+.gica-companion-compact[hidden],.gica-companion-card[hidden]{display:none!important}
 .gica-companion-card{padding:14px;background:var(--sidebar);border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 36px var(--shadow);max-height:calc(100dvh - 108px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--control-border) transparent}
 .gica-companion-header{display:flex;align-items:center;gap:9px;margin-bottom:12px}
 .gica-companion-grip{display:grid;place-items:center;flex:0 0 26px;width:26px;height:32px;padding:4px;border:0;border-radius:8px;background:transparent;color:var(--muted);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}

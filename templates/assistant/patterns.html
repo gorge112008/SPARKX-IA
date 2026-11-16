@@ -1,10 +1,10 @@
 {% extends 'base.html' %}{% load static %}
-{% block title %}Mis patrones · Gica · SparkX{% endblock %}
+{% block title %}Mis patrones · Gica · ArquiGica{% endblock %}
 {% block extra_head %}<link rel="stylesheet" href="{% static 'css/gica-memory.css' %}?v=20261115-autodirect1">{% endblock %}
 {% block content %}
 <main id="main-content" class="page-content gica-memory-page">
   <div class="page-heading">
-    <div><h1>Mis patrones de Gica</h1><p class="lead">Tus frases revisadas, asociadas a una función de SparkX.</p></div>
+    <div><h1>Mis patrones de Gica</h1><p class="lead">Tus frases revisadas, asociadas a una función de ArquiGica.</p></div>
     <a class="button button-secondary" href="{% url 'events:index' %}">Volver a mis eventos</a>
   </div>
   <p class="gica-memory-intro">Estos patrones son sólo de tu cuenta. Guardar una frase ayuda a reconocerla; cada acción conserva sus permisos y controles. No se guarda audio. El <a class="text-link" href="{% url 'assistant:memory' %}">registro de interacciones para el mentor</a> se revisa por separado y no activa patrones.</p>

@@ -1,23 +1,119 @@
 # Plan de construcción y criterio de cierre
 
-## Etapa vigente: piloto completo y preparación de entrega
+## Etapa vigente: preparación específica y revisión del recorrido
 
-El piloto local de Gicaingenieros recorre creación, siete campos de preparación,
-propuesta, aprobación, calendario, sustitución de Robert por Jorge Gayoso Ugas,
-reprogramación del 19 al 26 de noviembre y ajuste de horarios. Se conserva un
-evento y tres versiones aprobadas con once tareas pendientes. Hay formulario
-manual de horarios e historial visible; los pasos y aprobaciones del guion están
-autorizados expresamente para este piloto. No se amplían permisos generales del agente.
+La solicitud compacta pide ocho a diez tareas propias del seminario y tres
+comunicaciones breves. El recorrido abre instrucciones y dependencias, ilustra
+estados con porcentaje en una escena sin persistir avances ficticios, y lee los
+mensajes. Después solicita el cambio acotado de dar al caso práctico cinco
+minutos más, manteniendo noventa minutos totales y diez de preguntas como mínimo.
+El servidor conserva títulos, preparación, fecha y expositor. La nueva versión
+espera aprobación humana incluso en la presentación automática.
 
-La suite completa tiene 1.445 casos correctos y 14 omitidos de PostgreSQL.
-El recorrido y las guardas tienen evidencia independiente en
-[verificación](verification.md). Entrega: informe y manual, diapositivas ES/EN y
-paquete de código instalable separado de los datos activos. Publicación del
-repositorio y despliegue multiusuario requieren su destino y configuración.
+El cierre abre Conoce a Gica y explica personalidad, voz, memoria y permisos,
+sin activar la conversación. La revisión documental de ArquiGica conserva el
+concurso SparkX 3.0 como contexto y distingue capturas controladas de inferencia
+real. La concurrencia PostgreSQL y el despliegue público permanecen pendientes.
 
-Pendientes fuera de esta aceptación: audio físico en el navegador del usuario,
+## Base vigente del directorio y de la guía conversacional
+
+La demo presenta brevemente ArquiGica y a Gica como bot arquitecto. Recorre el alta
+de Gicaingenieros y del expositor Jorge Gayoso antes del evento. Mantiene el caso
+Robert → Jorge, la fecha del jueves 19 y el contenido compacto. La respuesta
+validada queda visible tres segundos en una escena de confirmación antes de
+continuar. El guion se despide explicando cómo pedir esos pasos por voz/texto.
+
+La guía local identifica el evento, el estado de propuesta y datos pendientes;
+pregunta lo que falta y prepara formularios. La persona conserva los botones de
+guardar, generar y aprobar. No se amplían acceso administrativo ni presupuesto,
+ni se permite IA real sobre cualquier evento por este cambio.
+
+La preparación del nuevo piloto retira las fichas antiguas de Gicaingenieros y
+Jorge del directorio visible, conserva UNAC/Robert, cuentas, planes y consumos,
+y deja las altas para el recorrido. El UUID reservado es
+`bcf52dbd-206b-4d22-a294-8c487c770c56`. La verificación nueva se documenta en
+`verification.md`; no se atribuyen los tokens medidos del piloto anterior a esta
+versión de interfaz.
+
+## Antecedente: demo con IA compacta y aplicación acotada
+
+El acceso principal **Iniciar demo con OpenAI** muestra la solicitud exacta y guarda
+una copia de la propuesta en Temporal antes de aplicarla. Por autorización
+expresa del organizador, sólo los modos `agenda-openai`, su continuación y `agenda-live`, sobre el UUID fijo, continúan a
+la aprobación sin pausa. **Recorrido completo** (`full`) conserva la revisión
+humana; **Guardar agenda para comparar** mantiene la opción privada sin candidatos.
+
+El nuevo recorrido parte de Mis eventos, completa la ficha y solicita agenda,
+preparación y comunicaciones al perfil principal OpenAI `gpt-5.4-mini`, con JSON
+acotado y elección gratuita opcional separada. Se mantiene el tope acumulado de
+USD 1, sin reiniciar consumo ni reservas anteriores, y límites de 12.000/1.800
+tokens por solicitud. Si faltan
+preferencias, pregunta una por una y remite las respuestas en un único lote.
+Aplica la propuesta según el modo elegido, siempre con validación del servidor.
+El caso de cambio mantiene el jueves
+19 de noviembre: Robert no puede participar y se elige a Jorge Gayoso Ugas,
+sin otra consulta a la IA. El editor manual de horarios permanece disponible.
+Los mensajes son borradores y las tareas no se dan por realizadas.
+
+**El recorrido nuevo está completado operativamente:** el piloto activo
+`ebd54e40-752c-4f8a-9376-f2735e2c6a41` generó cuatro sesiones que suman 90 minutos,
+tres tareas y tres comunicaciones. Una llamada real GPT-5.4 mini informó
+1.320 tokens y USD 0,002104 brutos estimados. Se guardó la copia antes de aplicar,
+se comprobaron ambos calendarios y se aprobó el reemplazo Robert → Jorge sin otra
+llamada. No pidió aclaraciones: la elección A/B y su espera se verificaron con
+dobles locales. La revisión semántica independiente considera adecuada la nueva
+agenda para el piloto: 25 minutos de marco, 35 de caso, 20 de preguntas y 10 de
+cierre. Incluye ensayo técnico y moderación; profundidad y dependencias son mejorables.
+
+El prompt ahora incluye requisitos cerrados para caso práctico y preguntas con
+tiempos propios, ensayo técnico y moderación. Se ve su escritura progresiva, el
+clic en Ejecutar, el cierre del panel y la escena real de espera. El cursor queda
+centrado verticalmente en el control. Las pistas originales son Órbita pop,
+Brisa groove y Chispa latina, a 124, 119 y 128 BPM.
+
+El anterior quedó archivado con respaldo y ensayo; sus Jobs, AIUsage y planes
+coinciden exactamente con el respaldo y siguen sumando al presupuesto. Hay un
+evento activo y uno retirado. El acumulado es cuatro llamadas OpenAI, 4.344 tokens
+y USD 0,006068 brutos estimados, con USD 0,993932 restantes del tope USD 1; el
+cobro neto tras créditos no se ha comprobado. Inscripción, directorio, horarios,
+herramientas y reservas excluyen eventos archivados. El reinicio final cargó
+esas guardas y vació la clave en RAM; revisar el plan no requiere reintroducirla.
+Evidencia: [resultado conciliado](../Temporal/qa-gica-polish-v3/completion.json)
+y [revisión de agenda](../Temporal/qa-gica-polish-v3/agenda-review.json).
+
+### Antecedente conservado: primera agenda OpenAI
+
+La primera ejecución gratuita recibió 429 de GLM y no produjo agenda. Jorge
+autorizó luego OpenAI expresamente y guardó su clave en el panel privado. La
+primera llamada devolvió una pregunta de enfoque; la aclaración falló sin
+publicar agenda. Su contenido no se conservó y la causa concreta no está acreditada.
+Se corrigió el esquema de segunda ronda y se recuperaron las respuestas mediante
+una continuación explícita, sin repetir la ficha ni borrar historial o presupuesto.
+
+La primera aceptación operativa produjo cuatro sesiones
+que suman 90 minutos, cuatro tareas y tres borradores de comunicación. Se guardó
+la copia antes de aprobar y se verificaron el calendario inicial y el actualizado.
+El cambio Robert → Jorge conservó contenido, horarios y recursos, sin otra llamada
+de IA. Quedaron dos planes aprobados. Las tres llamadas OpenAI, incluida la rechazada,
+informaron 3.024 tokens y un coste bruto Standard estimado de USD 0,003964 bajo el
+tope acumulado USD 1. El cobro neto tras créditos no está comprobado. No se usó una
+agenda prearmada. La revisión de esa primera salida concluyó `needs_adjustments`:
+la progresión era coherente, pero faltaban tiempos explícitos para caso práctico
+y preguntas solicitados en la ficha. El prompt sólo exportó `focus=planning`,
+sin nivel intermedio ni formato de caso. Este diagnóstico motivó los requisitos
+cerrados del corte nuevo; la agenda original se conserva sin reescritura.
+Evidencia: [revisión independiente](../Temporal/qa-gica-openai/agenda-review.json).
+Pruebas actuales, evidencia y distinción entre dobles de inferencia y uso remoto
+en [verificación](verification.md). El ZIP, informes y diapositivas de la entrega
+anterior describen el guion local anterior; no acreditan este cambio de IA.
+
+### Pendientes del corte vigente
+
+Pendientes fuera de esta aceptación: nivel y resultado de aprendizaje explícitos,
+detalle técnico del caso, mayor profundidad y dependencias de preparación,
+audio físico en el navegador del usuario,
 concurrencia y carga PostgreSQL, disponibilidad real de expositores y Zoom,
-e inferencia remota con datos permitidos y cuota autorizada. No se declara
+y actualización del paquete e informes con esta evidencia. No se declara
 completa la totalidad de módulos de las bases por haber terminado este recorrido.
 
 ## Antecedentes de implementación — sustituidos por el corte vigente
@@ -104,7 +200,7 @@ reutilizables. «Hola chica, abre eventos» reconoce el vocativo sin reescribir
 tokens de LLM; el banco inválido falla cerrado. Sinónimos no agregan capacidades:
 siguen exactamente dos temas, abrir calendario/directorio/eventos y buscar personas.
 Negaciones, citas, relatos, condiciones, administración y órdenes múltiples no
-autorizan ejecuciones parciales. Detalle en [lenguaje de Gica](romeo-language.md).
+autorizan ejecuciones parciales. Detalle en [lenguaje de Gica](arquitectura/romeo-language.md).
 
 La normalización selecciona spans gramaticales tras las guardas originales y
 revalida la gramática canónica. Plurales/variantes nominales e inflexiones verbales
@@ -205,7 +301,7 @@ límites en verification.md y ai-management.md.
 
 Actualización posterior: Jorge autorizó iniciar **Gica-1 con OpenAI mini y un tope
 global de USD 1**, sólo eventos controlados. Se implementaron guardas de gasto,
-contexto aislado/congelado, monitor y un único arranque **Iniciar SparkX.cmd**, con
+contexto aislado/congelado, monitor y un único arranque **iniciar.cmd**, con
 web y worker local, sin pedir claves en consola. El superadministrador activo las
 configura para su propia cuenta en `/ai/control/`, **Gestión de IA → APIs y agentes**:
 memoria efímera de hasta dos horas, sin persistencia, revocable y perdida al reiniciar.
@@ -232,7 +328,7 @@ de conectar la clave privada y pedir una operación controlada. Las simulaciones
 acreditan aceptación de IA real. Los párrafos de espera de cuota, OpenAI deshabilitado
 y baselines que siguen son historia previa a esta autorización; el estado y las
 comprobaciones vigentes están en [verificación](verification.md) y el contrato en
-[Gestión de IA](ai-management.md). La prioridad sigue siendo prototipo y evidencia
+[Gestión de IA](guias/ai-management.md). La prioridad sigue siendo prototipo y evidencia
 antes del informe y los demás documentos finales.
 
 El usuario confirmó entrega el **15 de noviembre de 2026 a las 12:00, America/Lima**.
@@ -296,7 +392,7 @@ Se corrigió `no-referrer` a `same-origin` en la página pública porque el env�
 `Origin: null` y recibía 403 CSRF; el paso corregido se repitió correctamente.
 La inferencia real sigue pendiente; la suite final ya terminó correctamente. No se declara éxito de IA
 ni cero tokens por esta simulación. El usuario aún no tiene claves Groq/Google;
-la [guía opcional de Groq Free](ai-management.md#guía-opcional-preparar-groq-free-en-privado)
+la [guía opcional de Groq Free](guias/ai-management.md#guía-opcional-preparar-groq-free-en-privado)
 prepara el entorno privado sin activar perfiles o pago.
 
 Comentarios, reporte posterior, materiales más amplios, recomendaciones,
@@ -311,15 +407,16 @@ La conversación acompaña acciones visibles y editables; no reemplaza la ficha,
 
 Supuestos de arranque, modificables expresamente por el equipo:
 
-- Confirmado el 12 de noviembre: el agente pregunta y prepara propuestas; el organizador confirma cambios del plan y estados de tareas.
-- Caso principal de seminario virtual y datos sintéticos identificados para la demostración inicial.
+- Regla general: el agente pregunta y propone; el organizador confirma cambios y estados. La excepción autorizada del 16 de noviembre aplica sólo las propuestas del piloto fijo mediante sus modos de demo.
+- Seminario virtual del piloto con identidades declaradas localmente; las pruebas con datos sintéticos siguen identificadas como tales.
 - Hasta 100 inscritos; validar primero 20 usuarios web activos. La concurrencia de IA se mide y limita aparte.
 - Un servidor y una base de datos; desarrollo local antes de un ensayo de despliegue.
-- IA gratuita autorizada sólo para datos ficticios mediante el puente acotado.
-  OpenAI y gasto permanecen deshabilitados; el beneficio mostrado anteriormente
-  no constituye autorización de consumo. Disponibilidad y consumo real pendientes.
+- Puente gratuito general restringido a datos ficticios; el contrato compacto
+  exporta únicamente el tema público y preferencias cerradas. OpenAI ahora tiene
+  autorización expresa con tope acumulado USD 1; la clave debe estar disponible
+  y el consumo real sigue sujeto a comprobación.
 
-## Fases y puertas de aceptación
+## Fases y puertas de aceptación — referencia del 15 de noviembre
 
 | Fase | Estado contrastado al 15 de noviembre | Entrega concreta y puerta de cierre |
 | --- | --- | --- |
@@ -333,7 +430,7 @@ Supuestos de arranque, modificables expresamente por el equipo:
 
 Cada entrega debe ser navegable o comprobable antes de ampliar alcance. El primer arranque de hoy no tiene que completar todas las fases: debe dejar una base honesta y verificable, sin botones que aparenten operaciones inexistentes.
 
-## Orden inmediato de trabajo
+## Orden de trabajo histórico — 12 a 15 de noviembre
 
 El usuario confirmó el 12 de noviembre la prioridad del recorrido describir evento → plan con IA → revisar y aprobar → adaptar y seguir tareas. Estos incrementos desarrollan las fases existentes; no añaden otra numeración de etapas.
 
@@ -365,7 +462,7 @@ Se conserva Django/HTMX, servicios de aplicación, reglas de dominio, base de da
 | Proveedores y ahorro | Reutilizar Gestión de IA y sus adaptadores; evitar llamadas para fechas, porcentajes, permisos o consultas exactas. Persistir resultados y contar fallos. | Comparar proveedores sobre tareas equivalentes antes de activar otra ruta. Una cuota gratuita agotada no autoriza gasto. |
 | Apoyo al desarrollo | Usar el mentor canónico y encargos acotados con criterios de aceptación. Aprovechar revisiones manuales en herramientas ya disponibles. | OpenCode, Claude u otro asistente son opciones de desarrollo, separadas del backend de SparkX. Los beneficios exactos de Gemini Workspace siguen pendientes de edición/licencia; no atribuir beneficios de planes personales. |
 
-## Decisiones confirmadas el 12 y el 15 de noviembre
+## Decisiones históricas del 12 y el 15 de noviembre
 
 | Decisión | Respuesta del usuario y consecuencia |
 | --- | --- |
@@ -373,7 +470,7 @@ Se conserva Django/HTMX, servicios de aplicación, reglas de dominio, base de da
 | Prioridad | Cerrar describir evento → plan con IA → revisar/aprobar → adaptar/seguir tareas. Conservar esta prioridad al evaluar extras. |
 | Autonomía | El agente pregunta y prepara propuestas; Jorge confirma cambios del plan y estados de tareas. No habilitar escritura autónoma de estados desde el chat. |
 | Voz inicial | Por turnos, con texto revisable. No incorporar voz continua para cerrar este recorrido. |
-| Créditos API | Capturas anteriores: Personal / SparkX-Pruebas, USD 61 con vencimiento 22/11 y límites de Mini; sin acceso efectivo verificado. OpenAI y pago siguen sólo preparados, sin autorización de llamadas. El puente gratuito sintético del 15/11 tiene autorización separada; guía en [Gestión de IA](ai-management.md). |
+| Créditos API | Capturas anteriores: Personal / SparkX-Pruebas, USD 61 con vencimiento 22/11 y límites de Mini; sin acceso efectivo verificado. OpenAI y pago siguen sólo preparados, sin autorización de llamadas. El puente gratuito sintético del 15/11 tiene autorización separada; guía en [Gestión de IA](guias/ai-management.md). |
 
 No se vuelve a preguntar por la propuesta, inscripción, aprobación, stack, paletas, hora de cierre o estas preferencias sin una razón nueva. El gasto adicional autorizado permanece en cero; el piloto de USD 5 descrito en la investigación sigue siendo una propuesta. Cualquier credencial alternativa se configura sólo en privado y con autorización concreta.
 
