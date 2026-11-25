@@ -29,10 +29,7 @@ Si ya está abierto, utiliza esa dirección; el lanzador evita otra instancia
 en el mismo puerto. Mantén su ventana abierta durante el uso.
 
 Para instalar una copia nueva, usar otra cuenta administradora o resolver
-problemas de arranque, consulta [Inicio e instalación](docs/guias/inicio.md).
-
-Inicio de sesion: adminjorge
-Psw: G-1k@
+problemas de arranque, consulta [Inicio e instalación](docs/guias/inicio.md)
 
 ## Estructura del código
 
